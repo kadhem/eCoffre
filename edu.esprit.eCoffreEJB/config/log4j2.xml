@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Configuration> 
+  <Appenders> 
+<!--   	<Socket name="Socket" host="localhost" port="4712"> -->
+<!--       <SerializedLayout/> -->
+<!--     </Socket> -->
+	<RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log" append="false">
+      <PatternLayout>
+        <Pattern>%d %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="1 MB"/>
+      </Policies>
+    </RollingFile>
+    <File name="FileLogger" fileName="HelloLog4j.log" append="false"> 
+      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/> 
+    </File> 
+    <Console name="STDOUT" target="SYSTEM_OUT"> 
+      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/> 
+    </Console> 
+  </Appenders> 
+  <Loggers> 
+<!--     <Logger name="edu.esprit.eCoffreEJB.Technique" level="trace">  -->
+<!--       <AppenderRef ref="FileLogger"/>  -->
+<!--     </Logger> -->
+    <Root level="trace"> 
+      <AppenderRef ref="STDOUT"/> 
+      <AppenderRef ref="RollingFile"/>
+    </Root> 
+  </Loggers> 
+</Configuration>

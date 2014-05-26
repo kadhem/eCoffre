@@ -1,0 +1,131 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/templateA.xhtml">
+
+<ui:define name="title">Mon compte</ui:define>
+<ui:define name="page-titre">Mon compte</ui:define>
+<ui:define name="description-titre">gestion des informations personnelles</ui:define>
+<ui:define name="information">
+<h:form id="spaceUser">
+	<h6>Bienvenue #{userBean.user.firstName}</h6>
+	<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
+<div>
+	<h6>Espace utilisé</h6>
+	<div>
+		<p:progressBar value="#{obnBean.calculUsedSpace()}" labelTemplate="{value}%" displayOnly="true" style="width:50%;position: absolute"/>
+	</div>
+	<div style="padding-left: 115px;font-size: 11px">
+	#{obnBean.calculUsedSpace1()} / 1Go
+	</div>
+</div>
+<div style="margin-top: 10px">
+	<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="deposer.show()" global="false"/>
+</div>
+</h:form>
+</ui:define>
+<ui:define name="menu">
+<h:form>
+	<li><p:commandLink action="index.jsf?faces-redirect=true" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
+	<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
+	<li><p:commandLink action="#{partageBean.redirectToPartages}" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
+	<li><p:commandLink action="#{utisBean.redirectToEvents}" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
+	<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
+</h:form>
+</ui:define>
+<ui:define name="contenu">
+	<div class="row-fluid">
+		<div class="span6" style="width: 100%">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+        <div class="dialog">      
+			<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+				<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+			</p:dialog>
+		</div>
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Informations personnelles</h4>
+				</div>
+				<div class="widget-body">
+					<p:tabView effectDuration="normal">
+				        <p:tab title="Informations personnel" >  
+				        <h:form>
+				            <h:panelGrid columns="2" cellpadding="15">  
+				            	<p:outputLabel value="Nom" />
+					            <h:outputText id="nom" value="#{utisBean.utiS.lastName}"/> 
+                				
+            					<p:outputLabel value="Prénom" style="margin-top:10px"/>  
+					            <h:outputText id="prenom" value="#{utisBean.utiS.firstName}"/>
+                				
+                				<p:outputLabel value="Date de naissance" style="margin-top:10px"/> 
+            					<h:outputText id="date" value="#{utisBean.utiS.dateNaissance}">
+            						<f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+            					</h:outputText>
+            					
+            					<p:outputLabel value="Téléphone " style="margin-top:10px"/>  
+            					<p:inplace> 
+					            	<p:inputText id="tel" label="Tel" value="#{utisBean.utiS.tel}"> 
+					            		<f:validateLength minimum="8"/>
+					            	</p:inputText>    
+                				<p:message for="tel" /> 
+                				</p:inplace>
+            					<p:outputLabel value="Adresse" style="margin-top:10px"/>  
+            					<p:inplace>  
+					                <p:inputText id="adresse" value="#{utisBean.utiS.adresse}"/>  
+					            </p:inplace>
+				            </h:panelGrid>  
+				            <p:commandButton value="Valider" action="#{utisBean.doUpdate()}" update="@form" 
+				            	styleClass="btn btn-primary" style="margin-left:600px"/>
+				        </h:form>
+						</p:tab>  
+				        <p:tab title="Paramètres de connexion">  
+				        <h:form>
+				            <h:panelGrid columns="3" cellpadding="15">  
+	                         	<p:outputLabel value="Adresse e-mail *" style="margin-top:10px"/>
+	            				<h:outputText value="#{utisBean.utiS.userName}"/>
+ 								<h:inputHidden value="rien" />
+ 								
+  								<p:outputLabel value="Mot de passe *" style="margin-top:10px"/>
+  								<p:inplace>
+						            <p:keyboard value="#{utisBean.utiS.password}" id="password" 
+						            password="true" keypadOnly="true" label="mot de passe" required="true" 
+						            requiredMessage="vous devez avoir un mot de passe" closeLabel="Fermer" clearLabel="Effacer">
+						            <f:validateLength minimum="6"/>
+						            </p:keyboard>
+						        </p:inplace> 
+					            <p:message for="password"/> 
+				            </h:panelGrid>  
+				            <p:commandButton value="Valider" action="#{utisBean.doUpdate()}" update="@form" 
+				            	styleClass="btn btn-primary" style="margin-left:600px"/>
+				        </h:form>
+				        </p:tab>  
+				        <p:tab title="Plus besoin d'EspritBox?">  
+				            <h:panelGrid columns="2" cellpadding="15">  
+				            <h4>En supprimons votre compte EspritBox vous devez tenir compte des points suivants : </h4>
+				            	<ul>
+				            		<li>
+				            			Votre espace de stockage ainsi que les données y appartenant seront supprimer définitivement.
+				            		</li>
+				            		<li>
+				            			Votre espace de partage ne sera plus disponible.
+				            		</li>
+				            		<li>
+				            			Votre compte sera éliminé de nos base de données, en conséquent vous ne pourrez plus se connecter avec.
+				            		</li>
+				            	</ul>
+				            </h:panelGrid>  
+				            <p:commandButton value="Résilier" action="#{utisBean.doDelete()}" 
+				            	styleClass="btn btn-primary" style="margin-left:600px"></p:commandButton>
+				        </p:tab>  
+				    </p:tabView>
+				</div>	
+			</div>
+		</div>
+	</div>
+	
+</ui:define>
+
+</ui:composition>
+

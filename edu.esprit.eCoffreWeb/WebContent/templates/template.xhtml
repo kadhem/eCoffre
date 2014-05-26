@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+
+<!-- BEGIN HEAD -->
+
+<h:head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<title><ui:insert name="title">Page</ui:insert></title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<link href="./resources/template/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/template/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="./resources/template/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="./resources/template/css/style.css" rel="stylesheet" />
+	<link href="./resources/template/css/style_responsive.css" rel="stylesheet" />
+	<link href="./resources/template/css/style_default.css" rel="stylesheet" id="style_color" />
+	<link href="#" rel="stylesheet" id="style_metro"/>
+	<link rel="stylesheet" type="text/css" href="./resources/template/uniform/css/uniform.default.css" />
+	<h:outputScript library="primefaces" name="jquery/jquery.js" />
+</h:head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+		<!-- BEGIN HEADER -->
+		<div id="header" class="navbar navbar-inverse navbar-fixed-top">
+			<!-- BEGIN TOP NAVIGATION BAR -->
+			<div class="navbar-inner">
+				<div class="container-fluid header">
+					<!-- BEGIN LOGO -->
+					<a class="brand" href="index.html">
+						<img src="./resources/template/img/logoEcoffre.png" alt="Conquer"/>
+					</a>
+					<!-- END LOGO -->
+					<div style="float: right;padding: 1% 4% 0% 0%;">
+						<div>
+							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
+							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
+							<a class="btn" href="login.jsf" style="vertical-align: inherit;"><b><i>Se connecter</i></b></a> 
+						</div>
+					</div>
+				</div>
+				<div class="animation">
+					<ui:insert name="animation">
+					
+						vous pouvez mettre une image ou une animation ici
+					
+					</ui:insert>
+				</div>
+			</div>
+			<!-- END TOP NAVIGATION BAR -->
+		</div>
+	<!-- END HEADER -->
+	
+	<!-- BEGIN CONTAINER -->
+	<div id="container" >
+		<!-- BEGIN PAGE -->
+		<div id="body">
+			<!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<ui:insert name="page_header">header page</ui:insert>
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+					
+				<div>
+					<ui:insert name="page_content">page content</ui:insert>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+			<!-- END PAGE CONTAINER-->		
+		</div>
+		<!-- END PAGE -->
+	</div>
+	<!-- END CONTAINER -->
+	<ui:include src="/templates/footer.xhtml"/>
+</body>
+<!-- END BODY -->
+</html>

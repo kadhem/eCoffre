@@ -1,0 +1,188 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/templateA.xhtml">
+	
+<ui:define name="information">
+<h:form id="spaceUser">
+	<h6>Bienvenue #{userBean.user.firstName}</h6>
+</h:form>
+</ui:define>
+<ui:define name="menu">
+	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Tableau de bord</p:commandLink></li>
+	<li><p:commandLink action="gestionutilisateurs?faces-redirect=true" global="false"><i class="icon-home"></i>Gérer les utilisateurs</p:commandLink></li>
+	<li><p:commandLink action="gestionconteneurs?faces-redirect=true" global="false"><i class="icon-home"></i>Gérer les conteneurs</p:commandLink></li>
+</ui:define>
+<ui:define name="title">Tableau de bord</ui:define>
+<ui:define name="page-titre">Tableau de bord</ui:define>
+<ui:define name="description-titre">résumé et statistiques</ui:define>
+<ui:define name="contenu">
+	
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+	<div class="dialog">      
+		<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+			<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+		</p:dialog>
+	</div>
+
+	<div class="row-fluid stats-overview-cont">
+		<div class="span2 responsive" data-tablet="span4" data-desktop="span2">
+			<div class="stats-overview block clearfix">		
+					<p:graphicImage value="/resources/templateA/img/user.png" width="50px" height="70px" style="float:right"/>  
+				<div class="details">
+					<div class="title">Utilisateurs</div>
+					<div class="numbers">#{adminBean.users.size()}</div>
+				</div>
+			</div>
+		</div>
+		<div class="span2 responsive" data-tablet="span4" data-desktop="span2">
+			<div class="stats-overview block clearfix">		
+					<p:graphicImage value="/resources/templateA/img/documents.png" width="50px" height="70px" style="float:right"/>  
+				<div class="details">
+					<div class="title">Documents</div>
+					<div class="numbers">#{adminBean.countObn}</div>
+				</div>
+			</div>
+		</div>
+		<div class="span2 responsive" data-tablet="span4" data-desktop="span2">
+			<div class="stats-overview block clearfix">		
+					<p:graphicImage value="/resources/templateA/img/conteneurs.png" width="50px" height="70px" style="float:right"/>  
+				<div class="details">
+					<div class="title">Conteneurs</div>
+					<div class="numbers">#{adminBean.conteneurs.size()}</div>
+				</div>
+			</div>
+		</div>
+		<div class="span2 responsive" data-tablet="span4" data-desktop="span2">
+			<div class="stats-overview block clearfix">		
+					<p:graphicImage value="/resources/templateA/img/shares.png" width="50px" height="70px" style="float:right"/>  
+				<div class="details">
+					<div class="title">Partages</div>
+					<div class="numbers">#{adminBean.shares.size()}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row-fluid">
+		<div class="span6">
+		
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Inscriptions pendant les 5 derniers mois</h4>
+				</div>
+				<div class="widget-body">
+					<p:lineChart value="#{adminBean.linearModel}" legendPosition="e" zoom="true" minY="0" 
+						style="width:500px;height:300px" widgetVar="chart" />
+				</div>	
+			</div>
+		</div>
+		
+		<div class="span6">
+		
+			<div class="widget">
+				<div class="widget-body, recentFiles" style="max-height:300px">
+					<h:form id="formL">
+					    <p:dataTable value="#{adminBean.conteneurs}" var="cont" style="text-align: center;" styleClass="hide-border-columns">
+					    	<p:column style="width:1%">
+					            <f:facet name="header" styleClass="widget-title">
+					                <h:outputText value="Id" />
+					            </f:facet>
+					            <h:outputText value="#{cont.idCont}"/>
+					        </p:column>
+					        <p:column filterBy="#{cont.libelle}" sortBy="#{cont.libelle}">
+					            <f:facet name="header" >
+					                <h:outputText value="Libellé" />
+					            </f:facet>
+					            <h:outputText value="#{cont.libelle}"/><h:outputText value=" (par défaut)" rendered="#{cont.parDefaut}" />
+					        </p:column>
+					        <p:column>
+					        <div style="float:right">
+					            <p:commandButton id="v" value="Désactiver" title="Désactiver" icon="ui-icon ui-icon-locked" 
+					            	disabled="#{!cont.actif}" actionListener="#{adminBean.disableConteneur(cont)}" update="@form"
+					            		styleClass="btn btn-danger"/>
+					            <p:tooltip for="v"></p:tooltip>
+						            
+							    <p:commandButton id="t" value="Activer" title="Activer" icon="ui-icon ui-icon-unlocked" 
+							    	disabled="#{cont.actif}" actionListener="#{adminBean.enableConteneur(cont)}" update="@form"
+							    		styleClass="btn btn-success"/>
+								<p:tooltip for="t"></p:tooltip>
+							</div>
+					        </p:column>
+					    </p:dataTable>
+					</h:form>	
+				</div>	
+			</div>
+		</div>
+		
+		
+	</div>
+	<div class="row-fluid">
+		<div class="span6" style="width: 100%;">
+			<div class="widget">
+				<div class="widget-body, recentFiles">
+					<h:form id="formAjout">  
+					    <p:dataTable value="#{adminBean.users}" var="user" styleClass="hide-border-columns" style="text-align: center;">
+					    	<p:column filterBy="#{user.firstName}" sortBy="#{user.firstName}">
+					            <f:facet name="header" styleClass="widget-title">
+					                <h:outputText value="Prénom" />
+					            </f:facet>
+					            <h:outputText value="#{user.firstName}"/>
+					        </p:column>
+					        <p:column filterBy="#{user.lastName}" sortBy="#{user.lastName}">
+					            <f:facet name="header" >
+					                <h:outputText value="Nom" />
+					            </f:facet>
+					            <h:outputText value="#{user.lastName}"/>
+					        </p:column>
+					        <p:column filterBy="#{user.adresse}" sortBy="#{user.adresse}">
+					            <f:facet name="header" >
+					                <h:outputText value="Adresse" />
+					            </f:facet>
+					            <h:outputText value="#{user.adresse}" />
+					        </p:column>
+					        <p:column filterBy="#{user.userName}" sortBy="#{user.userName}">
+					            <f:facet name="header" >
+					                <h:outputText value="Email" />
+					            </f:facet>
+					            <h:outputText value="#{user.userName}" />
+					        </p:column>
+					        <p:column filterBy="#{user.tel}" sortBy="#{user.tel}">
+					            <f:facet name="header" >
+					                <h:outputText value="Tel" />
+					            </f:facet>
+					            <h:outputText value="#{user.tel}" />
+					        </p:column>
+					        <p:column>
+					            <f:facet name="header" >
+					                <h:outputText value="Espace utilisé" />
+					            </f:facet>
+					            <p:progressBar value="#{adminBean.calculUsedSpace(user.userName)}" labelTemplate="{value}%" displayOnly="true"/>
+					        </p:column>
+					        
+					        <p:column width="1%">
+					        <center>
+					            	<p:commandButton id="v" title="Désactiver" icon="ui-icon ui-icon-locked" disabled="#{!user.valide}"
+					            		styleClass="btn btn-danger"/>
+					            	<p:tooltip for="v"></p:tooltip>
+						            
+							        <p:commandButton id="t" title="Activer" icon="ui-icon ui-icon-unlocked" disabled="#{user.valide}"
+							        	styleClass="btn btn-success"/>
+									<p:tooltip for="t"></p:tooltip>
+							</center>
+					        </p:column>
+					    </p:dataTable>
+					</h:form> 
+					<p:dialog id="dialog" widgetVar="dialog" header="Erreur" modal="true">
+						<h:outputText value="Vous ne pouvez pas désactiver le conteneur par défaut" />
+					</p:dialog>
+				</div>	
+			</div>
+		</div>
+	</div>
+	
+</ui:define>
+</ui:composition>
+

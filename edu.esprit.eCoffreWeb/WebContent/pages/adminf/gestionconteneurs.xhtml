@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/templateA.xhtml">
+	
+<ui:define name="information">
+<h:form id="spaceUser">
+	<h6>Bienvenue #{userBean.user.firstName}</h6>
+</h:form>
+</ui:define>
+<ui:define name="menu">
+	<li><p:commandLink action="index?faces-redirect=true" global="false"><i class="icon-home"></i>Tableau de bord</p:commandLink></li>
+	<li><p:commandLink action="gestionutilisateurs?faces-redirect=true" global="false"><i class="icon-home"></i>Gérer les utilisateurs</p:commandLink></li>
+	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Gérer les conteneurs</p:commandLink></li>
+</ui:define>
+<ui:define name="title">Gestion des utilisateurs</ui:define>
+<ui:define name="page-titre">Gestion des utilisateurs</ui:define>
+<ui:define name="description-titre">...</ui:define>
+<ui:define name="contenu">
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+	<div class="dialog">      
+		<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+			<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+		</p:dialog>
+	</div>
+	<h:form style="padding:0;margin:0">
+			<p:commandButton value="Ajouter" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" global="false" onclick="addDialog.show()"/>
+	</h:form>
+	<p:dialog widgetVar="addDialog" header="Ajouter un conteneur" modal="true" resizable="true" draggable="true">
+		<h:form id="formAjout" style="margin:0">
+			<p:panelGrid columns="2">
+				<h:outputLabel value="Libellé"/>
+				<p:inputText value="#{adminBean.libelle}"/>
+				<h:outputLabel value="Activer"/>
+				<p:selectBooleanCheckbox value="#{adminBean.actif}"/>
+				<h:outputLabel value="Par défaut"/>
+				<p:selectBooleanCheckbox value="#{adminBean.parDefaut}"/>
+				<p:column>
+					<h:outputText styleClass="alert alert-success" value="#{adminBean.statusOp}" rendered="#{adminBean.success}"/>
+					<h:outputText styleClass="alert alert-error" value="#{adminBean.statusOp}" rendered="#{adminBean.fail}"/>
+				</p:column>
+				<p:column>
+				<div style="float:right">
+					<p:commandButton value="Annuler" onclick="addDialog.hide()" styleClass="btn"/>
+					<p:commandButton value="Valider" actionListener="#{adminBean.createConteneur}" update="@form :formL" styleClass="btn btn-primary"/>
+				</div>
+				</p:column>
+			</p:panelGrid>
+			<p:panelGrid columns="2">
+				
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+	<div class="row-fluid">
+		<div class="span6" style="width: 100%">
+			<div class="widget">
+				<div class="widget-body" style="padding: 0;">
+					<h:form id="formL">
+					    <p:dataTable value="#{adminBean.conteneurs}" var="cont" emptyMessage="Aucun conteneur créé" paginatorPosition="bottom" 
+					     		paginator="true" rows="10" paginatorAlwaysVisible="false" style="text-align: center;" 
+					     			styleClass="hide-border-columns">
+					    	<p:column style="width:1%">
+					            <f:facet name="header" styleClass="widget-title">
+					                <h:outputText value="Id" />
+					            </f:facet>
+					            <h:outputText value="#{cont.idCont}"/>
+					        </p:column>
+					        <p:column filterBy="#{cont.libelle}" sortBy="#{cont.libelle}">
+					            <f:facet name="header" >
+					                <h:outputText value="Libellé" />
+					            </f:facet>
+					            <h:outputText value="#{cont.libelle}"/><h:outputText value=" (par défaut)" rendered="#{cont.parDefaut}" />
+					        </p:column>
+					        <p:column>
+					        <div style="float:right">
+					            <p:commandButton id="v" value="Désactiver" title="Désactiver" icon="ui-icon ui-icon-locked" 
+					            	disabled="#{!cont.actif}" actionListener="#{adminBean.disableConteneur(cont)}" update="@form"
+					            		styleClass="btn btn-danger"/>
+					            <p:tooltip for="v"></p:tooltip>
+						            
+							    <p:commandButton id="t" value="Activer" title="Activer" icon="ui-icon ui-icon-unlocked" 
+							    	disabled="#{cont.actif}" actionListener="#{adminBean.enableConteneur(cont)}" update="@form"
+							    		styleClass="btn btn-success"/>
+								<p:tooltip for="t"></p:tooltip>
+							</div>
+					        </p:column>
+					    </p:dataTable>
+					</h:form> 
+					<p:dialog id="dialog" widgetVar="dialog" header="Erreur" modal="true">
+						<h:outputText value="Vous ne pouvez pas désactiver le conteneur par défaut" />
+					</p:dialog>
+				</div>	
+			</div>
+		</div>
+	</div>
+</ui:define>
+</ui:composition>
+

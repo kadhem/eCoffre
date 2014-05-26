@@ -1,0 +1,23 @@
+body { 
+  color: #222; 
+  background-color:#0e4152 !important;/*#DBDBD9 !important;
+  background-image: -webkit-linear-gradient(top, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 31%,rgba(215,222,227,1) 100%,rgba(245,247,249,1) 100%);*/
+}
+
+#header.navbar-inverse .navbar-inner {
+  background-color: #3c3c3c !important;
+  
+  border-color: #141313;
+  webkit-box-shadow: 0 1px 10px rgba(120, 120, 120, .1);
+    -moz-box-shadow: 0 1px 10px rgba(120, 120, 120, .1);
+         box-shadow: 0 1px 10px rgba(120, 120, 120, .1);
+}
+
+#header .navbar-inner .nav .dropdown-toggle:hover, .navbar-inner .nav .dropdown.open .dropdown-toggle {
+  background-color: #333 !important;
+}
+
+#header.navbar-inverse .divider-vertical {
+  border-left-color: #2c2d2f;
+  border-right-color: #181a1b;
+}

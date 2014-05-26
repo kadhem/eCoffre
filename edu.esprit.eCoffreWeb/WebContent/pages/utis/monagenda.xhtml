@@ -1,0 +1,165 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/templateA.xhtml">
+	
+	<ui:define name="title">Mon agenda</ui:define>
+	<ui:define name="page-titre">Tableau de bord</ui:define>
+	<ui:define name="description-titre">résumé et statistiques</ui:define>
+	<ui:define name="information">
+		<h:form id="spaceUser">
+			<h6>Bienvenue #{userBean.user.firstName}</h6>
+			<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
+			<div>
+				<h6>Espace utilisé</h6>
+				<div>
+					<p:progressBar value="#{obnBean.calculUsedSpace()}"
+						labelTemplate="{value}%" displayOnly="true"
+						style="width:50%;position: absolute" />
+				</div>
+				<div style="padding-left: 115px; font-size: 11px">
+					#{obnBean.calculUsedSpace1()} / 1Go</div>
+			</div>
+			<div style="margin-top: 10px">
+				<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="deposer.show()" global="false"/>
+			</div>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menu">
+	<h:form>
+		<li><p:commandLink action="index.jsf?faces-redirect=true" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
+		<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
+		<li><p:commandLink action="#{partageBean.redirectToPartages}" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
+		<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
+		<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
+	</h:form>
+	</ui:define>
+
+	<ui:define name="contenu">
+		<div class="row-fluid">
+			<div class="span6" style="width: 100%">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();"
+					onsuccess="PF('statusDialog').hide()" />
+				<div class="dialog">
+					<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog"
+						showHeader="false" draggable="false" closable="false"
+						resizable="false">
+						<p:graphicImage value="/resources/templateA/img/loading.gif" />
+					</p:dialog>
+				</div>
+
+				<div class="widget">
+					<div class="widget-body" style="padding: 0">
+						<h:form>
+							 <p:schedule id="mySchedule" widgetVar="mySchedule" value="#{utisBean.eventModel}" locale="fr" > 
+							 	<p:ajax event="dateSelect" listener="#{utisBean.onDateSelect}" update=":formAddEvent" 
+							 		oncomplete="addEvent.show()" />
+        						<p:ajax event="eventSelect" listener="#{utisBean.onEventSelect}" update=":formShowEvent" 
+        							oncomplete="showEvent.show()" />
+							 </p:schedule> 
+						</h:form>	 
+						<script type="text/javascript">
+						    PrimeFaces.locales['fr'] = {
+						        closeText: 'kapat',
+						        prevText: 'geri',
+						        nextText: 'ileri',
+						        currentText: 'Date courante',
+						        monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin',
+						        'Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
+						        monthNamesShort: ['Jan','Fév','Mar','Avr','Mai','Juin',
+						        'Jui','Aout','Sept','Oct','Nov','Déc'],
+						        dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+						        dayNamesShort: ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
+						        dayNamesMin: ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
+						        weekHeader: 'Hf',
+						        firstDay: 1,
+						        isRTL: false,
+						        showMonthAfterYear: false,
+						        yearSuffix: '',
+						        month: 'Mois',
+						        week: 'Semaine',
+						        day: 'Jour',
+						        allDayText : 'Tous les jours'
+						    };
+						</script>
+						
+							 <p:dialog widgetVar="showEvent" header="#{utisBean.selectedEvent.title}" showEffect="clip" hideEffect="clip" 
+							 	resizable="false" style="position:absolute;">  
+							 <h:form id="formShowEvent">
+						        <h:panelGrid columns="2">
+						        							        	
+						            <h:outputLabel for="title" value="Titre: " />  
+						            <p:inputText id="title" value="#{utisBean.selectedEvent.title}" required="true"/>  
+						  			
+						  			<h:outputLabel for="desc" value="Description: " />  
+						            <p:inputTextarea id="desc" value="#{utisBean.selectedEvent.data}" readonly="true"/>
+						  			
+						            <h:outputLabel for="start" value="Début: " />  
+						            <p:calendar id="start" widgetVar="start" value="#{utisBean.selectedEvent.startDate}" 
+						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
+						  			
+						            <h:outputLabel for="end" value="Fin: " />  
+						           	<p:calendar id="end" widgetVar="end" value="#{utisBean.selectedEvent.endDate}" 
+						            	pattern="dd/MM/yyyy HH:mm" required="true"/>
+						            
+						        </h:panelGrid> 
+						        <div style="float:right;margin-top: 10px">
+						          <p:commandButton type="button" value="Annuler" styleClass="btn" onclick="showEvent.hide()"/>  
+						          <p:commandButton value="Modifier" styleClass="btn btn-primary" actionListener="#{utisBean.doEditEvent}"
+						             oncomplete="PF('mySchedule').update();PF('showEvent').hide();"/>  
+						        </div> 
+						        <script type="text/javascript">
+									 jQuery(document).ready(function(){
+									   start.jqEl.datepicker("option", "minDate", +0);//set minDate to today
+									   end.jqEl.datepicker("option", "minDate", +1);//set minDate to today
+									 });
+								</script>
+						    </h:form>
+						    </p:dialog>
+						    
+						    <p:dialog widgetVar="addEvent" header="Nouvel événement" showEffect="clip" hideEffect="clip" resizable="false"
+						    	style="position:absolute;">  
+						    <h:form id="formAddEvent">
+						        <h:panelGrid columns="2">
+						        							        	
+						            <h:outputLabel for="title1" value="Titre: " />  
+						            <p:inputText id="title1" value="#{utisBean.titre}" required="true"/>  
+						  			
+						  			<h:outputLabel for="desc1" value="Description: " />  
+						            <p:inputTextarea id="desc1" value="#{utisBean.description}" required="true"/>
+						  			
+						            <h:outputLabel for="start1" value="Début: " />  
+						            <p:calendar id="start1" widgetVar="start1" value="#{utisBean.selectedEvent.startDate}" 
+						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
+						  
+						            <h:outputLabel for="end1" value="Fin: " />  
+						           	<p:calendar id="end1" widgetVar="end1" value="#{utisBean.selectedEvent.endDate}" 
+						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
+						            	
+						        </h:panelGrid>  
+						        <div style="float: right;margin-top:10px">
+						          <p:commandButton type="button" value="Annuler" styleClass="btn" onclick="addEvent.hide();"/>  
+						          <p:commandButton id="addButton" value="Ajouter" styleClass="btn btn-primary" actionListener="#{utisBean.doAddEvent}"
+						             oncomplete="PF('mySchedule').update();PF('addEvent').hide();"/>
+						        </div>
+						        
+						    </h:form>
+						    <script type="text/javascript">
+									 jQuery(document).ready(function(){
+									   start1.jqEl.datepicker("option", "minDate", +0);//set minDate to today
+									   end1.jqEl.datepicker("option", "minDate", +1);//set minDate to today
+									 });
+								</script>
+						    <p:ajax event="close" listener="#{utisBean.resetAddEventDialog}" global="false"/>
+						    </p:dialog>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+

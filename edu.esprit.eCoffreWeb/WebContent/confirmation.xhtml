@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+
+	<f:metadata>
+	    <f:viewParam name="id" value="#{validationBean.id}" />
+	    <f:event type="preRenderView" listener="#{validationBean.validateAccount()}" />
+	</f:metadata>
+		
+	<ui:define name="animation">
+		<img style="height: 100%;position: absolute;" src="resources/template/img/header_images.jpg" alt="architecture"/>
+	</ui:define>
+	
+   	<ui:define name="page_header">
+      <div class="row-fluid" >
+          <div class="span6" style="margin-top:-30px;width:100%">
+                     <!-- BEGIN User Info-->	
+                     <div class="widget" style="border-radius: 4px;">
+                        <div class="widget-title">
+                           <h4><i class="icon-reorder"></i>Confirmation</h4>		
+                        </div>
+	                    <p:panel styleClass="widget-body">
+	                    <h:form>
+	                      <h5>Félicitations, vous venez de confirmer votre compte. Vous pouvez dès présent utiliser votre coffre fort</h5>
+	                      <ul>
+	                      <li><h:commandLink action="login.jsf" value="-> Se connecter" /> </li>
+	                      <li><h:commandLink action="index.jsf" value="-> Page d'accueil" /></li>
+	                      </ul>
+	                    </h:form>
+	                    </p:panel>
+	                 </div>
+                     <!-- END User Info-->
+         </div>         
+     </div>	
+   </ui:define>
+   <!-- BEGIN PAGE CONTENT-->
+   <ui:define name="page_content">
+   </ui:define>
+   <!-- END PAGE CONTENT-->	
+</ui:composition>

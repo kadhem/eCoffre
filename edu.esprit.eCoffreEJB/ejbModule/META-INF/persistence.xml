@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="data">
+	<jta-data-source>java:/eCoffreDS</jta-data-source>
+		<class>edu.esprit.eCoffreEJB.Entities.Metadonnees</class>
+		<class>edu.esprit.eCoffreEJB.Entities.UTI_G</class>
+		<class>edu.esprit.eCoffreEJB.Entities.UTI_F</class>
+		<class>edu.esprit.eCoffreEJB.Entities.CCFN</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Evenement</class>
+		<class>edu.esprit.eCoffreEJB.Entities.UTI_S</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Utilisateur</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Conteneur</class>
+		<class>edu.esprit.eCoffreEJB.Entities.ObN</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Partage</class>
+		<class>edu.esprit.eCoffreEJB.Entities.PartageON</class>
+		<class>edu.esprit.eCoffreEJB.Entities.PartageONPK</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Invite</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Profil</class>
+		<class>edu.esprit.eCoffreEJB.Entities.Log</class>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+		</properties>
+	</persistence-unit>
+	
+	<!--  <persistence-unit name="log">
+	<jta-data-source>java:/logDS</jta-data-source>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+			<property name="hibernate.hbm2ddl.auto" value="create"/>
+		</properties>
+	</persistence-unit>-->
+	
+</persistence>

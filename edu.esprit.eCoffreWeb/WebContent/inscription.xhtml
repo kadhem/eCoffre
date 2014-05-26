@@ -1,0 +1,198 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+	
+<h:head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<title>Conquer Admin Dashboard Template</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<link href="./resources/template/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./resources/template/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="./resources/template/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="./resources/template/css/style.css" rel="stylesheet" />
+	<link href="./resources/template/css/style_responsive.css" rel="stylesheet" />
+	<link href="./resources/template/css/style_default.css" rel="stylesheet" id="style_color" />
+	<link href="#" rel="stylesheet" id="style_metro"/>
+	<link rel="stylesheet" type="text/css" href="./resources/template/uniform/css/uniform.default.css" />
+</h:head>
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+   <!-- BEGIN HEADER -->
+		<div id="header" class="navbar navbar-inverse navbar-fixed-top">
+			<!-- BEGIN TOP NAVIGATION BAR -->
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<!-- BEGIN LOGO -->
+					<a class="brand" href="index.jsf">
+						<img src="./resources/template/img/logoEcoffre.png" alt="Conquer"/>
+					</a>
+					<!-- END LOGO -->
+					<div style="float: right;">
+						<div>
+							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
+							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
+							<a class="btn" href="login.jsf"><b><i>Se connecter</i></b></a> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END TOP NAVIGATION BAR -->
+		</div>
+	<!-- END HEADER -->
+	
+	
+   <!-- BEGIN CONTAINER -->
+   <div id="container" class="row-fluid">
+      <!-- BEGIN PAGE -->  
+      <div id="body">
+         <!-- BEGIN PAGE CONTAINER-->
+         <div class="container-fluid">
+         	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+	        <div class="dialog">      
+				<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+					<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+				</p:dialog>
+			</div>
+         <!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid" >
+					<div class="span12" style="margin-top: 0px">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->		
+						<h3 class="page-title">
+							Inscription
+							<small>devenez membre d'EspritBox...</small>
+						</h3>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+            <!-- BEGIN PAGE CONTENT-->
+            <div id="page">
+            <!-- BEGIN FORM-->
+            <h:form id="formAjout">
+               <div class="row-fluid" >
+                  <div class="span6" style="margin-top: 0px">
+                     <!-- BEGIN User Info-->	
+                     <div class="widget" style="border-radius: 4px;">
+                        <div class="widget-title">
+                           <h4><i class="icon-reorder"></i>Informations personnelles</h4>		
+                        </div>
+	                     <p:panel styleClass="widget-body form">
+	                         <div class="control-group">
+            		            <p:outputLabel value="Nom *" />  
+					            <p:inputText styleClass="span6" id="nom" value="#{utisBean.lastName}" required="true" 
+					            requiredMessage="vous devez remplir ce champ">
+					            	<f:validateLength minimum="3"/>
+					            </p:inputText>  
+                				<p:message for="nom" />
+                				
+            					<p:outputLabel value="Prénom *" style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="prenom" value="#{utisBean.firstName}" required="true" 
+					            requiredMessage="vous devez remplir ce champ">
+					            	<f:validateLength minimum="3"/>
+					            </p:inputText>  
+                				<p:message for="prenom" /> 
+                				
+                				<p:outputLabel value="Date de naissance *" style="margin-top:10px"/> 
+            					<p:inputMask styleClass="span6" id="date" value="#{utisBean.dateNaissance}" label="Date de naissance" 
+            					required="true" requiredMessage="vous devez remplir ce champ" mask="99/99/9999">
+            						<f:convertDateTime pattern="dd/MM/yyyy" timeStyle="short"/>
+            					</p:inputMask>
+            					<p:message for="date" />
+            					 
+            					<p:outputLabel value="Téléphone " style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="tel" label="Tel" value="#{utisBean.tel}">
+					            	<f:validateLength minimum="8"/>
+					            </p:inputText>    
+                				<p:message for="tel" />  
+                				
+            					<p:outputLabel value="Adresse" style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="adresse" value="#{utisBean.adresse}"/>  
+                				<p:message for="adresse" />  
+	                         </div>
+	                     </p:panel>
+	                     
+	                 </div>
+                     <!-- END User Info-->
+                  </div>
+                  <div class="span6" style="margin-top: 0px">
+                     <!-- BEGIN Coffre Info-->	
+                     <div class="widget">
+                        
+                        <div class="widget-title">
+                           <h4><i class="icon-reorder"></i>Compte EspritBox</h4>
+                        </div>
+	                    <p:panel styleClass="widget-body form">
+	                         <div class="control-group">
+	                         	<B>Définissez un email valide et un mot de passe. Ils vous seront demandés pour vous connecter.</B>
+	                         	
+	                         	<p:outputLabel value="Adresse e-mail *" style="margin-top:10px"/> 
+            					<p:inputText id="email" label="email" validatorMessage="Veuillez vérifier le format"
+								value="#{utisBean.userName}" styleClass="span6" required="true" 
+								requiredMessage="vous devez indiquer votre email">
+							  	<f:validateRegex 
+							  	pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+ 								</p:inputText>
+ 								<h:outputText value="adresse dèja utilisée" rendered="#{utisBean.exist}" style="font-weight:bold;
+ 								margin-left:5px;color:red"/>
+ 								<p:message for="email"/>
+ 								<br />
+ 								
+ 								<B>La longueur de votre mot de passe doit être au moins 6 caractères. </B>
+  								<p:outputLabel value="Mot de passe *" style="margin-top:10px"/>
+					            <p:keyboard value="#{utisBean.password}" id="password" 
+					            password="true" keypadOnly="true" styleClass="span6" label="mot de passe" required="true" 
+					            requiredMessage="vous devez avoir un mot de passe">
+					            <f:validateLength minimum="6"/>
+					            </p:keyboard>
+					            <p:message for="password" />  
+					            <br /><br />
+					            
+  								<p:selectBooleanCheckbox id="contrat" value="#{utisBean.coche}" required="true"
+  								requiredMessage="vous devez accepter les termes du contrat">
+  									<f:validator validatorId="RequiredCheckboxValidator" />
+  								</p:selectBooleanCheckbox>  
+  								<font size="1">En cochant cette case, je reconnais avoir pris 
+  								connaissance des <a href="#"><b>Conditions Générales d'Utilisation</b></a> d'EspritBox et les accepter.*
+  								</font><br />
+  								<p:message for="contrat"/>
+	                         </div>
+	                    </p:panel>
+	                    <div style="float:right;margin: 10px 0 0 0;">
+		                    <p:commandButton value="Réinitialiser" action="#{utisBean.doReset()}" 
+	  								styleClass="btn" update="@form"/>
+		                    <p:commandButton value="Valider" action="#{utisBean.doCreate}" 
+	  								styleClass="btn btn-primary" update="@form"/>
+  						</div>
+                     </div>
+                     <!-- END Coffre Info-->
+                  </div>
+               </div>
+               </h:form>	
+               <!-- END FORM-->	
+            </div>
+            <!-- END PAGE CONTENT-->	
+         </div>
+         <!-- END PAGE CONTAINER-->
+      </div>
+      <!-- END PAGE -->  
+   </div>
+   <!-- END CONTAINER -->
+   <!-- BEGIN FOOTER -->
+   <div id="footer">
+      2012 Conquer. Admin Dashboard Template.
+      <div class="span pull-right">
+         <span class="go-top"><i class="icon-arrow-up"></i></span>
+      </div>
+   </div>
+   <!-- END FOOTER -->
+   
+</body>
+<!-- END BODY -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+</html>

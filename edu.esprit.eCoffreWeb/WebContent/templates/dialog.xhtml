@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+
+<!-- BEGIN HEAD -->
+
+<h:head>
+	<h:outputStylesheet library="templateA/bootstrap/css" name="bootstrap.min.css" />
+	<h:outputStylesheet library="templateA/bootstrap/css" name="bootstrap-responsive.min.css" />
+	<h:outputStylesheet library="templateA/font-awesome/css" name="font-awesome.css" />
+	<h:outputStylesheet library="templateA/css" name="style.css" />
+	<h:outputStylesheet library="templateA/css" name="style_responsive.css" />
+	<h:outputStylesheet library="templateA/css" name="style_default.css" />
+	<h:outputStylesheet library="templateA/uniform/css" name="uniform.default.css" />
+</h:head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="deposer">
+		
+	<!-- BEGIN CONTAINER -->
+	<div>
+		<!-- BEGIN PAGE -->
+		<div>
+			<!-- BEGIN PAGE CONTAINER-->
+			<div>
+				<!-- BEGIN PAGE CONTENT-->
+				<div style="width: 100%">
+					<ui:insert name="page_content">page content</ui:insert>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+			<!-- END PAGE CONTAINER-->		
+		</div>
+		<!-- END PAGE -->
+	</div>
+	<!-- END CONTAINER -->
+</body>
+<!-- END BODY -->
+</html>

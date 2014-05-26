@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
+      
+<!-- BEGIN HEAD -->
+<h:head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8"  />
+	<title><ui:insert name="title">Page</ui:insert></title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<h:outputStylesheet library="templateA/bootstrap/css" name="bootstrap.min.css" />
+	<h:outputStylesheet library="templateA/bootstrap/css" name="bootstrap-responsive.min.css" />
+	<h:outputStylesheet library="templateA/font-awesome/css" name="font-awesome.css" />
+	<h:outputStylesheet library="templateA/css" name="style.css" />
+	<h:outputStylesheet library="templateA/css" name="style_responsive.css" />
+	<h:outputStylesheet library="templateA/css" name="style_default.css" />
+	<h:outputStylesheet library="templateA/uniform/css" name="uniform.default.css" />
+</h:head>
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+	<ui:include src="header.xhtml" />
+	<!-- BEGIN CONTAINER -->
+	<div id="container" class="row-fluid">
+		<!-- BEGIN SIDEBAR -->
+		<div id="sidebar" class="nav-collapse collapse">
+			<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+			<div class="infoPerso">
+				<div>
+					<ui:insert name="information">Bonjour Kadhem</ui:insert>
+				</div>
+			</div>
+			<!-- END RESPONSIVE QUICK SEARCH FORM -->
+			<!-- BEGIN SIDEBAR MENU -->
+			<ul>
+				<ui:insert name="menu">** Menu **</ui:insert>
+			</ul>
+			<!-- END SIDEBAR MENU -->
+		</div>
+		<!-- END SIDEBAR -->
+		<!-- BEGIN PAGE -->
+		<div id="body">
+			
+			<!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->		
+						<h3 class="page-title">
+							<ui:insert name="page-titre">Titre en grand</ui:insert>
+							<small><ui:insert name="description-titre">description du titre</ui:insert></small>
+						</h3>
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="#">Home</a> <span class="divider">/</span>
+							</li>
+							<li><ui:insert name="page-courante">lien de la page courante</ui:insert></li>
+							<li class="pull-right dashboard-report-li">
+								<div id="dashboard-report-range" class="dashboard-report-range-container no-text-shadow tooltips" >
+									<h:outputText id="date" value="#{currentDate}" >
+									<f:convertDateTime dateStyle="full" timeZone="EST" type="date" />
+									</h:outputText>
+								</div>
+							</li>
+						</ul>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div id="page" class="dashboard">
+					<ui:insert name="contenu">contenu de la page</ui:insert>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+			<!-- END PAGE CONTAINER-->		
+		</div>
+		<!-- END PAGE -->
+	</div>
+	<!-- END CONTAINER -->
+	<!-- BEGIN FOOTER -->
+	<ui:include src="/templates/footer.xhtml"/>
+	<!-- END FOOTER -->
+</body>
+<!-- END BODY -->
+</html>

@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
+	
+<h:head>
+  <title>Conquer Admin Dashboard Template</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+  <link href="./resources/templateA/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="./resources/templateA/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="./resources/templateA/css/style.css" rel="stylesheet" />
+  <link href="./resources/templateA/css/style_responsive.css" rel="stylesheet" />
+  <link href="./resources/templateA/css/style_default.css" rel="stylesheet" id="style_color" />
+  <link rel="stylesheet" type="text/css" href="./resources/templateA/uniform/css/uniform.default.css" />
+</h:head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<h:body class="fixed-top">
+  <!-- BEGIN LOGO -->
+  <div id="logo" class="center">
+    <a href="index.jsf"><img src="./resources/templateA/img/logoEcoffre.png" alt="logo" class="center" /> </a>
+  </div>
+  <!-- END LOGO -->
+  <!-- BEGIN LOGIN -->
+  <div id="login">
+    <!-- BEGIN LOGIN FORM -->
+    <h:form id="loginform" class="form-vertical no-padding no-margin">
+      <p class="center">Veuillez saisir vos coordonnées.</p>
+      <h:outputText value="#{userBean.trouV}" style="font-weight:bold;margin-left:5px;color:red"/>
+      <div class="control-group">
+        <div class="controls">
+          <div class="input-prepend">
+            <span class="add-on"><i class="icon-user"></i></span>
+            <p:inputText id="username" value="#{userBean.userName}" placeholder="Username" />
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <div class="input-prepend">
+            <span class="add-on"><i class="icon-lock"></i></span>
+            <!--  <p:keyboard id="password" value="#{userBean.passwd}" password="true" keypadOnly="true" placeholder="Password"/> -->
+            <p:password id="password" value="#{userBean.passwd}" placeholder="Password"/>           
+          </div>
+          <div class="block-hint pull-right">
+            <a href="javascript:;" class="" id="forget-password">Forgot Password?</a>
+          </div>
+          <div class="clearfix space5"></div>
+        </div>
+      </div>
+      <p:commandButton styleClass="btn btn-block btn-inverse" value="Login" ajax="false" action="#{userBean.doAuthenticate()}"/>
+    </h:form>
+    <!-- END LOGIN FORM -->        
+    <!-- BEGIN FORGOT PASSWORD FORM -->
+    <form id="forgotform" class="form-vertical no-padding no-margin hide" action="http://www.eatvilla.co.uk/templates/conquer/index.html">
+      <p class="center">Enter your e-mail address below to reset your password.</p>
+      <div class="control-group">
+        <div class="controls">
+          <div class="input-prepend">
+            <span class="add-on"><i class="icon-envelope"></i></span><input id="input-email" type="text" placeholder="Email" />
+          </div>
+        </div>
+        <div class="space10"></div>
+      </div>
+      <input type="button" id="forget-btn" class="btn btn-block btn-inverse" value="Submit" />
+    </form>
+    <!-- END FORGOT PASSWORD FORM -->
+  </div>
+  <!-- END LOGIN -->
+  <!-- BEGIN COPYRIGHT -->
+  <div id="login-copyright">
+    2012  Conquer. Admin Dashboard Template.
+  </div>
+  <!-- END COPYRIGHT -->
+</h:body>
+<!-- END BODY -->
+</html>

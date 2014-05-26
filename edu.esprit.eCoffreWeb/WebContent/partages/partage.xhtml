@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" > 
+
+<!-- BEGIN HEAD -->
+
+<h:head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<f:metadata>
+	    <f:viewParam name="i" value="#{partageBean.inviT}" required="true" />
+	    <f:viewParam name="p" value="#{partageBean.idPartage}" required="true" />
+	    <f:event type="preRenderView" listener="#{partageBean.getSharedObnForInviT}" />
+	    <f:event type="preRenderView" listener="#{obnBean.initON()}"/>
+	</f:metadata>
+	
+	<title><ui:insert name="title">Page</ui:insert></title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<link href="../resources/template/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../resources/template/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="../resources/template/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="../resources/template/css/style.css" rel="stylesheet" />
+	<link href="../resources/template/css/style_responsive.css" rel="stylesheet" />
+	<link href="../resources/template/css/style_default.css" rel="stylesheet" id="style_color" />
+	<link rel="stylesheet" type="text/css" href="../resources/uniform/css/uniform.default.css" />
+</h:head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+		<!-- BEGIN HEADER -->
+		<div id="header" class="navbar navbar-inverse navbar-fixed-top">
+			<!-- BEGIN TOP NAVIGATION BAR -->
+			<div class="navbar-inner">
+				<div class="container-fluid header">
+					<!-- BEGIN LOGO -->
+					<a class="brand" href="index.html">
+						<img src="../resources/template/img/logoEcoffre.png" alt="Conquer"/>
+					</a>
+					<!-- END LOGO -->
+					<div style="float: right;">
+						<div>
+							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
+							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
+							<a class="btn" href="../login.jsf" style="vertical-align: inherit;"><b><i>Se connecter</i></b></a> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END TOP NAVIGATION BAR -->
+		</div>
+	<!-- END HEADER -->
+	
+	<!-- BEGIN CONTAINER -->
+	<div id="container" >
+		<!-- BEGIN PAGE -->
+		<div id="body">
+			<!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE CONTENT-->
+				<div>
+					<div class="span6" style="margin:20px 0 20px 0;width: 100%">
+					
+					<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+			        <div class="dialog">      
+						<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+							<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+						</p:dialog>
+					</div>
+					
+						<p:panel style="width: 100%;height: 150px;" rendered="#{partageBean.success}">
+							<p:panel style="height:100%;" header="Nom du partage #{partageBean.partageForInviT.nom}">  
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Description" style="margin-top:10px;margin-right:100px"/>
+						        <h:outputText value="#{partageBean.partageForInviT.description}" />
+						        
+								<p:outputLabel value="Propriètaire"/>
+						        <h:outputText value="#{partageBean.partageForInviT.utiS.firstName} #{partageBean.partageForInviT.utiS.lastName}" />
+						       	
+						        <p:outputLabel value="Valable jusqu'au"/>
+						        <h:outputText value="#{partageBean.partageForInviT.dateExpiration}">
+						         	<f:convertDateTime pattern="dd/MM/yyyy"/>
+						        </h:outputText>
+						    </h:panelGrid>
+						    </p:panel>
+						</p:panel>
+						
+						<h:form id="formPartage">  
+						<p:dataGrid value="#{partageBean.obNsForInviT}" var="obN" rendered="#{not empty partageBean.obNsForInviT}" columns="3">
+						    <p:panel header="#{obN.libelle}" styleClass="sharedObn">
+						    <p:panelGrid columns="1" style="width:100%;">
+						    	<p:commandLink actionListener="#{obnBean.showFile(obN.idU)}" oncomplete="showDialog.show()" update=":showDialog"
+						    		immediate="true">
+						    		<p:graphicImage value="#{obnBean.getIconObN(obN.libelle)}" width="50px" height="50px" />
+						    	</p:commandLink>
+						    	<p:outputLabel value="#{obnBean.getSizeObN(obN.metadonnees.size)}"/>
+						    	<p:column>
+						    	<div class="dialog">
+						    	<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
+								   	<center><p:graphicImage value="../resources/templateA/img/loading.gif" /></center>
+								</p:dialog>
+								</div>
+						    	<p:commandButton value="Télécharger" icon="ui-icon-disk" actionListener="#{obnBean.downloadFile(obN.libelle)}" 
+						    		ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" styleClass="btn btn-info">
+						    		<p:fileDownload value="#{obnBean.downloadFile(obN.libelle)}" />  
+								</p:commandButton> 
+						    	<script type="text/javascript">  
+									function start() {  
+									    PF('statusDialog').show();  
+									}  
+											  
+									function stop() {  
+									    PF('statusDialog').hide();  
+									}  
+								</script>
+								</p:column>
+						   	</p:panelGrid>
+						    </p:panel>
+						</p:dataGrid>
+						
+						<p:panel styleClass="failPanel stats-overview block clearfix" 
+							rendered="#{empty partageBean.obNsForInviT} and #{partageBean.success}">
+							<p:panelGrid columns="2">
+								<p:graphicImage value="../resources/template/img/introuvable.gif" width="150" height="150"/>
+								<p:outputLabel value="Aucun fichier n'est partagé"/>
+							</p:panelGrid>
+						</p:panel>
+						
+						
+						<p:panel styleClass="failPanel stats-overview block clearfix" rendered="#{partageBean.fail}">
+							<p:panelGrid columns="2">
+								<p:graphicImage value="../resources/template/img/introuvable.gif" width="150" height="150"/>
+								<p:outputLabel value="#{partageBean.statusOp}!" styleClass="failLabel" style="font-size: 18px" 
+									rendered="#{partageBean.fail}"/>
+							</p:panelGrid>
+						</p:panel>
+						
+						</h:form>
+						
+						<p:dialog modal="true" id="showDialog" widgetVar="showDialog" header="#{obnBean.obnToShow.libelle}" 
+							showEffect="fade" hideEffect="fade" width="910px" height="500px" style="position:absolute;"> 
+							<p:media id="media" value="#{obnBean.showSharedFile()}" style="width:880px;height:500px" player="pdf" cache="false" rendered="#{obnBean.typeFileToShow=='pdf'}">  
+				    		Votre navigateur ne supporte pas les fichiers pdf, <h:outputLink value="/resources/other/guide.pdf">Cliquez</h:outputLink> pour télécharger le fichier.  
+							</p:media>
+							<p:graphicImage value="#{obnBean.showSharedFile()}" style="width:auto;height:auto" cache="false" rendered="#{obnBean.typeFileToShow=='img'}"/>
+						</p:dialog>
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+			<!-- END PAGE CONTAINER-->		
+		</div>
+		<!-- END PAGE -->
+	</div>
+	<!-- END CONTAINER -->
+	<ui:include src="/templates/footer.xhtml"/>
+</body>
+<!-- END BODY -->
+</html>

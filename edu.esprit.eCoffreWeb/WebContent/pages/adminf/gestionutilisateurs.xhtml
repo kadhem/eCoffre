@@ -1,0 +1,205 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/templateA.xhtml">
+	
+<ui:define name="information">
+<h:form id="spaceUser">
+	<h6>Bienvenue #{userBean.user.firstName}</h6>
+</h:form>
+</ui:define>
+<ui:define name="menu">
+	<li><p:commandLink action="index?faces-redirect=true" global="false"><i class="icon-home"></i>Tableau de bord</p:commandLink></li>
+	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Gérer les utilisateurs</p:commandLink></li>
+	<li><p:commandLink action="gestionconteneurs?faces-redirect=true" global="false"><i class="icon-home"></i>Gérer les conteneurs</p:commandLink></li>
+</ui:define>
+<ui:define name="title">Gestion des utilisateurs</ui:define>
+<ui:define name="page-titre">Gestion des utilisateurs</ui:define>
+<ui:define name="description-titre">...</ui:define>
+<ui:define name="contenu">
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+	<div class="dialog">      
+		<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+			<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+		</p:dialog>
+	</div>
+	<h:form style="padding:0;margin:0">
+			<p:commandButton value="Ajouter" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" 
+				global="false" 
+					onclick="addDialog.show()"/>
+	</h:form>
+	
+	<p:dialog widgetVar="addDialog" header="Ajouter un utilisateur" modal="true" draggable="true" resizable="false" 
+		style="position:absolute;max-width:950px">
+	
+	<h:form id="formAjout">
+               <div class="row-fluid" >
+                  <div class="span6" style="margin-top: 0px">
+                     <!-- BEGIN User Info-->	
+                     <div class="widget" style="border-radius: 4px;">
+                        <div class="widget-title">
+                           <h4><i class="icon-reorder"></i>Informations relatives à l'utilisateur</h4>		
+                        </div>
+	                     <p:panel styleClass="widget-body form">
+	                         <div class="control-group">
+            		            <p:outputLabel value="Nom *" />  
+					            <p:inputText styleClass="span6" id="nom" value="#{adminBean.lastName}" required="true" 
+					            requiredMessage="vous devez remplir ce champ">
+					            	<f:validateLength minimum="3"/>
+					            </p:inputText>  
+                				<p:message for="nom"/>
+                				
+            					<p:outputLabel value="Prénom *" style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="prenom" value="#{adminBean.firstName}" required="true" 
+					            requiredMessage="vous devez remplir ce champ">
+					            	<f:validateLength minimum="3"/>
+					            </p:inputText>  
+                				<p:message for="prenom" /> 
+                				
+                				<p:outputLabel value="Date de naissance *" style="margin-top:10px"/> 
+            					<p:inputMask styleClass="span6" id="date" value="#{adminBean.dateNaissance}" label="Date de naissance" 
+            					required="true" requiredMessage="vous devez remplir ce champ" mask="99/99/9999">
+            						<f:convertDateTime pattern="dd/MM/yyyy" timeStyle="short"/>
+            					</p:inputMask>
+            					<p:message for="date" />
+            					 
+            					<p:outputLabel value="Téléphone " style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="tel" label="Tel" value="#{adminBean.tel}">
+					            	<f:validateLength minimum="8"/>
+					            </p:inputText>    
+                				<p:message for="tel" />  
+                				
+            					<p:outputLabel value="Adresse" style="margin-top:10px"/>  
+					            <p:inputText styleClass="span6" id="adresse" value="#{adminBean.adresse}"/>  
+                				<p:message for="adresse" />  
+	                         </div>
+	                     </p:panel>
+	                     
+	                 </div>
+                     <!-- END User Info-->
+                  </div>
+                  <div class="span6" style="margin-top: 0px">
+                     <!-- BEGIN Coffre Info-->	
+                     <div class="widget">
+                        
+                        <div class="widget-title">
+                           <h4><i class="icon-reorder"></i>Paramètres de connexion</h4>
+                        </div>
+	                    <p:panel styleClass="widget-body form">
+	                         <div class="control-group">
+	                         	<p:outputLabel value="Adresse e-mail *" style="margin-top:10px"/> 
+            					<p:inputText id="email" label="email" validatorMessage="Veuillez vérifier le format"
+								value="#{adminBean.userName}" styleClass="span6" required="true" 
+								requiredMessage="vous devez indiquer votre email">
+							  	<f:validateRegex 
+							  	pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+ 								</p:inputText>
+ 								<h:outputText value="adresse dèja utilisée" rendered="#{adminBean.exist}" style="font-weight:bold;
+ 								margin-left:5px;color:red"/>
+ 								<p:message for="email"/>
+ 								<br />
+ 								
+ 								<B>La longueur de votre mot de passe doit être au moins 6 caractères. </B>
+  								<p:outputLabel value="Mot de passe *" style="margin-top:10px"/>
+  								<p:password value="#{adminBean.password}" id="password" feedback="true"   
+                        		promptLabel="Saisisser un mot de passe" weakLabel="Faible"  
+                        		goodLabel="Moyen" strongLabel="Fort" required="true" 
+					            requiredMessage="vous devez avoir un mot de passe">
+					            <f:validateLength minimum="6"/>
+					            </p:password>
+					            <p:message for="password" />  
+					            <br /><br />
+					            
+  								<p:selectBooleanCheckbox id="contrat" value="#{adminBean.coche}" required="true"
+  								requiredMessage="vous devez accepter les termes du contrat">
+  									<f:validator validatorId="RequiredCheckboxValidator" />
+  								</p:selectBooleanCheckbox>  
+  								<font size="1">En cochant cette case, je reconnais avoir pris 
+  								connaissance des <a href="#"><b>Conditions Générales d'Utilisation</b></a> d'EspritBox et les accepter.*
+  								</font><br />
+  								<p:message for="contrat"/>
+	                         </div>
+	                    </p:panel>
+	                    <div style="float:right;margin: 10px 0 0 0;">
+		                    <p:commandButton value="Réinitialiser" actionListener="#{utiSBean.doReset}" 
+	  								styleClass="btn" update="@form" immediate="true"/>
+		                    <p:commandButton value="Valider" actionListener="#{adminBean.createUser}" 
+	  								styleClass="btn btn-primary" update="@form :formL"/>
+  						</div>
+	                     
+                     </div>
+                     <!-- END Coffre Info-->
+                  </div>
+        	</div>
+    	</h:form>
+    	<p:ajax event="close" listener="#{adminBean.resetAddDialog()}" global="false"/>
+	</p:dialog>
+	
+	<div class="row-fluid">
+		<div class="span6" style="width: 100%">
+			<div class="widget">
+				<div class="widget-body" style="padding: 0;">
+					<h:form id="formL">  
+					    <p:dataTable value="#{adminBean.users}" var="user" emptyMessage="Aucun utilisateur créé" paginatorPosition="bottom" 
+					     		paginator="true" rows="10" paginatorAlwaysVisible="false" styleClass="hide-border-columns" 
+					     			style="text-align:center">
+					    	<p:column filterBy="#{user.firstName}" sortBy="#{user.firstName}">
+					            <f:facet name="header" styleClass="widget-title">
+					                <h:outputText value="Prénom" />
+					            </f:facet>
+					            <h:outputText value="#{user.firstName}"/>
+					        </p:column>
+					        <p:column filterBy="#{user.lastName}" sortBy="#{user.lastName}">
+					            <f:facet name="header" >
+					                <h:outputText value="Nom" />
+					            </f:facet>
+					            <h:outputText value="#{user.lastName}"/>
+					        </p:column>
+					        <p:column filterBy="#{user.adresse}" sortBy="#{user.adresse}">
+					            <f:facet name="header" >
+					                <h:outputText value="Adresse" />
+					            </f:facet>
+					            <h:outputText value="#{user.adresse}" />
+					        </p:column>
+					        <p:column filterBy="#{user.userName}" sortBy="#{user.userName}">
+					            <f:facet name="header" >
+					                <h:outputText value="Email" />
+					            </f:facet>
+					            <h:outputText value="#{user.userName}" />
+					        </p:column>
+					        <p:column filterBy="#{user.tel}" sortBy="#{user.tel}">
+					            <f:facet name="header" >
+					                <h:outputText value="Tel" />
+					            </f:facet>
+					            <h:outputText value="#{user.tel}" />
+					        </p:column>
+					        <p:column>
+					            <f:facet name="header" >
+					                <h:outputText value="Espace utilisé" />
+					            </f:facet>
+					            <p:progressBar value="#{adminBean.calculUsedSpace(user.userName)}" labelTemplate="{value}%" displayOnly="true"/>
+					        </p:column>
+					        
+					        <p:column width="1%">
+					        <center>
+					            	<p:commandButton id="v" title="Désactiver" icon="ui-icon ui-icon-locked" disabled="#{!user.valide}"
+					            		actionListener="#{adminBean.ableOrDisableUser(user)}" update="@form" styleClass="btn btn-danger"/>
+					            	<p:tooltip for="v"></p:tooltip>
+						            
+							        <p:commandButton id="t" title="Activer" icon="ui-icon ui-icon-unlocked" disabled="#{user.valide}"
+							        	actionListener="#{adminBean.ableOrDisableUser(user)}" update="@form" styleClass="btn btn-success"/>
+									<p:tooltip for="t"></p:tooltip>
+							</center>
+					        </p:column>
+					    </p:dataTable>
+					</h:form> 
+				</div>	
+			</div>
+		</div>
+	</div>
+</ui:define>
+</ui:composition>
+

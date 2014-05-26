@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+<!-- BEGIN HEADER -->
+	<div id="header" class="navbar navbar-inverse navbar-fixed-top">
+		<!-- BEGIN TOP NAVIGATION BAR -->
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<!-- BEGIN LOGO -->
+				<a class="brand" href="index.jsf">
+				<h:graphicImage value="/resources/templateA/img/logoEcoffre.png" />
+				</a>
+				<!-- END LOGO -->
+				<!-- BEGIN QUICK SEARCH FORM -->
+					
+				<form class="navbar-search">
+					<div class="search-input-icon">
+						<input type="text" class="search-query" 
+							id="quick_search" placeholder="Search"/>
+						<i class="icon-search"></i>			
+					</div>
+				</form>
+				
+			</div>
+		</div>
+		<!-- END TOP NAVIGATION BAR -->
+	</div>
+<!-- END HEADER -->
+</ui:composition>

@@ -1,0 +1,224 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/templateA.xhtml">
+	
+
+<ui:define name="title">Tableau de bord</ui:define>
+<ui:define name="page-titre">Tableau de bord</ui:define>
+<ui:define name="description-titre">résumé et statistiques</ui:define>
+<ui:define name="information">
+<h:form id="spaceUser">
+	<h6>Bienvenue #{userBean.user.firstName}</h6>
+	<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
+<div>
+	<h6>Espace utilisé</h6>
+	<div>
+		<p:progressBar value="#{obnBean.calculUsedSpace()}" labelTemplate="{value}%" displayOnly="true" style="width:50%;position: absolute"/>
+	</div>
+	<div style="padding-left: 115px;font-size: 11px">
+	#{obnBean.calculUsedSpace1()} / 1Go
+	</div>
+</div>
+<div style="margin-top: 10px">
+	<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="PF('deposer').show()" global="false"/>
+</div>
+</h:form>
+</ui:define>
+<ui:define name="menu">
+<h:form>
+	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
+	<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
+	<li><p:commandLink action="#{partageBean.redirectToPartages}" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
+	<li><p:commandLink action="#{utisBean.redirectToEvents}" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
+	<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
+</h:form>
+</ui:define>
+<ui:define name="contenu">
+	<div class="row-fluid">
+		<div class="span6" style="width: 100%">
+		
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
+        <div class="dialog">      
+			<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
+				<p:graphicImage value="/resources/templateA/img/loading.gif" />  
+			</p:dialog>
+		</div>
+		
+		<div class="widget">
+			<div class="widget-title">
+				<h4>Espace personnel utilisé</h4>
+			</div>
+			<div class="widget-body">
+				<i><b><h:outputLabel styleClass="usedSpace" value="#{obnBean.calculUsedSpace1()}/1Go" /></b></i>
+				<p:progressBar value="#{obnBean.calculUsedSpace()}"  labelTemplate="{value}%" displayOnly="true"/>
+			</div>	
+		</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Statistiques</h4>
+				</div>
+				<div class="widget-body, stat">
+					<p:pieChart value="#{obnBean.createPieModel()}" legendPosition="e" fill="false" sliceMargin="5" diameter="150"
+						showDataLabels="true" style="width:100%;height:100%"/>
+				</div>
+			</div>
+		</div>
+		<div class="span6">
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Statistiques</h4>
+				</div>
+				<div class="widget-body, stat">
+					<p:donutChart value="#{obnBean.createDonutModel()}" legendPosition="w" 
+						sliceMargin="5" showDataLabels="true" dataFormat="value" shadow="false" style="width:100%;height:100%"/> 
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Fichiers récents</h4>
+				</div>
+				<div class="widget-body, recentFiles">
+					<h:form id="formRecentFiles">  
+					    <p:dataTable styleClass="hide-column-names" var="obn" value="#{obnBean.obNs}" 
+					    rows="5" sortBy="#{obn.metadonnees.date_fin_depot}" sortOrder="descending" emptyMessage="Vous n'avez aucun fichier">  
+					        <p:column style="width:90%">  
+					        	<h:graphicImage value="#{obnBean.getIconObN(obn.libelle)}" style="margin-right:10px"/>
+					            <h:outputText value="#{obn.libelle}" />  
+					        </p:column>
+					        <p:column style="float:right">  
+					            <div class="dialog">
+						            <p:dialog modal="true" widgetVar="statusDownload" header="Status" draggable="false" closable="false" resizable="false">  
+								    	<center><p:graphicImage value="/resources/templateA/img/loading.gif" /></center>
+									</p:dialog>  
+								</div>
+									<p:commandButton id="downloadLink" value="Télécharger" ajax="false" 
+										onclick="PrimeFaces.monitorDownload(start, stop)" icon="ui-icon-disk" styleClass="btn btn-info">  
+									    <p:fileDownload value="#{obnBean.downloadFile(obn.idU,obn.libelle)}" />  
+									</p:commandButton>
+								    <script type="text/javascript">  
+											function start() {  
+											    PF('statusDownload').show();  
+											}  
+											  
+											function stop() {  
+											    PF('statusDownload').hide();  
+											}  
+								    </script> 
+					        </p:column> 
+					    </p:dataTable>  
+					</h:form> 
+				</div>	
+			</div>
+		</div>
+	
+		<div class="span6">
+			<div class="widget">
+				<div class="widget-title">
+					<h4>Historique</h4>
+				</div>
+				<div class="widget-body" style="padding:0">
+					<h:form id="formLog">
+					<p:panel style="max-height:300px;overflow:scroll;border:none;padding:0">
+						<p:dataScroller value="#{obnBean.logs}" var="log" chunkSize="5" >
+							<p:panel styleClass="alert-success" style="padding:5px;margin-bottom:5px;border:none">
+								<h:outputText value="Vous avez déposé un fichier nommé #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'deposer'}"/>
+								<h:outputText value="Vous avez listé vos documents" rendered="#{log.function == 'lister'}" />
+								<h:outputText value="Vous avez téléchargé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'telecharger'}" />
+								<h:outputText value="Vous avez contrôler le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'controler'}" />
+								<h:outputText value="Vous avez visualisé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'visualiser'}" />
+								<h:outputText value="Vous avez lu le journal du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'journal'}" />
+								<h:outputText value="Vous avez consulté les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'lire metadonnees'}" />
+								<h:outputText value="Vous avez détruit un document" rendered="#{log.function == 'detruire'}" />
+								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+							</p:panel>
+							<p:panel styleClass="alert-error" rendered="#{log.status == 'Accès refusé'}">
+								<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'deposer'}"/>
+								<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'telecharger'}" />
+								<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'controler'}" />
+								<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'visualiser'}" />
+								<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'journal'}" />
+								<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'lire metadonnees'}" />
+							</p:panel>
+							<p:panel styleClass="alert-danger" rendered="#{log.status == 'Erreur inconnu'}">
+								<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'deposer'}"/>
+								<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'telecharger'}" />
+								<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'controler'}" />
+								<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'visualiser'}" />
+								<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'journal'}" />
+								<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'lire metadonnees'}" />
+							</p:panel>
+							<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+					    </p:dataScroller> 
+					</p:panel>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<p:dialog id="deposer" widgetVar="deposer" modal="true" styleClass="deposer" header="Déposer vos documents" resizable="false" 
+			showEffect="fade" hideEffect="fade">
+		
+			<h:form id="formAjout" style="width:550px;margin-top:20px" enctype="multipart/form-data">   
+			
+  			<h:outputText value="Emplacement *" style="font-size:13px;font-weight:bold"/>
+	        <p:selectOneMenu value="#{obnBean.selectedConteneur}" style="margin-left:15px;width:120px;vertical-align:middle;" effect="fade" 
+	        converter="#{conteneurConverter}">
+	        	<f:selectItem itemLabel="Selectionnez un dossier" itemValue="" itemDisabled="true" />  		
+	            <f:selectItems value="#{obnBean.conteneurs}" var="con"/>
+	            <p:ajax listener="#{obnBean.valueChange}"></p:ajax>
+	        </p:selectOneMenu>
+	        
+	        <p:separator/>
+  			<h6>Pour déposer vos fichiers appyuez sur Parcourir ou glissez les directement. Vous pouvez ajouter jusqu'à 
+  			4 fichiers à la fois. Taille limite : 20 mo</h6>
+  	
+  			
+		    <p:fileUpload id="upload" fileUploadListener="#{obnBean.handle}" 
+		    mode="advanced" dragDropSupport="true"
+		    sizeLimit="20000000" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|doc|docx|xls|xlsx|txt|rtf|ppt|pptx)$/" cancelLabel="Annuler"
+		    label="Parcourir" uploadLabel="Charger" fileLimitMessage="La taille du fichier dépasse la limite"
+		    fileLimit="4" style="margin-top:20px"/>  
+		  	
+		  	
+		  	<p:separator/> 
+			<h6>Ajouter des mots clés à vos documents pour une recherche plus simple</h6>
+			<div>
+				<p:inputText placeholder="séparez les mots par une virgule" value="#{obnBean.tags}"/>
+			</div>
+			<p:panelGrid columns="1" style="width:100%">
+	 			<p:column style="margin-top:10px;float: right;vertical-align: middle">
+	 				<h:outputText value="Extensions autorisées : xls,xlsx,doc,docx,rtf,txt,pdf,jpeg,jpg,gif,png" 
+					style="font-size:8px;"/>
+					
+					<p:commandButton value="Déposer" styleClass="btn btn-primary" style="float:right;padding:5px 5px 5px 5px" 
+					actionListener="#{obnBean.uploadFile()}" update=":spaceUser @form"/>
+					
+					<p:commandButton type="button" value="Annuler" styleClass="btn" style="float:right;padding:5px 5px 5px 5px" 
+						onclick="deposer.hide()" global="false"/>
+				</p:column>
+				
+				<p:column style="margin-top:20px;float: left;vertical-align: middle">
+					<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.success}"/>
+					<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.fail}"/>
+				</p:column>	
+			</p:panelGrid>
+		</h:form>
+		<p:ajax event="close" listener="#{obnBean.resetDepotDialog}" global="false"/>
+		</p:dialog>
+		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog" header="Opération refusé">
+			<p:outputLabel value="Vous n'avez pas le droit d'exécuter cette opération. Contactez l'administrateur"/>
+		</p:dialog>
+</ui:define>
+</ui:composition>
+
