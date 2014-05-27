@@ -11,7 +11,7 @@ import edu.esprit.eCoffreEJB.Entities.CCFN;
 import edu.esprit.eCoffreEJB.Entities.Conteneur;
 
 @Local
-@Path("/cont")
+@Path("/ws/cont")
 public interface IConteneurLocal {
 
 	public int ajouterConteneur(Conteneur conteneur, CCFN ccfn);

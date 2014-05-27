@@ -416,7 +416,7 @@ public class ONManagement implements IONLocal {
 				long size = 0;
 				size = sftpCom.getFileSize(obN.getLibelle());
 				if (size > 0) {
-					map.put("idu", obN.getIdU());
+					map.put("idU", obN.getIdU());
 					map.put("ccfn", idCCFN);
 					map.put("cont", idConteneur);
 					map.put("uti", idUti);
@@ -424,6 +424,7 @@ public class ONManagement implements IONLocal {
 					map.put("size", size);
 					map.put("algo", metadonnees.getAlgo());
 					map.put("hash", metadonnees.getHash());
+					map.put("tags", metadonnees.getTags());
 					map.put("status", true);
 					map.put("date", df.format(new Date()));
 					return map;
@@ -474,6 +475,7 @@ public class ONManagement implements IONLocal {
 						map.put("ccfn", idCCFN);
 						map.put("uti", idUti);
 						map.put("idOnUti", obN.getIdUONUti());
+						map.put("cont",obN.getConteneur().getIdCont());
 						map.put("status", true);
 						map.put("dateDepot", metadonnees.getDate_fin_depot());
 						map.put("match", true);
@@ -651,37 +653,36 @@ public class ONManagement implements IONLocal {
 	public List<ObN> getIdus(int idU, int idCCFN, int idUti, String[] date,
 			int[] idOnUti, int idCont) {
 
+		Boolean cont = false, idu = false, dat = false, idonuti = false;
 		String q = "select o from ObN o join o.metadonnees m join o.conteneur c where m.idUti=:idUti and c.ccfn.idCCFN=:idCCFN";
 		Query query = null;
-		query = entityManager.createQuery(q);
 
 		if (idU != 0) {
-			q = q + " and o.idU=:idU and o.idU=m.obN.idU";
-			query = entityManager.createQuery(q);
-			query.setParameter("idU", idU);
-
-		} else {
-			q = q + " and o.idU=m.obN.idU";
-			query = entityManager.createQuery(q);
-			System.out.println("else");
+			idu = true;
 		}
 		if (idCont != 0) {
-			q = q + " and o.conteneur.idCont=c.idCont and c.idCont=:idCont";
-			query = entityManager.createQuery(q);
-			query.setParameter("idCont", idCont);
+			cont = true;
 		}
 		if (date != null) {
-			q.concat(" and m.date_fin_depot>=:date1 and m.date_fin_depot<=:date2");
-			query = entityManager.createQuery(q);
-			query.setParameter("date1", date[0]);
-			query.setParameter("date2", date[1]);
+			dat = true;
 		}
 		if (idOnUti != null) {
-			q.concat(" and m.idONUti>=:idOnUti1 and m.idONUti<=:idOnUti2");
-			query = entityManager.createQuery(q);
-			query.setParameter("idOnUti1", idOnUti[0]);
-			query.setParameter("idOnUti2", idOnUti[1]);
+			idonuti = true;
 		}
+		
+		if(cont){ q = q + " and o.conteneur.idCont=c.idCont and c.idCont=:idCont"; }
+		if(idu) { q += " and o.idU=:idU and o.idU=m.obN.idU"; } else { q = q + " and o.idU=m.obN.idU"; }
+		if(dat) { q+=" and m.date_fin_depot>=:date1 and m.date_fin_depot<=:date2"; }
+		if(idonuti) { q+=" and m.idONUti>=:idOnUti1 and m.idONUti<=:idOnUti2"; }
+		q += " order by m.date_fin_depot desc";
+		
+		query = entityManager.createQuery(q);
+		
+		if(cont){ query.setParameter("idCont", idCont); }
+		if(idu) { query = query.setParameter("idU", "%" + String.valueOf(idU) + "%"); }
+		if(dat) { query.setParameter("date1", date[0]);	query.setParameter("date2", date[1]); }
+		if(idonuti) { query.setParameter("idOnUti1", idOnUti[0]);query.setParameter("idOnUti2", idOnUti[1]); }
+		
 		System.out.println("query : " + q);
 		query.setParameter("idCCFN", idCCFN);
 		query.setParameter("idUti", idUti);

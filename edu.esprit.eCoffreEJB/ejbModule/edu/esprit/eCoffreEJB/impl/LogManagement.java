@@ -154,15 +154,18 @@ public class LogManagement implements ILogLocal {
 			}
 		}
 		
-//		if(cont){ q += " and l.idCont=:idCont"; }
-//		if(idu) { q += " and l.idU LIKE :idU"; }
+		if(cont){ q += " and l.idCont=:idCont"; }
+		if(idu) { q += " and l.idU LIKE :idU"; }
 		if(dat) { q+=" and m.date_fin_depot>=:date1 and m.date_fin_depot<=:date2"; }
-//		if(idonuti) { q+=" and m.idONUti>=:idOnUti1 and m.idONUti<=:idOnUti2"; }
+		if(idonuti) { q+=" and m.idONUti>=:idOnUti1 and m.idONUti<=:idOnUti2"; }
+		q+= " order by l.date desc";
+		
 		query = entityManager.createQuery(q);
-//		if(cont){ query.setParameter("idCont", idCont); }
-//		if(idu) { query = query.setParameter("idU", "%" + String.valueOf(idU) + "%"); }
+		
+		if(cont){ query.setParameter("idCont", idCont); }
+		if(idu) { query.setParameter("idU", "%" + String.valueOf(idU) + "%"); }
 		if(dat) { query.setParameter("date1", date[0]);	query.setParameter("date2", date[1]); }
-//		if(idonuti) { query = query.setParameter("idOnUti1", idOnUti[0]);query.setParameter("idOnUti2", idOnUti[1]); }
+		if(idonuti) { query.setParameter("idOnUti1", idOnUti[0]);query.setParameter("idOnUti2", idOnUti[1]); }
 		
 		System.out.println("query : " + q);
 		

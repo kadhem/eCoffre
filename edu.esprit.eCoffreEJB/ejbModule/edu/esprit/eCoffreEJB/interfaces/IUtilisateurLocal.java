@@ -15,7 +15,7 @@ import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreEJB.Entities.Utilisateur;
 
 @Local
-@Path("/uti")
+@Path("/ws/uti")
 public interface IUtilisateurLocal {
 
 	@GET

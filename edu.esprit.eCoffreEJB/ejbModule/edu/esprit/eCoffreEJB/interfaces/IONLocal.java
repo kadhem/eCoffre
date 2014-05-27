@@ -7,20 +7,18 @@ import java.util.Map;
 
 import javax.ejb.Local;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import edu.esprit.eCoffreEJB.Entities.ObN;
 
 @Local
-@Path("/on")
+@Path("/ws/on")
 public interface IONLocal {
 
 	public Map<String, Object> deposerOnAvecControle(InputStream in,
@@ -83,12 +81,12 @@ public interface IONLocal {
 			@QueryParam("minId")int minId, @QueryParam("maxId")int maxId, @QueryParam("idCont")int idCont);
 
 	@GET
-	@Path("download")
+	@Path("/download")
 	@Produces("*/*")
 	public InputStream downloadRest(@QueryParam("idUti") int idUti, @QueryParam("idU") int idU);
 	
 	@GET
-	@Path("show")
+	@Path("/show")
 	@Produces("*/*")
 	public InputStream showRest(@QueryParam("idUti") int idUti, @QueryParam("idU") int idU);
 	

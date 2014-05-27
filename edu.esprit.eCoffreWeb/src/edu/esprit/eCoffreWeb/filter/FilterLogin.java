@@ -2,7 +2,6 @@ package edu.esprit.eCoffreWeb.filter;
 
 import java.io.IOException;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,13 +32,19 @@ public class FilterLogin implements Filter {
 		UserBean login = (UserBean) httpServletRequest.getSession()
 				.getAttribute("userBean");
 		if (login != null)
+		{
 			chain.doFilter(httpServletRequest, httpServletResponse);
-		else if (!httpServletRequest.getRequestURL().toString()
-				.contains("index.jsf")) {
-			httpServletResponse.sendRedirect(httpServletRequest
-					.getContextPath() + "/index.jsf");
-		} else
+		}
+			
+		else if (!httpServletRequest.getRequestURL().toString().contains("accueil.jsf")) 
+		{
+			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/accueil.jsf");
+		} 
+		else
+		{
 			chain.doFilter(httpServletRequest, httpServletResponse);
+		}
+			
 
 	}
 

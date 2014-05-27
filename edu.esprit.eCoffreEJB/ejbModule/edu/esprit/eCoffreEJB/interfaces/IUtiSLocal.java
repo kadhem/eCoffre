@@ -13,7 +13,7 @@ import edu.esprit.eCoffreEJB.Entities.Profil;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
 
 @Local
-@Path("/utis")
+@Path("/ws/utis")
 public interface IUtiSLocal {
 	
 	public int ajouterSimpleUti(UTI_S utiS, Profil profil);

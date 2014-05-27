@@ -1,6 +1,7 @@
 package edu.esprit.eCoffreEJB.Entities;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -94,6 +95,18 @@ public class Log implements Serializable {
 		this.size = size;
 		this.params = params;
 	}
+	
+	public static Comparator<Log> logComparator = new Comparator<Log>() {
+
+		@Override
+		public int compare(Log o1, Log o2) {
+			// TODO Auto-generated method stub
+			String date1 = o1.getDate();
+			String date2 = o2.getDate();
+			return date2.compareTo(date1);
+		}
+
+		};
 
 
 

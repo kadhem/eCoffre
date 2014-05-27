@@ -331,7 +331,7 @@ public class SFTPCom {
 	public long getUsedSpace() {
 		long usedSpace = 0;
 		try {
-			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*");
+			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.*");
 			SftpATTRS attrs;
 			for (ChannelSftp.LsEntry entry : list) {
 				attrs = entry.getAttrs();

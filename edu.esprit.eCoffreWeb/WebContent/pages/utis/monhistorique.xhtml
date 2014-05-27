@@ -5,9 +5,9 @@
 	xmlns:p="http://primefaces.org/ui" 
 	template="/templates/templateA.xhtml">
 	
-<ui:define name="title">Mon coffre</ui:define>
-<ui:define name="page-titre">Coffre</ui:define>
-<ui:define name="description-titre">gestion de documents</ui:define>
+<ui:define name="title">Mon historique</ui:define>
+<ui:define name="page-titre">Historique</ui:define>
+<ui:define name="description-titre">historique d'actions</ui:define>
 <ui:define name="information">
 <h:form id="spaceUser">
 	<h6>Bienvenue #{userBean.user.firstName}</h6>
@@ -80,63 +80,87 @@
 				<p:panel style="max-height:400px;overflow:scroll;border-style: none;;padding:0;width: 100%;">
 						<p:dataScroller id="logs" value="#{obnBean.selectedLogs}" var="log" chunkSize="10" rendered="#{obnBean.selectedObN!=null}">
 							<p:panel styleClass="alert-success" style="padding:15px;margin-bottom:5px;border-style: none;">
-								<h:outputText value="Vous avez déposé un fichier nommé #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez téléchargé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez contrôler le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez visualisé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez lu le journal du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez consulté les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez déposé un fichier nommé #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez téléchargé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez contrôler le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez visualisé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez lu le journal du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez consulté les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'lire metadonnees'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 							<p:panel styleClass="alert-error" rendered="#{log.status == 'Accès refusé'}">
-								<h:outputText value="Vous avez voulu déposer ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez voulu télécharger ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez voulu contrôler ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez voulu visualiser ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez voulu lire le journal de ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez voulu consulter les métadonnés de ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez voulu déposer ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez voulu télécharger ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez voulu contrôler ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez voulu visualiser ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez voulu lire le journal de ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez voulu consulter les métadonnés de ce document mais vous n'aviez pas le droit}" rendered="#{log.function == 'lire metadonnees'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 							<p:panel styleClass="alert-danger" rendered="#{log.status == 'Erreur inconnu'}">
-								<h:outputText value="Vous avez voulu déposer ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez voulu télécharger ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez voulu contrôler ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez voulu visualiser ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez voulu lire le journal de ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez voulu consulter les métadonnés de ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez voulu déposer ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez voulu télécharger ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez voulu contrôler ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez voulu visualiser ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez voulu lire le journal de ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez voulu consulter les métadonnés de ce document mais une erreur inconnue est survenue}" rendered="#{log.function == 'lire metadonnees'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 					   </p:dataScroller> 
 					   
-					   <p:dataScroller value="#{obnBean.logs}" var="log" chunkSize="10" rendered="#{obnBean.selectedObN==null}">
+					    <p:dataScroller value="#{obnBean.logs}" var="log" chunkSize="10" rendered="#{obnBean.selectedObN==null}">
 							<p:panel styleClass="alert-success" style="padding:5px;margin-bottom:5px;border:none">
-								<h:outputText value="Vous avez déposé un fichier nommé #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez listé vos documents" rendered="#{log.function == 'lister'}" />
-								<h:outputText value="Vous avez téléchargé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez contrôler le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez visualisé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez lu le journal du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez consulté les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="Vous avez détruit un document" rendered="#{log.function == 'detruire'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez déposé un fichier nommé #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez listé vos documents" rendered="#{log.function == 'lister'}" />
+									<h:outputText value="Vous avez téléchargé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez contrôler le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez visualisé le document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez lu le journal du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez consulté les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}" rendered="#{log.function == 'lire metadonnees'}" />
+									<h:outputText value="Vous avez détruit un document" rendered="#{log.function == 'detruire'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 							<p:panel styleClass="alert-error" rendered="#{log.status == 'Accès refusé'}">
-								<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit}" rendered="#{log.function == 'lire metadonnees'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 							<p:panel styleClass="alert-danger" rendered="#{log.status == 'Erreur inconnu'}">
-								<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'deposer'}"/>
-								<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'telecharger'}" />
-								<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'controler'}" />
-								<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'visualiser'}" />
-								<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'journal'}" />
-								<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'lire metadonnees'}" />
-								<h:outputText value="#{log.date}" styleClass="text-error" style="float:right;font-size:10px;font-weight:bold"/>
+								<div>
+									<h:outputText value="Vous avez voulu déposer le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'deposer'}"/>
+									<h:outputText value="Vous avez voulu télécharger le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'telecharger'}" />
+									<h:outputText value="Vous avez voulu contrôler le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'controler'}" />
+									<h:outputText value="Vous avez voulu visualiser le document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'visualiser'}" />
+									<h:outputText value="Vous avez voulu lire le journal du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'journal'}" />
+									<h:outputText value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue}" rendered="#{log.function == 'lire metadonnees'}" />
+								</div>
+								<div style="font-size:10px;font-weight:bold">
+									<h:outputText value="#{log.date}" styleClass="text-error"/>
+								</div>
 							</p:panel>
 					    </p:dataScroller>
 				</p:panel>

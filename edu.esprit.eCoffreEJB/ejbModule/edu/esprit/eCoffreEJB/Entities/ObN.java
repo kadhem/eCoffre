@@ -1,6 +1,7 @@
 package edu.esprit.eCoffreEJB.Entities;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -44,6 +45,20 @@ public class ObN implements Serializable{
 		this.idUONUti = idUONUti;
 		this.libelle = libelle;
 	}
+	
+	public static Comparator<ObN> obnComparator = new Comparator<ObN>() {
+
+		@Override
+		public int compare(ObN o1, ObN o2) {
+			// TODO Auto-generated method stub
+			String date1 = o1.getMetadonnees().getDate_fin_depot();
+			String date2 = o2.getMetadonnees().getDate_fin_depot();
+			return date2.compareTo(date1);
+		}
+
+		
+
+		};
 
 
 

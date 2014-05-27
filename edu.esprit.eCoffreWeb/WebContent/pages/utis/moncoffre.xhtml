@@ -51,10 +51,11 @@
 		<h:form style="padding:0;margin:0">
 			<p:commandButton value="Déposer" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" 
 				onclick="PF('deposer').show()" global="false"/>
+			<p:commandButton value="Actualiser" actionListener="#{obnBean.listFiles}" update=":formL :spaceUser" styleClass="btn btn-success" style="padding:5px 5px 5px 5px"/>
 		</h:form>
 		
 		<p:dialog id="deposer" widgetVar="deposer" modal="true" header="Déposer vos documents" resizable="false" 
-			showEffect="fade" hideEffect="fade" styleClass="deposer" style="position:absolute;">
+			showEffect="fade" hideEffect="fade" styleClass="deposer" style="position:absolute;" onHide="#{obnBean.resetDepotDialog()}">
 		
 			<h:form id="formAjout" style="width:550px;margin-top:20px" enctype="multipart/form-data">   
 			
@@ -96,12 +97,12 @@
 				</p:column>
 				
 				<p:column style="margin-top:20px;float: left;vertical-align: middle">
-					<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.success}"/>
-					<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.fail}"/>
+					<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusOp}" rendered="#{obnBean.success}"/>
+					<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{obnBean.statusOp}" rendered="#{obnBean.fail}"/>
 				</p:column>	
 			</p:panelGrid>
 		</h:form>
-		<p:ajax event="close" listener="#{obnBean.resetDepotDialog}" global="false"/>
+		<p:ajax event="close" listener="#{obnBean.resetDepotDialog()}" update=":deposer"/>
 		</p:dialog>
 		
 			<div class="widget">
@@ -116,7 +117,7 @@
 					            </f:facet>
 					            <h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}" style="margin-right:10px"/>
 					            <p:commandLink value="#{obnBean.getLibelle(obN.libelle)}" actionListener="#{obnBean.showMeta(obN)}" 
-					            	oncomplete="metaDialog.show()" update=":metaDialog"/>
+					            	oncomplete="PF('metaDialog').show()" update=":metaDialog"/>
 					        </p:column>
 					        <p:column filterBy="#{obN.conteneur.libelle}" sortBy="#{obN.conteneur.libelle}" width="20%" style="text-align: center;">
 					            <f:facet name="header" >
@@ -167,7 +168,8 @@
 				</div>	
 			</div>
 			
-			<p:dialog id="metaDialog" widgetVar="metaDialog" modal="true" header="Détails" draggable="false" resizable="false">
+			<p:dialog id="metaDialog" widgetVar="metaDialog" modal="true" header="Détails" draggable="false" resizable="false"
+				onHide="#{obnBean.resetMetaDialog()}">
 				<h:form id="formMeta">
 				
 				<h:panelGrid columns="2" style="margin:20px 10px 20px 10px">
@@ -193,21 +195,22 @@
 				<p:separator style="width:100%"/>
 				<div>
 				<div style="float:left">
-					<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.success}"/>
-					<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{obnBean.statusUpload}" rendered="#{obnBean.fail}"/>
+					<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusOp}" rendered="#{obnBean.success}"/>
+					<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{obnBean.statusOp}" rendered="#{obnBean.fail}"/>
 				</div>
 				<div style="float:right"><p:commandButton value="Contrôler" styleClass="btn btn-primary" 
 					actionListener="#{obnBean.controler(obnBean.metadonnees.obN)}" update="@form"/></div>
 				</div>
 			</h:form>
-			<p:ajax event="close" listener="#{obnBean.resetMetaDialog}" global="false"/>
+			<p:ajax event="close" listener="#{obnBean.resetMetaDialog}" update=":metaDialog" global="false"/>
 			</p:dialog>
+			
 			<p:dialog id="deleteDialog" widgetVar="deleteDialog" modal="true" header="Confirmation" draggable="false" resizable="false"
-				hideEffect="fade" style="position:absolute;">
-				<h:form id="formDelete">
-				<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusUpload}" 
+				hideEffect="fade" style="position:absolute;" onHide="#{obnBean.resetDeleteDialog()}">
+				<h:form id="formDelete" style="max-width:500px">
+				<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{obnBean.statusOp}"
 					rendered="#{obnBean.success}"/>
-				<h:outputText id="fail1" styleClass="alert alert-error" value="#{obnBean.statusUpload}" rendered="#{obnBean.fail}"/>
+				<h:outputText id="fail1" styleClass="alert alert-error" value="#{obnBean.statusOp}" rendered="#{obnBean.fail}"/>
 						<div style="float: left;margin-right: 30px;margin-top: 10px">
 							<p:graphicImage value="/resources/templateA/img/question.png" height="50px" width="50px"/>
 						</div>
@@ -217,13 +220,15 @@
 							</div>
 							<div style="float: right">
 							    <p:commandButton value="Oui" styleClass="btn btn-primary" icon="ui-icon-check" 
-							    	actionListener="#{obnBean.deleteFile}" update="@form :formL"/>
-							    <p:commandButton value="Non" styleClass="btn" icon="ui-icon-close" onclick="deleteDialog.hide()" global="false"/> 	
+							    	actionListener="#{obnBean.deleteFile}" update="@form :formL" rendered="#{!obnBean.fail and !obnBean.success}"/>
+							    <p:commandButton value="Non" styleClass="btn" icon="ui-icon-close" rendered="#{!obnBean.fail and !obnBean.success}" 
+							    	onclick="PF('deleteDialog').hide()" global="false"/> 	
 							</div>
 						</div>
 				</h:form>
-			<p:ajax event="close" listener="#{obnBean.resetDeleteDialog}" global="false"/>
+			<p:ajax event="close" listener="#{obnBean.resetDeleteDialog()}" update=":deleteDialog"></p:ajax>
 			</p:dialog>
+			
 			<p:dialog modal="true" id="showDialog" widgetVar="showDialog" header="#{obnBean.obnToShow.libelle}" 
 				showEffect="fade" hideEffect="fade" width="910px" height="480px" style="position:absolute;"> 
 				<p:media id="media" value="#{obnBean.fileToShow}" style="width:880px;height:480px" player="pdf" cache="false" 
@@ -233,6 +238,7 @@
 				<p:graphicImage value="#{obnBean.fileToShow}" style="width:880px;height:480px" cache="false" rendered="#{obnBean.typeFileToShow=='img'}"/>
 			<p:ajax event="close" global="false"/>
 			</p:dialog>
+			
 			<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog" header="Opération refusée" draggable="false" resizable="false">
 					<p:outputLabel styleClass="alert alert-error" style="margin-top:15px" value="Vous n'avez pas le droit d'exécuter cette opération. Contactez l'administrateur"/>
 			</p:dialog>
