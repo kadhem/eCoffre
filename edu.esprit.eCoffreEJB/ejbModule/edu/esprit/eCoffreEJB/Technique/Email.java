@@ -270,7 +270,7 @@ public class Email implements IEmailLocal {
 				// Now set the actual message
 				message.setText("<strong>Bonjour</strong> <br /> <br /><strong>EspritBox </strong>veut vous rappeler que le partage " +
 						"<strong>"+ o.getNom() +"</strong> partagé par <strong>"+o.getUtiS().getFirstName()+" "+ o.getUtiS().getLastName()
-						+"</strong> sera expiré dans deux jours <br />"
+						+"</strong> va bientôt expirer <br />"
 						+ "Pour accèder au partage veuillez cliquer <a href=\""+urlInvitation + inviT + "&p="+this.partage+"\"> ici </a>" +
 								"<br /> <br />Cordialement", "UTF-8", "html");
 				// Send message
@@ -291,6 +291,7 @@ public class Email implements IEmailLocal {
 			message.setFrom(new InternetAddress(from));
 
 			// Set To: header field of the header.
+			System.out.println("+++"+o.getUtiS().getUserName());
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(o.getUtiS().getUserName()));
 
 			// Set Subject: header field
@@ -298,7 +299,7 @@ public class Email implements IEmailLocal {
 			// Now set the actual message
 			message.setText("<strong>Bonjour "+ o.getUtiS().getFirstName()+" "+ o.getUtiS().getLastName()+"</strong> <br /> <br />" +
 					"<strong>EspritBox </strong>veut vous rappeler que le partage " +
-					"<strong>"+ o.getNom() +"</strong> que vous avez partagé sera expiré dans deux jours <br /><br />Cordialement", "UTF-8", "html");
+					"<strong>"+ o.getNom() +"</strong> que vous avez partagé va bientôt expirer <br /><br />Cordialement", "UTF-8", "html");
 			// Send message
 			Transport.send(message);
 			System.out.println("Sent message successfully....");

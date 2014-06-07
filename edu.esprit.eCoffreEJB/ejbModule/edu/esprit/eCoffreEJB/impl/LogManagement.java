@@ -99,24 +99,31 @@ public class LogManagement implements ILogLocal {
     	
     	UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (utiS.getProfil().isLireJournal()) {
-			System.out.println("access");
-			List<Object[]> logs = getLog(idU, idCCFN, idUti, date, idOnUti, idCont);
-			map.put("ccfn", idCCFN);
-			map.put("uti", idUti);
-			map.put("status", true);
-			map.put("data", logs);
-			DateFormat df = new SimpleDateFormat(
-					"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-			map.put("date", df.format(new Date()));
+    	try {
+    		if (utiS.getProfil().isLireJournal()) {
+    			System.out.println("access");
+    			List<Object[]> logs = getLog(idU, idCCFN, idUti, date, idOnUti, idCont);
+    			map.put("ccfn", idCCFN);
+    			map.put("uti", idUti);
+    			map.put("data", logs);
+    			DateFormat df = new SimpleDateFormat(
+    					"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    			map.put("date", df.format(new Date()));
+    			map.put("status", true);
+    			return map;
+    		}
+    		else {
+    				System.out.println("denied");
+    				map.put("status", false);
+    				map.put("cause", "denied");
+    				return map;
+    		}
+		} catch (Exception e) {
+			map.put("cause", "error");
+			map.put("status", false);
 			return map;
 		}
-		else {
-				System.out.println("denied");
-				map.put("status", false);
-				map.put("cause", "denied");
-				return map;
-		}
+    	
 	}
     
     public List<Object[]> getLog(int idU, int idCCFN, int idUti,
@@ -126,7 +133,7 @@ public class LogManagement implements ILogLocal {
     	
 		String q = "select l.idCCFN, l.idCont, l.idUti, l.idU, l.function, l.date, l.params, l.status, m"+
 				" from Log l, Metadonnees m" +
-				" where l.idCCFN=:idCCFN and l.idUti=:idUti and LOCATE(m.obN.idU, l.idU)=1";
+				" where l.idCCFN=:idCCFN and l.idUti=:idUti and LOCATE(m.obN.idU, l.idU,1)=1";
 
 		Query query = null;
 		
@@ -156,21 +163,21 @@ public class LogManagement implements ILogLocal {
 		
 		if(cont){ q += " and l.idCont=:idCont"; }
 		if(idu) { q += " and l.idU LIKE :idU"; }
-		if(dat) { q+=" and m.date_fin_depot>=:date1 and m.date_fin_depot<=:date2"; }
+		if(dat) { q+=" and m.date_fin_depot>=:d1 and m.date_fin_depot<=:d2"; }
 		if(idonuti) { q+=" and m.idONUti>=:idOnUti1 and m.idONUti<=:idOnUti2"; }
 		q+= " order by l.date desc";
 		
 		query = entityManager.createQuery(q);
-		
+		query.setParameter("idCCFN", idCCFN);
+		query.setParameter("idUti", idUti);
 		if(cont){ query.setParameter("idCont", idCont); }
 		if(idu) { query.setParameter("idU", "%" + String.valueOf(idU) + "%"); }
-		if(dat) { query.setParameter("date1", date[0]);	query.setParameter("date2", date[1]); }
+		if(dat) { query.setParameter("d1", date[0]); query.setParameter("d2", date[1]);}
 		if(idonuti) { query.setParameter("idOnUti1", idOnUti[0]);query.setParameter("idOnUti2", idOnUti[1]); }
 		
 		System.out.println("query : " + q);
 		
-		query.setParameter("idCCFN", idCCFN);
-		query.setParameter("idUti", idUti);
+		
 		return query.getResultList();
     }
 }

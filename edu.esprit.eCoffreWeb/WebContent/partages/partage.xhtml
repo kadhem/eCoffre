@@ -13,7 +13,6 @@
 	    <f:viewParam name="i" value="#{partageBean.inviT}" required="true" />
 	    <f:viewParam name="p" value="#{partageBean.idPartage}" required="true" />
 	    <f:event type="preRenderView" listener="#{partageBean.getSharedObnForInviT}" />
-	    <f:event type="preRenderView" listener="#{obnBean.initON()}"/>
 	</f:metadata>
 	
 	<title><ui:insert name="title">Page</ui:insert></title>
@@ -89,11 +88,11 @@
 						</p:panel>
 						
 						<h:form id="formPartage">  
-						<p:dataGrid value="#{partageBean.obNsForInviT}" var="obN" rendered="#{not empty partageBean.obNsForInviT}" columns="3">
-						    <p:panel header="#{obN.libelle}" styleClass="sharedObn">
+						<p:dataGrid value="#{partageBean.obNsForInviT}" var="obN" rendered="#{not empty partageBean.obNsForInviT}" columns="4">
+						    <p:panel header="#{partageBean.fileName(obN.libelle)}" styleClass="sharedObn" >
 						    <p:panelGrid columns="1" style="width:100%;">
-						    	<p:commandLink actionListener="#{obnBean.showFile(obN.idU)}" oncomplete="showDialog.show()" update=":showDialog"
-						    		immediate="true">
+						    	<p:commandLink oncomplete="PF('showDialog').show()" update=":showDialog" immediate="true">
+						    		<f:actionListener binding="#{obnBean.showSharedFile(obN.idU)}" ></f:actionListener>
 						    		<p:graphicImage value="#{obnBean.getIconObN(obN.libelle)}" width="50px" height="50px" />
 						    	</p:commandLink>
 						    	<p:outputLabel value="#{obnBean.getSizeObN(obN.metadonnees.size)}"/>
@@ -103,9 +102,9 @@
 								   	<center><p:graphicImage value="../resources/templateA/img/loading.gif" /></center>
 								</p:dialog>
 								</div>
-						    	<p:commandButton value="Télécharger" icon="ui-icon-disk" actionListener="#{obnBean.downloadFile(obN.libelle)}" 
-						    		ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" styleClass="btn btn-info">
-						    		<p:fileDownload value="#{obnBean.downloadFile(obN.libelle)}" />  
+						    	<p:commandButton value="Télécharger" icon="ui-icon-disk" ajax="false" 
+						    		onclick="PrimeFaces.monitorDownload(start, stop)" styleClass="btn btn-info">
+						    		<p:fileDownload value="#{obnBean.downloadSharedFile(obN.idU)}" />  
 								</p:commandButton> 
 						    	<script type="text/javascript">  
 									function start() {  
@@ -140,12 +139,19 @@
 						
 						</h:form>
 						
-						<p:dialog modal="true" id="showDialog" widgetVar="showDialog" header="#{obnBean.obnToShow.libelle}" 
-							showEffect="fade" hideEffect="fade" width="910px" height="500px" style="position:absolute;"> 
-							<p:media id="media" value="#{obnBean.showSharedFile()}" style="width:880px;height:500px" player="pdf" cache="false" rendered="#{obnBean.typeFileToShow=='pdf'}">  
-				    		Votre navigateur ne supporte pas les fichiers pdf, <h:outputLink value="/resources/other/guide.pdf">Cliquez</h:outputLink> pour télécharger le fichier.  
+						<p:dialog modal="true" id="showDialog" widgetVar="showDialog"
+							header="#{obnBean.obnToShow.libelle}" showEffect="fade"
+							hideEffect="fade" width="910px" height="480px" style="position:absolute;">
+							
+							<p:media id="media" value="#{obnBean.fileToShow}"
+								style="width:880px;height:480px" player="pdf" cache="false"
+								rendered="#{obnBean.typeFileToShow=='pdf'}">  
+			    				Votre navigateur ne supporte pas les fichiers pdf, <h:outputLink
+									value="/resources/other/guide.pdf">Cliquez</h:outputLink> pour télécharger le fichier.  
 							</p:media>
-							<p:graphicImage value="#{obnBean.showSharedFile()}" style="width:auto;height:auto" cache="false" rendered="#{obnBean.typeFileToShow=='img'}"/>
+							<p:graphicImage value="#{obnBean.fileToShow}"
+								style="width:880px;height:480px" cache="false"
+								rendered="#{obnBean.typeFileToShow=='img'}" />
 						</p:dialog>
 					</div>
 				</div>

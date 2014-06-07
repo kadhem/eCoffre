@@ -32,19 +32,13 @@ public class FilterLogin implements Filter {
 		UserBean login = (UserBean) httpServletRequest.getSession()
 				.getAttribute("userBean");
 		if (login != null)
-		{
 			chain.doFilter(httpServletRequest, httpServletResponse);
-		}
-			
-		else if (!httpServletRequest.getRequestURL().toString().contains("accueil.jsf")) 
-		{
-			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/accueil.jsf");
-		} 
-		else
-		{
+		else if (!httpServletRequest.getRequestURL().toString()
+				.contains("accueil.jsf")) {
+			httpServletResponse.sendRedirect(httpServletRequest
+					.getContextPath() + "/accueil.jsf");
+		} else
 			chain.doFilter(httpServletRequest, httpServletResponse);
-		}
-			
 
 	}
 

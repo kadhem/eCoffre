@@ -2,130 +2,230 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" 
+	xmlns:p="http://primefaces.org/ui"
 	template="/templates/templateA.xhtml">
 
-<ui:define name="title">Mon compte</ui:define>
-<ui:define name="page-titre">Mon compte</ui:define>
-<ui:define name="description-titre">gestion des informations personnelles</ui:define>
-<ui:define name="information">
-<h:form id="spaceUser">
-	<h6>Bienvenue #{userBean.user.firstName}</h6>
-	<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
-<div>
-	<h6>Espace utilisé</h6>
-	<div>
-		<p:progressBar value="#{obnBean.calculUsedSpace()}" labelTemplate="{value}%" displayOnly="true" style="width:50%;position: absolute"/>
-	</div>
-	<div style="padding-left: 115px;font-size: 11px">
-	#{obnBean.calculUsedSpace1()} / 1Go
-	</div>
-</div>
-<div style="margin-top: 10px">
-	<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="deposer.show()" global="false"/>
-</div>
-</h:form>
-</ui:define>
-<ui:define name="menu">
-<h:form>
-	<li><p:commandLink action="index.jsf?faces-redirect=true" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
-	<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
-	<li><p:commandLink action="#{partageBean.redirectToPartages}" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
-	<li><p:commandLink action="#{utisBean.redirectToEvents}" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
-	<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
-</h:form>
-</ui:define>
-<ui:define name="contenu">
-	<div class="row-fluid">
-		<div class="span6" style="width: 100%">
-		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
-        <div class="dialog">      
-			<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
-				<p:graphicImage value="/resources/templateA/img/loading.gif" />  
-			</p:dialog>
-		</div>
-			<div class="widget">
-				<div class="widget-title">
-					<h4>Informations personnelles</h4>
+	<ui:define name="title">Mon compte</ui:define>
+	<ui:define name="page-titre">Mon compte</ui:define>
+	<ui:define name="description-titre">gestion des informations personnelles</ui:define>
+	<ui:define name="information">
+		<h:form id="spaceUser">
+			<h6>Bienvenue #{userBean.user.firstName}</h6>
+			<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
+			<div>
+				<h6>Espace utilisé</h6>
+				<div>
+					<p:progressBar value="#{obnBean.calculUsedSpace()}"
+						labelTemplate="{value}%" displayOnly="true"
+						style="width:50%;position: absolute" />
 				</div>
-				<div class="widget-body">
-					<p:tabView effectDuration="normal">
-				        <p:tab title="Informations personnel" >  
-				        <h:form>
-				            <h:panelGrid columns="2" cellpadding="15">  
-				            	<p:outputLabel value="Nom" />
-					            <h:outputText id="nom" value="#{utisBean.utiS.lastName}"/> 
-                				
-            					<p:outputLabel value="Prénom" style="margin-top:10px"/>  
-					            <h:outputText id="prenom" value="#{utisBean.utiS.firstName}"/>
-                				
-                				<p:outputLabel value="Date de naissance" style="margin-top:10px"/> 
-            					<h:outputText id="date" value="#{utisBean.utiS.dateNaissance}">
-            						<f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
-            					</h:outputText>
-            					
-            					<p:outputLabel value="Téléphone " style="margin-top:10px"/>  
-            					<p:inplace> 
-					            	<p:inputText id="tel" label="Tel" value="#{utisBean.utiS.tel}"> 
-					            		<f:validateLength minimum="8"/>
-					            	</p:inputText>    
-                				<p:message for="tel" /> 
-                				</p:inplace>
-            					<p:outputLabel value="Adresse" style="margin-top:10px"/>  
-            					<p:inplace>  
-					                <p:inputText id="adresse" value="#{utisBean.utiS.adresse}"/>  
-					            </p:inplace>
-				            </h:panelGrid>  
-				            <p:commandButton value="Valider" action="#{utisBean.doUpdate()}" update="@form" 
-				            	styleClass="btn btn-primary" style="margin-left:600px"/>
-				        </h:form>
-						</p:tab>  
-				        <p:tab title="Paramètres de connexion">  
-				        <h:form>
-				            <h:panelGrid columns="3" cellpadding="15">  
-	                         	<p:outputLabel value="Adresse e-mail *" style="margin-top:10px"/>
-	            				<h:outputText value="#{utisBean.utiS.userName}"/>
- 								<h:inputHidden value="rien" />
- 								
-  								<p:outputLabel value="Mot de passe *" style="margin-top:10px"/>
-  								<p:inplace>
-						            <p:keyboard value="#{utisBean.utiS.password}" id="password" 
-						            password="true" keypadOnly="true" label="mot de passe" required="true" 
-						            requiredMessage="vous devez avoir un mot de passe" closeLabel="Fermer" clearLabel="Effacer">
-						            <f:validateLength minimum="6"/>
-						            </p:keyboard>
-						        </p:inplace> 
-					            <p:message for="password"/> 
-				            </h:panelGrid>  
-				            <p:commandButton value="Valider" action="#{utisBean.doUpdate()}" update="@form" 
-				            	styleClass="btn btn-primary" style="margin-left:600px"/>
-				        </h:form>
-				        </p:tab>  
-				        <p:tab title="Plus besoin d'EspritBox?">  
-				            <h:panelGrid columns="2" cellpadding="15">  
-				            <h4>En supprimant votre compte EspritBox vous devez tenir compte des points suivants : </h4>
-				            	<ul>
-				            		<li>
-				            			Votre espace de stockage ainsi que les données y appartenant seront supprimer définitivement.
-				            		</li>
-				            		<li>
-				            			Votre espace de partage ne sera plus disponible.
-				            		</li>
-				            		<li>
-				            			Votre compte sera éliminé de nos base de données, en conséquent vous ne pourrez plus se connecter avec.
-				            		</li>
-				            	</ul>
-				            </h:panelGrid>  
-				            <p:commandButton value="Résilier" action="#{utisBean.doDelete()}" 
-				            	styleClass="btn btn-primary" style="margin-left:600px"></p:commandButton>
-				        </p:tab>  
-				    </p:tabView>
-				</div>	
+				<div style="padding-left: 115px; font-size: 11px">
+					#{obnBean.calculUsedSpace1()} / 1Go</div>
+			</div>
+			<div style="margin-top: 10px">
+				<p:commandButton type="button" value="Déposer"
+					styleClass="btn btn-success" style="width:100%"
+					onclick="deposer.show()" global="false" />
+			</div>
+		</h:form>
+		<p:dialog id="deposer" widgetVar="deposer" modal="true"
+			header="Déposer vos documents" resizable="false" showEffect="fade"
+			hideEffect="fade" styleClass="deposer" style="position:absolute;">
+
+			<h:form id="formAjout" style="width:550px;margin-top:20px"
+				enctype="multipart/form-data">
+
+				<h:outputText value="Emplacement *"
+					style="font-size:13px;font-weight:bold" />
+				<p:selectOneMenu value="#{obnBean.selectedConteneur}"
+					style="margin-left:15px;width:120px;vertical-align:middle;"
+					effect="fade" converter="#{conteneurConverter}">
+					<f:selectItem itemLabel="Selectionnez un dossier" itemValue=""
+						itemDisabled="true" />
+					<f:selectItems value="#{obnBean.conteneurs}" var="con" />
+					<p:ajax listener="#{obnBean.valueChange}"></p:ajax>
+				</p:selectOneMenu>
+
+				<p:separator />
+				<h6>Pour déposer vos fichiers appyuez sur Parcourir ou glissez
+					les directement. Vous pouvez ajouter jusqu'à 4 fichiers à la fois.
+					Taille limite : 20 mo</h6>
+
+
+				<p:fileUpload id="upload" fileUploadListener="#{obnBean.handle}"
+					mode="advanced" dragDropSupport="true" sizeLimit="20000000"
+					allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|doc|docx|xls|xlsx|txt|rtf|ppt|pptx)$/"
+					cancelLabel="Annuler" label="Parcourir" uploadLabel="Charger"
+					fileLimitMessage="La taille du fichier dépasse la limite"
+					fileLimit="4" style="margin-top:20px" />
+
+
+				<p:separator />
+				<h6>Ajouter des mots clés à vos documents pour une recherche
+					plus simple</h6>
+				<div>
+					<p:inputText placeholder="séparez les mots par une virgule"
+						value="#{obnBean.tags}" />
+				</div>
+				<p:panelGrid columns="1" style="width:100%">
+					<p:column
+						style="margin-top:10px;float: right;vertical-align: middle">
+						<h:outputText
+							value="Extensions autorisées : xls,xlsx,doc,docx,rtf,txt,pdf,jpeg,jpg,gif,png"
+							style="font-size:8px;" />
+
+						<p:commandButton value="Déposer" styleClass="btn btn-primary"
+							style="float:right;padding:5px 5px 5px 5px"
+							actionListener="#{obnBean.uploadFile()}"
+							update=":spaceUser :formAjout" />
+
+						<p:commandButton type="button" value="Annuler" styleClass="btn"
+							style="float:right;padding:5px 5px 5px 5px"
+							onclick="PF('deposer').hide()" global="false" />
+					</p:column>
+
+					<p:column
+						style="height:auto;margin-top:30px;float: left;vertical-align: middle">
+						<pre style="border: none; background-color: inherit;">
+						<h:outputText id="success" styleClass="alert alert-success"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusS}"
+								rendered="#{obnBean.success}" />
+						<h:outputText id="fail" styleClass="alert alert-error"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusF}"
+								rendered="#{obnBean.fail}" />
+						</pre>
+					</p:column>
+				</p:panelGrid>
+			</h:form>
+			<p:ajax event="close" oncomplete="#{obnBean.resetDepotDialog()}"
+				update=":deposer" global="false" />
+		</p:dialog>
+	</ui:define>
+	<ui:define name="menu">
+		<h:form>
+			<li><p:commandLink action="index.jsf?faces-redirect=true"
+					global="false">
+					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToFiles}"
+					global="false">
+					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+			<li><p:commandLink action="#{partageBean.redirectToPartages}"
+					global="false">
+					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+			<li><p:commandLink action="#{utisBean.redirectToEvents}"
+					global="false">
+					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToLogs}"
+					global="false">
+					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+		</h:form>
+	</ui:define>
+	<ui:define name="contenu">
+		<div class="row-fluid">
+			<div class="span6" style="width: 100%">
+				<p:ajaxStatus onstart="PF('statusDialog').show();"
+					onsuccess="PF('statusDialog').hide()" />
+				<div class="dialog">
+					<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog"
+						showHeader="false" draggable="false" closable="false"
+						resizable="false">
+						<p:graphicImage value="/resources/templateA/img/loading.gif" />
+					</p:dialog>
+				</div>
+				<div class="widget">
+					<div class="widget-title">
+						<h4>Informations personnelles</h4>
+					</div>
+					<div class="widget-body">
+						<p:tabView effectDuration="normal">
+							<p:tab title="Informations personnel">
+								<h:form>
+									<h:panelGrid columns="2" cellpadding="15">
+										<p:outputLabel value="Nom" />
+										<h:outputText id="nom" value="#{utisBean.utiS.lastName}" />
+
+										<p:outputLabel value="Prénom" style="margin-top:10px" />
+										<h:outputText id="prenom" value="#{utisBean.utiS.firstName}" />
+
+										<p:outputLabel value="Date de naissance"
+											style="margin-top:10px" />
+										<h:outputText id="date" value="#{utisBean.utiS.dateNaissance}">
+											<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+										</h:outputText>
+
+										<p:outputLabel value="Téléphone " style="margin-top:10px" />
+										<p:inplace>
+											<p:inputText id="tel" label="Tel"
+												value="#{utisBean.utiS.tel}">
+												<f:validateLength minimum="8" />
+											</p:inputText>
+											<p:message for="tel" />
+										</p:inplace>
+										<p:outputLabel value="Adresse" style="margin-top:10px" />
+										<p:inplace>
+											<p:inputText id="adresse" value="#{utisBean.utiS.adresse}" />
+										</p:inplace>
+									</h:panelGrid>
+									<p:commandButton value="Valider"
+										action="#{utisBean.doUpdate()}" update="@form"
+										styleClass="btn btn-primary" style="margin-left:600px" />
+								</h:form>
+							</p:tab>
+							<p:tab title="Paramètres de connexion">
+								<h:form>
+									<h:panelGrid columns="3" cellpadding="15">
+										<p:outputLabel value="Adresse e-mail *"
+											style="margin-top:10px" />
+										<h:outputText value="#{utisBean.utiS.userName}" />
+										<h:inputHidden value="rien" />
+
+										<p:outputLabel value="Mot de passe *" style="margin-top:10px" />
+										<p:inplace>
+											<p:keyboard value="#{utisBean.utiS.password}" id="password"
+												password="true" keypadOnly="true" label="mot de passe"
+												required="true"
+												requiredMessage="vous devez avoir un mot de passe"
+												closeLabel="Fermer" clearLabel="Effacer">
+												<f:validateLength minimum="6" />
+											</p:keyboard>
+										</p:inplace>
+										<p:message for="password" />
+									</h:panelGrid>
+									<p:commandButton value="Valider"
+										action="#{utisBean.doUpdate()}" update="@form"
+										styleClass="btn btn-primary" style="margin-left:600px" />
+								</h:form>
+							</p:tab>
+							<p:tab title="Plus besoin d'EspritBox?">
+								<h:panelGrid columns="2" cellpadding="15">
+									<h4>En supprimant votre compte EspritBox vous devez tenir
+										compte des points suivants :</h4>
+									<ul>
+										<li>Votre espace de stockage ainsi que les données y
+											appartenant seront supprimer définitivement.</li>
+										<li>Votre espace de partage ne sera plus disponible.</li>
+										<li>Votre compte sera éliminé de nos base de données, en
+											conséquent vous ne pourrez plus se connecter avec.</li>
+									</ul>
+								</h:panelGrid>
+								<p:commandButton value="Résilier"
+									action="#{utisBean.doDelete()}" styleClass="btn btn-primary"
+									style="margin-left:600px"></p:commandButton>
+							</p:tab>
+						</p:tabView>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	
-</ui:define>
+		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
+			header="Opération refusé" rendered="#{obnBean.denied}"
+			visible="#{obnBean.denied}">
+			<p:outputLabel styleClass="alert alert-error" style="margin-top:15px"
+				value="#{obnBean.deniedMessage}" />
+			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+				global="false" />
+		</p:dialog>
+	</ui:define>
 
 </ui:composition>
 

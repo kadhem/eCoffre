@@ -2,336 +2,537 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" 
+	xmlns:p="http://primefaces.org/ui"
 	template="/templates/templateA.xhtml">
 
-<ui:define name="title">Mes partages</ui:define>
-<ui:define name="page-titre">Partages</ui:define>
-<ui:define name="description-titre">gestion de partages</ui:define>
-<ui:define name="information">
-<h:form id="spaceUser">
-	<h6>Bienvenue #{userBean.user.firstName}</h6>
-	<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
-<div>
-	<h6>Espace utilisé</h6>
-	<div>
-		<p:progressBar value="#{obnBean.calculUsedSpace()}" labelTemplate="{value}%" displayOnly="true" style="width:50%;position: absolute"/>
-	</div>
-	<div style="padding-left: 115px;font-size: 11px">
-	#{obnBean.calculUsedSpace1()} / 1Go
-	</div>
-</div>
-<div style="margin-top: 10px">
-	<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="deposer.show()" global="false"/>
-</div>
-</h:form>
-</ui:define>
-
-<ui:define name="menu">
-<h:form>
-	<li><p:commandLink action="index.jsf?faces-redirect=true" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
-	<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
-	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
-	<li><p:commandLink action="#{utisBean.redirectToEvents}" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
-	<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
-</h:form>
-</ui:define>
-
-<ui:define name="contenu">
-	<div class="row-fluid">
-		<div class="span6" style="width: 100%">
-		
-		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
-        <div class="dialog">      
-			<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog" showHeader="false" draggable="false" closable="false" resizable="false">  
-				<p:graphicImage value="/resources/templateA/img/loading.gif" />  
-			</p:dialog>
-		</div>
-		
-		<h:form style="padding:0;margin:0">
-		<p:commandButton ajax="true" value="Ajouter" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" 
-			oncomplete="addPartage.show()" update=":addPartage" global="false"/>
-		</h:form>
-		
-			<div class="widget">
-				<div class="widget-body" style="padding: 0">
-					<h:form id="formL">
-					    <p:dataTable value="#{partageBean.partages}" var="prtg" styleClass="hide-border-columns"
-					    emptyMessage="Vous n'avez aucun partage"> 
-					     
-					     	<p:column headerText="Nom" sortBy="#{prtg.nom}">
-					            <p:outputLabel value="#{prtg.nom}"></p:outputLabel>
-					        </p:column>
-					        
-					        <p:column headerText="Description" sortBy="#{prtg.description}">
-					            <p:outputLabel value="#{prtg.description}"></p:outputLabel>
-					        </p:column>
-					        
-					        <p:column headerText="Date d'expiration" sortBy="#{prtg.dateExpiration}">
-					            <p:outputLabel value="#{prtg.dateExpiration}">
-					            	<f:convertDateTime pattern="dd-MM-yyyy"/>
-					            </p:outputLabel>
-					        </p:column>
-					        
-					        <p:column headerText="Nombre de fichiers" style="height:50px" sortBy="#{prtg.partageONs.size()}">
-					            <p:outputLabel value="#{prtg.partageONs.size()}"></p:outputLabel>
-					        </p:column>
-					        
-					        <p:column width="1%">
-					        <center>
-					            <p:commandButton id="i" title="Modifier ce partage" icon="ui-icon-pencil" 
-					            	actionListener="#{partageBean.selectPartage(prtg)}" oncomplete="editPartage.show()" update=":formEdit" global="false"/>
-							    <p:tooltip for="i"></p:tooltip>
-							    
-							    <p:commandButton id="a" title="Ajouter ou supprimer des fichier" icon="ui-icon-plusthick"
-							    	 oncomplete="addFile.show()" update=":addFile" global="false">
-							    	 <f:actionListener binding="#{partageBean.selectPartage(prtg)}"/>
-							    	 <f:actionListener binding="#{partageBean.getNotSharedObN()}"/> 
-							    	 <f:actionListener binding="#{partageBean.getSharedObN()}"/> 
-							    </p:commandButton>  
-							    <p:tooltip for="a"></p:tooltip>
-							    <p:commandButton id="d" title="Supprimer ce partage" icon="ui-icon-trash" 
-							    	actionListener="#{partageBean.selectPartage(prtg)}" oncomplete="deletePartage.show()" update=":deletePartage" global="false">
-							    </p:commandButton>
-							    <p:tooltip for="d"></p:tooltip>
-							</center>
-					        </p:column>
-					    </p:dataTable>
-					</h:form> 
-				</div>	
+	<ui:define name="title">Mes partages</ui:define>
+	<ui:define name="page-titre">Partages</ui:define>
+	<ui:define name="description-titre">gestion de partages</ui:define>
+	<ui:define name="information">
+		<h:form id="spaceUser">
+			<h6>Bienvenue #{userBean.user.firstName}</h6>
+			<h:commandLink action="#{utisBean.getCurrentUtiS}" value="Mon compte" />
+			<div>
+				<h6>Espace utilisé</h6>
+				<div>
+					<p:progressBar value="#{obnBean.calculUsedSpace()}"
+						labelTemplate="{value}%" displayOnly="true"
+						style="width:50%;position: absolute" />
+				</div>
+				<div style="padding-left: 115px; font-size: 11px">
+					#{obnBean.calculUsedSpace1()} / 1Go</div>
 			</div>
-			<p:dialog id="addPartage" widgetVar="addPartage" modal="true" styleClass="deposer" header="Ajouter un partage" 
-				hideEffect="fade" style="position:absolute;" paginatorPosition="bottom" paginator="true" rows="7" paginatorAlwaysVisible="false">
-		
-				<h:form id="formAjout" style="width:550px;margin-top:20px;margin-bottom:0">
-				<p:panelGrid columns="2" style="border:0">
-		  			<h:outputText value="Ajoutez un nom au partage *" style="font-size:13px;font-weight:bold"/>
-			        <p:inputText value="#{partageBean.nom}"></p:inputText>
-			        <h:outputText value="Pourquoi pas une description " style="font-size:13px;font-weight:bold"/>
-			        <p:inputTextarea rows="6" cols="50" value="#{partageBean.description}"/>
-			        <h:outputText value="ça commence *" style="font-size:13px;font-weight:bold"/>
-			        <p:calendar widgetVar="start" value="#{partageBean.datePartage}" />
-			        <h:outputText value="jusqu'au *" style="font-size:13px;font-weight:bold"/>
-			        <p:calendar widgetVar="end" value="#{partageBean.dateExpiration}" />
-		        </p:panelGrid>
-		        <script type="text/javascript">
-					 jQuery(document).ready(function(){
-					   start.jqEl.datepicker("option", "minDate", +0);//set minDate to today
-					   end.jqEl.datepicker("option", "minDate", +1);//set minDate to today
-					 });
-				</script>
-			        <p:separator/>
-			        <h6>Et enfin les invités</h6>
-		  			<div>
-				    
-					    <div style="float: left">
-							<h:outputLabel value="Vous avez dèja invité" style="font-weight:bold;margin-top:10px"/>
-				        	<p:dataList id="dataList" value="#{partageBean.invites}" var="i" type="none" emptyMessage="Aucun invité">  
-					  
-					       	<p:commandButton title="Effacer cet invité" icon="ui-icon-closethick" actionListener="#{partageBean.deleteInvite(i)}" 
-					       		update="@parent" global="false"/>
-					  	 	<h:outputText value="#{i.email}" style="margin-left:10px" />  
-					        <br />  
-					    	</p:dataList>
-						</div>
-					    
-					    <div style="margin-left:10px;float: left">
-				       		<h:outputLabel value="Et vous pouvez en ajouter" style="font-weight:bold;margin-top:10px"/>
-							<p:inputText id="email1" required="false" validatorMessage="Veuillez vérifier le format" value="#{partageBean.mail}" 
-									styleClass="inputP"/>
-					 		<p:commandButton icon="ui-icon-plusthick" actionListener="#{partageBean.addInvite()}" update="@form" global="false"/>
-						</div>
-		  			</div>
-		  			<p:panelGrid columns="2" style="width:100%">
-						<p:column style="margin-top:20px;float: left;vertical-align: middle">
-							<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{partageBean.statusOp}" rendered="#{partageBean.success}"/>
-							<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{partageBean.statusOp}" rendered="#{partageBean.fail}"/>
-						</p:column>
-						
-	 					<p:column style="margin-top:10px;float: right;vertical-align: middle">
-	 						<p:commandButton value="Ajouter" styleClass="btn btn-primary" style="float:right;padding:5px 5px 5px 5px" 
-								actionListener="#{partageBean.addPartage()}" update=":formAjout :formL"/>
-	 						<p:commandButton type="button" value="Annuler" styleClass="btn" style="float:right;padding:5px 5px 5px 5px" 
-								onclick="addPartage.hide()" global="false"/>
-						</p:column>
-					</p:panelGrid>
-		  			
-					
+			<div style="margin-top: 10px">
+				<p:commandButton type="button" value="Déposer"
+					styleClass="btn btn-success" style="width:100%"
+					onclick="PF('deposer').show()" global="false" />
+			</div>
+		</h:form>
+		<p:dialog id="deposer" widgetVar="deposer" modal="true"
+			header="Déposer vos documents" resizable="false" showEffect="fade"
+			hideEffect="fade" styleClass="deposer" style="position:absolute;">
+
+			<h:form id="formDepot" style="width:550px;margin-top:20px">
+				enctype="multipart/form-data">
+
+				<h:outputText value="Emplacement *"
+					style="font-size:13px;font-weight:bold" />
+				<p:selectOneMenu value="#{obnBean.selectedConteneur}"
+					style="margin-left:15px;width:120px;vertical-align:middle;"
+					effect="fade" converter="#{conteneurConverter}">
+					<f:selectItem itemLabel="Selectionnez un dossier" itemValue=""
+						itemDisabled="true" />
+					<f:selectItems value="#{obnBean.conteneurs}" var="con" />
+					<p:ajax listener="#{obnBean.valueChange}"></p:ajax>
+				</p:selectOneMenu>
+
+				<p:separator />
+				<h6>Pour déposer vos fichiers appyuez sur Parcourir ou glissez
+					les directement. Vous pouvez ajouter jusqu'à 4 fichiers à la fois.
+					Taille limite : 20 mo</h6>
+
+
+				<p:fileUpload id="upload" fileUploadListener="#{obnBean.handle}"
+					mode="advanced" dragDropSupport="true" sizeLimit="20000000"
+					allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|doc|docx|xls|xlsx|txt|rtf|ppt|pptx)$/"
+					cancelLabel="Annuler" label="Parcourir" uploadLabel="Charger"
+					fileLimitMessage="La taille du fichier dépasse la limite"
+					fileLimit="4" style="margin-top:20px" />
+
+
+				<p:separator />
+				<h6>Ajouter des mots clés à vos documents pour une recherche
+					plus simple</h6>
+				<div>
+					<p:inputText placeholder="séparez les mots par une virgule"
+						value="#{obnBean.tags}" />
+				</div>
+				<p:panelGrid columns="1" style="width:100%">
+					<p:column
+						style="margin-top:10px;float: right;vertical-align: middle">
+						<h:outputText
+							value="Extensions autorisées : xls,xlsx,doc,docx,rtf,txt,pdf,jpeg,jpg,gif,png"
+							style="font-size:8px;" />
+
+						<p:commandButton value="Déposer" styleClass="btn btn-primary"
+							style="float:right;padding:5px 5px 5px 5px"
+							actionListener="#{obnBean.uploadFile()}"
+							update=":spaceUser :formAjout" />
+
+						<p:commandButton type="button" value="Annuler" styleClass="btn"
+							style="float:right;padding:5px 5px 5px 5px"
+							onclick="PF('deposer').hide()" global="false" />
+					</p:column>
+
+					<p:column
+						style="height:auto;margin-top:30px;float: left;vertical-align: middle">
+						<pre style="border: none; background-color: inherit;">
+						<h:outputText id="success" styleClass="alert alert-success"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusS}"
+								rendered="#{obnBean.success}" />
+						<h:outputText id="fail" styleClass="alert alert-error"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusF}"
+								rendered="#{obnBean.fail}" />
+						</pre>
+					</p:column>
+				</p:panelGrid>
+			</h:form>
+			<p:ajax event="close" update=":deposer"
+				oncomplete="#{obnBean.resetDepotDialog()}" global="false" />
+		</p:dialog>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<li><p:commandLink action="index.jsf?faces-redirect=true"
+					global="false">
+					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToFiles}"
+					global="false">
+					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+			<li class="active"><p:commandLink action="#" global="false">
+					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+			<li><p:commandLink action="#{utisBean.redirectToEvents}"
+					global="false">
+					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToLogs}"
+					global="false">
+					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="contenu">
+		<div class="row-fluid">
+			<div class="span6" style="width: 100%">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();"
+					onsuccess="PF('statusDialog').hide()" />
+				<div class="dialog">
+					<p:dialog modal="true" id="statusDialog" widgetVar="statusDialog"
+						showHeader="false" draggable="false" closable="false"
+						resizable="false">
+						<p:graphicImage value="/resources/templateA/img/loading.gif" />
+					</p:dialog>
+				</div>
+
+				<h:form id="form" style="padding:0;margin:0">
+					<p:commandButton value="Ajouter" styleClass="btn btn-success"
+						style="padding:5px 5px 5px 5px" onclick="PF('addPartage').show()"
+						global="false" update=":formAjout" />
 				</h:form>
-				<p:ajax event="close" listener="#{partageBean.resetAjoutDialog}" global="false"/>
-			</p:dialog>
-		
-			<p:dialog id="editPartage" widgetVar="editPartage" modal="true" header="Ajouter un partage" 
-				hideEffect="fade" styleClass="deposer" style="position:absolute;" rendered="#{partageBean.selectedPartage!=null}">
-			
-				<h:form id="formEdit" style="width:550px;margin-top:20px;margin-bottom:0">
-				
-				<p:panelGrid columns="2" style="border:0">
-		  			<h:outputText value="Nom au partage *" style="font-size:13px;font-weight:bold"/>
-			        <p:inputText value="#{partageBean.selectedPartage.nom}"></p:inputText>
-			        <h:outputText value="Description du partage " style="font-size:13px;font-weight:bold"/>
-			        <p:inputTextarea rows="6" cols="50" value="#{partageBean.selectedPartage.description}"/>
-			        <h:outputText value="jusqu'au *" style="font-size:13px;font-weight:bold"/>
-			        <p:calendar value="#{partageBean.selectedPartage.dateExpiration}" />
-		        </p:panelGrid>
-			    <p:separator/>
-			    
-			    <div>
-			       	<div style="float: left">
-						<h:outputLabel value="Vous avez dèja invité" style="font-weight:bold;margin-top:10px"/>
-						<p:dataList id="dataList" value="#{partageBean.selectedPartage.invites}" var="i" type="none" 
-						   emptyMessage="Aucun invité" style="min-height:20px">
-						<p:commandButton title="Effacer cet invité" icon="ui-icon-closethick" actionListener="#{partageBean.deleteInvite(i)}" 
-						   update="@parent" global="false"/>
-						<p:commandButton title="Renvoyer une invitation" icon="ui-icon-mail-closed" 
-							actionListener="#{partageBean.resendInvitation(i)}"/>
-						<h:outputText value="#{i.email}" style="margin-left:10px" />  
-						<br />  
-						</p:dataList>
-					</div>
-				       	
-				    <div style="margin-left:10px;float: left">
-				       		<h:outputLabel value="Et vous pouvez en ajouter" style="font-weight:bold;margin-top:10px"/>
-							<p:inputText id="email1" required="false" validatorMessage="Veuillez vérifier le format" value="#{partageBean.mail}" 
-									styleClass="inputP"/>
-					 		<p:commandButton icon="ui-icon-plusthick" actionListener="#{partageBean.addInvite()}" update="@form" global="false"/>
+
+				<p:dialog id="addPartage" widgetVar="addPartage" modal="true"
+					resizable="false" showEffect="fade" hideEffect="fade"
+					styleClass="deposer" header="Ajouter un partage"
+					style="position:absolute;">
+
+					<h:form id="formAjout"
+						style="width:550px;margin-top:20px;margin-bottom:0">
+						<p:panelGrid columns="2" style="border:0">
+							<h:outputText value="Ajoutez un nom au partage *"
+								style="font-size:13px;font-weight:bold" />
+							<p:inputText value="#{partageBean.nom}"></p:inputText>
+							<h:outputText value="Pourquoi pas une description "
+								style="font-size:13px;font-weight:bold" />
+							<p:inputTextarea rows="6" cols="50"
+								value="#{partageBean.description}" />
+							<h:outputText value="ça commence *"
+								style="font-size:13px;font-weight:bold" />
+							<p:calendar widgetVar="start" value="#{partageBean.datePartage}"
+								mindate="start.today()" />
+							<h:outputText value="jusqu'au *"
+								style="font-size:13px;font-weight:bold" />
+							<p:calendar widgetVar="end" value="#{partageBean.dateExpiration}"
+								mindate="start.today()" />
+						</p:panelGrid>
+						<p:separator />
+						<h6>Et enfin les invités</h6>
+						<div>
+
+							<div style="float: left">
+								<h:outputLabel value="Vous avez dèja invité"
+									style="font-weight:bold;margin-top:10px" />
+								<p:dataList id="dataList" value="#{partageBean.invites}" var="i"
+									type="none" emptyMessage="Aucun invité">
+
+									<p:commandButton title="Effacer cet invité"
+										icon="ui-icon-closethick"
+										actionListener="#{partageBean.deleteInvite(i)}"
+										update="@parent" global="false" />
+									<h:outputText value="#{i.email}" style="margin-left:10px" />
+									<br />
+								</p:dataList>
+							</div>
+
+							<div style="margin-left: 10px; float: left">
+								<h:outputLabel value="Et vous pouvez en ajouter"
+									style="font-weight:bold;margin-top:10px" />
+								<p:inputText id="email1" required="false"
+									validatorMessage="Veuillez vérifier le format"
+									value="#{partageBean.mail}" styleClass="inputP" />
+								<p:commandButton icon="ui-icon-plusthick"
+									actionListener="#{partageBean.addInvite()}" update="@form"
+									global="false" />
+							</div>
+						</div>
+						<p:panelGrid columns="2" style="width:100%">
+							<p:column
+								style="margin-top:20px;float: left;vertical-align: middle">
+								<h:outputText id="success" styleClass="alert alert-success"
+									style="width:100%" value="#{partageBean.statusOp}"
+									rendered="#{partageBean.success}" />
+								<h:outputText id="fail" styleClass="alert alert-error"
+									style="width:100%" value="#{partageBean.statusOp}"
+									rendered="#{partageBean.fail}" />
+							</p:column>
+
+							<p:column
+								style="margin-top:10px;float: right;vertical-align: middle">
+								<p:commandButton value="Ajouter" styleClass="btn btn-primary"
+									style="float:right;padding:5px 5px 5px 5px"
+									actionListener="#{partageBean.addPartage()}"
+									update=":formAjout :formL" />
+								<p:commandButton type="button" value="Annuler" styleClass="btn"
+									style="float:right;padding:5px 5px 5px 5px"
+									onclick="addPartage.hide()" global="false" />
+							</p:column>
+						</p:panelGrid>
+
+
+					</h:form>
+					<p:ajax event="close"
+						oncomplete="#{partageBean.resetAjoutDialog()}" global="false" />
+				</p:dialog>
+
+				<div class="widget">
+					<div class="widget-body" style="padding: 0">
+						<h:form id="formL">
+							<p:dataTable value="#{partageBean.partages}" var="prtg"
+								styleClass="hide-border-columns"
+								emptyMessage="Vous n'avez aucun partage"
+								paginatorPosition="bottom" paginator="true" rows="7"
+								paginatorAlwaysVisible="false">
+
+								<p:column headerText="Nom" sortBy="#{prtg.nom}" width="15%">
+									<p:outputLabel value="#{prtg.nom}"></p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Description" sortBy="#{prtg.description}"
+									width="30%">
+									<p:outputLabel value="#{prtg.description}"></p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Date d'expiration"
+									sortBy="#{prtg.dateExpiration}" width="20%"
+									style="text-align: center;">
+									<p:outputLabel value="#{prtg.dateExpiration}">
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+									</p:outputLabel>
+								</p:column>
+
+								<p:column headerText="Nombre de fichiers"
+									sortBy="#{prtg.partageONs.size()}"
+									style="height:50px;text-align: center;">
+									<p:outputLabel value="#{prtg.partageONs.size()}"></p:outputLabel>
+								</p:column>
+
+								<p:column width="5%" style="text-align: center;">
+									<p:commandButton id="i" title="Modifier ce partage"
+										icon="ui-icon-pencil"
+										actionListener="#{partageBean.selectPartage(prtg)}"
+										oncomplete="PF('editPartage').show()" update=":formEdit"
+										global="false" />
+									<p:tooltip for="i"></p:tooltip>
+
+									<p:commandButton id="a"
+										title="Ajouter ou supprimer des fichier"
+										icon="ui-icon-plusthick" oncomplete="PF('addFile').show()"
+										update=":tab" global="false">
+										<f:actionListener binding="#{partageBean.selectPartage(prtg)}" />
+										<f:actionListener binding="#{partageBean.getNotSharedObN()}" />
+										<f:actionListener binding="#{partageBean.getSharedObN()}" />
+									</p:commandButton>
+									<p:tooltip for="a"></p:tooltip>
+									<p:commandButton id="d" title="Supprimer ce partage"
+										icon="ui-icon-trash"
+										actionListener="#{partageBean.selectPartage(prtg)}"
+										oncomplete="PF('deletePartage').show()" update=":formDelete">
+									</p:commandButton>
+									<p:tooltip for="d"></p:tooltip>
+								</p:column>
+							</p:dataTable>
+						</h:form>
 					</div>
 				</div>
-					
-					<p:panelGrid columns="2" style="width:100%">
-							
-						<p:column style="margin-top:20px;float: left;vertical-align: middle">
-							<h:outputText id="success" styleClass="alert alert-success" style="width:100%" value="#{partageBean.statusOp}" rendered="#{partageBean.success}"/>
-							<h:outputText id="fail" styleClass="alert alert-error" style="width:100%" value="#{partageBean.statusOp}" rendered="#{partageBean.fail}"/>
-						</p:column>
-						
-	 					<p:column style="margin-top:10px;float: right;vertical-align: middle">
-	 					
-					  		<p:commandButton value="Modifier" styleClass="btn btn-primary" style="float: right;padding:5px 5px 5px 5px" 
-									actionListener="#{partageBean.editPartage()}" update=":formEdit :formL"/>
-							<p:commandButton type="button" value="Annuler" styleClass="btn" style="float: right;padding:5px 5px 5px 5px" 
-								onclick="editPartage.hide()" global="false"/>
-						</p:column>
-						
-					</p:panelGrid>
-				</h:form>
-			<p:ajax event="close" listener="#{partageBean.resetEditDialog}" global="false"/>
-			</p:dialog>
-		
-			<p:dialog modal="true" id="deletePartage" widgetVar="deletePartage" header="Confirmation" hideEffect="fade"
-				styleClass="deposer" style="position:absolute;">
-				<h:form id="formDelete">
+
+				<p:dialog id="editPartage" widgetVar="editPartage" modal="true"
+					header="Ajouter un partage" hideEffect="fade" styleClass="deposer"
+					style="position:absolute;"
+					rendered="#{partageBean.selectedPartage!=null}">
+
+					<h:form id="formEdit"
+						style="width:550px;margin-top:20px;margin-bottom:0">
+
+						<p:panelGrid columns="2" style="border:0">
+							<h:outputText value="Nom au partage *"
+								style="font-size:13px;font-weight:bold" />
+							<p:inputText value="#{partageBean.selectedPartage.nom}"></p:inputText>
+							<h:outputText value="Description du partage "
+								style="font-size:13px;font-weight:bold" />
+							<p:inputTextarea rows="6" cols="50"
+								value="#{partageBean.selectedPartage.description}" />
+							<h:outputText value="jusqu'au *"
+								style="font-size:13px;font-weight:bold" />
+							<p:calendar value="#{partageBean.selectedPartage.dateExpiration}" />
+						</p:panelGrid>
+						<p:separator />
+
 						<div>
-							<h:outputText id="fail1" styleClass="alert alert-error" value="#{obnBean.statusUpload}" rendered="#{obnBean.fail}"/>
+							<div style="float: left">
+								<h:outputLabel value="Vous avez dèja invité"
+									style="font-weight:bold;margin-top:10px" />
+								<p:dataList id="dataList"
+									value="#{partageBean.selectedPartage.invites}" var="i"
+									type="none" emptyMessage="Aucun invité" style="min-height:20px">
+									<p:commandButton title="Effacer cet invité"
+										icon="ui-icon-closethick"
+										actionListener="#{partageBean.deleteInvite(i)}"
+										update="@parent" global="false" />
+									<p:commandButton title="Renvoyer une invitation"
+										icon="ui-icon-mail-closed"
+										actionListener="#{partageBean.resendInvitation(i)}" />
+									<h:outputText value="#{i.email}" style="margin-left:10px" />
+									<br />
+								</p:dataList>
+							</div>
+
+							<div style="margin-left: 10px; float: left">
+								<h:outputLabel value="Et vous pouvez en ajouter"
+									style="font-weight:bold;margin-top:10px" />
+								<p:inputText id="email1" required="false"
+									validatorMessage="Veuillez vérifier le format"
+									value="#{partageBean.mail}" styleClass="inputP" />
+								<p:commandButton icon="ui-icon-plusthick"
+									actionListener="#{partageBean.addInvite()}" update="@form"
+									global="false" />
+							</div>
 						</div>
-						<div style="float: left;margin-right: 30px;margin-top: 10px">
-							<p:graphicImage value="/resources/templateA/img/question.png" height="50px" width="50px"/>
+
+						<p:panelGrid columns="2" style="width:100%">
+
+							<p:column
+								style="margin-top:20px;float: left;vertical-align: middle">
+								<h:outputText id="success" styleClass="alert alert-success"
+									style="width:100%" value="#{partageBean.statusOp}"
+									rendered="#{partageBean.success}" />
+								<h:outputText id="fail" styleClass="alert alert-error"
+									style="width:100%" value="#{partageBean.statusOp}"
+									rendered="#{partageBean.fail}" />
+							</p:column>
+
+							<p:column
+								style="margin-top:10px;float: right;vertical-align: middle">
+
+								<p:commandButton value="Modifier" styleClass="btn btn-primary"
+									style="float: right;padding:5px 5px 5px 5px"
+									actionListener="#{partageBean.editPartage()}"
+									update=":formEdit :formL" />
+
+								<p:commandButton type="button" value="Annuler" styleClass="btn"
+									style="float: right;padding:5px 5px 5px 5px"
+									onclick="PF('editPartage').hide()" global="false" />
+
+							</p:column>
+
+						</p:panelGrid>
+					</h:form>
+					<p:ajax event="close" oncomplete="#{partageBean.resetEditDialog()}"
+						global="false" />
+				</p:dialog>
+
+				<p:dialog modal="true" id="deletePartage" widgetVar="deletePartage"
+					header="Confirmation" hideEffect="fade" styleClass="deposer"
+					style="position:absolute;" closable="true" draggable="false"
+					resizable="false">
+
+					<h:form id="formDelete">
+						<div>
+							<h:outputText id="fail1" styleClass="alert alert-error"
+								value="#{obnBean.statusOp}" rendered="#{obnBean.fail}" />
 						</div>
-						<div style="float: left;margin-bottom: 10px">
+						<div style="float: left; margin-right: 30px; margin-top: 10px">
+							<p:graphicImage value="/resources/templateA/img/question.png"
+								height="50px" width="50px" />
+						</div>
+						<div style="float: left; margin-bottom: 10px">
 							<div style="margin-bottom: 10px">
-							    <h5>Voulez vous vraiment supprimer ce fichier</h5>
+								<h5>Voulez vous vraiment supprimer ce fichier</h5>
 							</div>
 							<div style="float: right">
-							    <p:commandButton value="Oui" styleClass="btn btn-primary" icon="ui-icon-check" oncomplete="deletePartage.hide()" 
-							    	actionListener="#{partageBean.deletePartage()}" update="@form :formL"/>
-							    <p:commandButton value="Non" styleClass="btn" icon="ui-icon-close" onclick="deletePartage.hide()" global="false"/> 	
+								<p:commandButton value="Oui" styleClass="btn btn-primary"
+									icon="ui-icon-check" oncomplete="PF('deletePartage').hide()"
+									actionListener="#{partageBean.deletePartage()}"
+									update="@form :formL" />
+								<p:commandButton value="Non" styleClass="btn"
+									icon="ui-icon-close" onclick="PF('deletePartage').hide()"
+									global="false" />
 							</div>
 						</div>
-				</h:form>
-			<p:ajax event="close" listener="#{partageBean.resetDeleteDialog}" global="false"/>
-			</p:dialog>
-			
-			<p:dialog modal="true" id="addFile" widgetVar="addFile" header="Contenu du partage #{partageBean.selectedPartage.nom}" 
-				hideEffect="fade" styleClass="deposer" style="width:400px;min-height:400px;position:absolute;">
-				
-				<p:tabView id="tab" widgetVar="tab" dynamic="true" cache="true" style="height:100%;width:100%">  
-        			<p:tab id="tabAdd" title="Ajouter des fichiers" titleStyleClass="btn btn-info">  
-        				<h:form id="formAddFile">
-						<p:outputLabel style="font-weight:bold" value="Selectionnez les fichiers que vous souhaitez ajouter à ce partage en appuyant sur 'ctrl' et la souris, puis cliquez sur 'Ajouter au partage'"/>
-						<p:commandButton value="Ajouter au partage" styleClass="btn btn-success" style="padding:5px 5px 5px 5px"
-							actionListener="#{partageBean.addFileToPartage}" update="@widgetVar(tab)"/>
-							<p:dataTable var="obN" value="#{partageBean.obNsNonPartages}" rowKey="#{obN.idU}" selection="#{partageBean.obnsToAdd}" 
-								selectionMode="multiple" styleClass="hide-border-columns" style="font-size:10px" 
-									emptyMessage="Pas de fichier à ajouter" paginatorPosition="bottom" 
-					     				paginator="true" rows="7" paginatorAlwaysVisible="false">   
-						  		
-						        <p:column filterBy="#{obN.libelle}" sortBy="#{obN.libelle}" width="250">
-							      <f:facet name="header" styleClass="widget-title">
-							         <h:outputText value="Nom" />
-							      </f:facet>
-							      <h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}" style="margin-right:10px"/>
-							      <h:outputText value="#{obnBean.getLibelle(obN.libelle)}"/>
-							    </p:column>  
-							    <p:column filterBy="#{obN.conteneur.libelle}" sortBy="#{obN.conteneur.libelle}" width="50">
-					            <f:facet name="header" >
-					                <h:outputText value="Conteneur" />
-					            </f:facet>
-					            <h:outputText value="#{obN.conteneur.libelle}" />
-						        </p:column>
-						        <p:column filterBy="#{obN.metadonnees.tags}" sortBy="#{obN.metadonnees.tags}" width="50">
-						            <f:facet name="header" >
-						                <h:outputText value="Mots clés" />
-						            </f:facet>
-						            <h:outputText value="#{obN.metadonnees.tags}" />
-						        </p:column>
-						        <p:column filterBy="#{obN.metadonnees.date_fin_depot}" sortBy="#{obN.metadonnees.date_fin_depot}">
-						            <f:facet name="header">
-						                <h:outputText value="Date depôt" />
-						            </f:facet>
-						            <h:outputText value="#{obN.metadonnees.date_fin_depot}" >
-						            	<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
-						            </h:outputText>
-						        </p:column>
-						    
-						    </p:dataTable>
-						</h:form>
-					</p:tab>
-					<p:tab id="tabDel" title="Supprimer des fichiers" titleStyleClass="btn btn-info">  
-        				<h:form id="formDeleteFile">
-						<p:outputLabel style="font-weight:bold" value="Selectionnez les fichiers que vous souhaitez supprimer 
-							de ce partage en appuyant sur 'ctrl' et la souris, puis cliquez sur 'Supprimer du partage'"/>
-						<p:commandButton value="Supprimer du partage" styleClass="btn btn-danger" style="padding:5px 5px 5px 5px"
-							actionListener="#{partageBean.deleteFilesFromPartage}" update="@widgetVar(tab)"/>
-							<p:dataTable var="obN" value="#{partageBean.obNsPartages}" rowKey="#{obN.idU}" selection="#{partageBean.obnsToDelete}" 
-								selectionMode="multiple" styleClass="hide-border-columns" style="font-size:10px" 
-									emptyMessage="Aucun fichier n'a été ajouté" paginatorPosition="bottom" 
-					     				paginator="true" rows="7" paginatorAlwaysVisible="false">   
-						  		
-						        <p:column filterBy="#{obN.libelle}" sortBy="#{obN.libelle}" width="250">
-							      <f:facet name="header" styleClass="widget-title">
-							         <h:outputText value="Nom" />
-							      </f:facet>
-							      <h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}" style="margin-right:10px"/>
-							      <h:outputText value="#{obnBean.getLibelle(obN.libelle)}"/>
-							    </p:column>  
-						    	<p:column filterBy="#{obN.conteneur.libelle}" sortBy="#{obN.conteneur.libelle}" width="50">
-					            <f:facet name="header" >
-					                <h:outputText value="Conteneur" />
-					            </f:facet>
-					            <h:outputText value="#{obN.conteneur.libelle}" />
-						        </p:column>
-						        <p:column filterBy="#{obN.metadonnees.tags}" sortBy="#{obN.metadonnees.tags}" width="50">
-						            <f:facet name="header" >
-						                <h:outputText value="Mots clés" />
-						            </f:facet>
-						            <h:outputText value="#{obN.metadonnees.tags}" />
-						        </p:column>
-						        <p:column filterBy="#{obN.metadonnees.date_fin_depot}" sortBy="#{obN.metadonnees.date_fin_depot}">
-						            <f:facet name="header">
-						                <h:outputText value="Date depôt" />
-						            </f:facet>
-						            <h:outputText value="#{obN.metadonnees.date_fin_depot}" >
-						            	<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
-						            </h:outputText>
-						        </p:column>
-						    </p:dataTable>
-						</h:form>
-					</p:tab>
-				</p:tabView>
-			<p:ajax event="close" listener="#{partageBean.resetAddFileDIalog}" update="formL" global="false"/>
+					</h:form>
+					<p:ajax event="close" update=":formL"
+						oncomplete="#{partageBean.resetDeleteDialog()}" />
+				</p:dialog>
+
+				<p:dialog modal="true" id="addFile" widgetVar="addFile"
+					header="Contenu du partage #{partageBean.selectedPartage.nom}"
+					hideEffect="fade" styleClass="deposer"
+					style="width:400px;min-height:400px;position:absolute;">
+
+					<p:tabView id="tab" widgetVar="tab" dynamic="true" cache="true"
+						style="height:100%;width:100%">
+						<p:tab id="tabAdd" title="Ajouter des fichiers"
+							titleStyleClass="btn btn-info">
+							<h:form id="formAddFile">
+								<p:outputLabel style="font-weight:bold"
+									value="Selectionnez les fichiers que vous souhaitez ajouter à ce partage en appuyant 
+									sur 'ctrl' et la souris, puis cliquez sur 'Ajouter au partage'" />
+
+								<p:commandButton value="Ajouter au partage"
+									styleClass="btn btn-success" style="padding:5px 5px 5px 5px"
+									actionListener="#{partageBean.addFileToPartage}"
+									update="@widgetVar(tab)" global="false" />
+
+								<p:dataTable var="obN" value="#{partageBean.obNsNonPartages}"
+									rowKey="#{obN.idU}" selection="#{partageBean.obnsToAdd}"
+									selectionMode="multiple" styleClass="hide-border-columns"
+									emptyMessage="Pas de fichier à ajouter"
+									paginatorPosition="bottom" paginator="true" rows="7"
+									paginatorAlwaysVisible="false">
+
+									<p:column filterBy="#{obN.libelle}" sortBy="#{obN.libelle}"
+										width="30%">
+										<f:facet name="header" styleClass="widget-title">
+											<h:outputText value="Nom" />
+										</f:facet>
+										<h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}"
+											style="margin-right:10px" />
+										<h:outputText value="#{obnBean.getLibelle(obN.libelle)}" />
+									</p:column>
+									<p:column filterBy="#{obN.conteneur.libelle}"
+										sortBy="#{obN.conteneur.libelle}" width="15%">
+										<f:facet name="header">
+											<h:outputText value="Conteneur" />
+										</f:facet>
+										<h:outputText value="#{obN.conteneur.libelle}" />
+									</p:column>
+									<p:column filterBy="#{obN.metadonnees.tags}"
+										sortBy="#{obN.metadonnees.tags}" width="20%">
+										<f:facet name="header">
+											<h:outputText value="Mots clés" />
+										</f:facet>
+										<h:outputText value="#{obN.metadonnees.tags}" />
+									</p:column>
+									<p:column filterBy="#{obN.metadonnees.date_fin_depot}"
+										sortBy="#{obN.metadonnees.date_fin_depot}" width="15%">
+										<f:facet name="header">
+											<h:outputText value="Date depôt" />
+										</f:facet>
+										<h:outputText value="#{obN.metadonnees.date_fin_depot}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+										</h:outputText>
+									</p:column>
+
+								</p:dataTable>
+							</h:form>
+						</p:tab>
+						<p:tab id="tabDel" title="Supprimer des fichiers"
+							titleStyleClass="btn btn-info">
+							<h:form id="formDeleteFile">
+								<p:outputLabel style="font-weight:bold"
+									value="Selectionnez les fichiers que vous souhaitez supprimer 
+								de ce partage en appuyant sur 'ctrl' et la souris, puis cliquez sur 'Supprimer du partage'" />
+
+								<p:commandButton value="Supprimer du partage"
+									styleClass="btn btn-danger" style="padding:5px 5px 5px 5px"
+									actionListener="#{partageBean.deleteFilesFromPartage}"
+									update="@widgetVar(tab)" global="false" />
+
+								<p:dataTable var="obN" value="#{partageBean.obNsPartages}"
+									rowKey="#{obN.idU}" selection="#{partageBean.obnsToDelete}"
+									selectionMode="multiple" styleClass="hide-border-columns"
+									emptyMessage="Aucun fichier n'a été ajouté"
+									paginatorPosition="bottom" paginator="true" rows="7"
+									paginatorAlwaysVisible="false">
+
+									<p:column filterBy="#{obN.libelle}" sortBy="#{obN.libelle}"
+										width="30%">
+										<f:facet name="header" styleClass="widget-title">
+											<h:outputText value="Nom" />
+										</f:facet>
+										<h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}"
+											style="margin-right:10px" />
+										<h:outputText value="#{obnBean.getLibelle(obN.libelle)}" />
+									</p:column>
+									<p:column filterBy="#{obN.conteneur.libelle}"
+										sortBy="#{obN.conteneur.libelle}" width="15%">
+										<f:facet name="header">
+											<h:outputText value="Conteneur" />
+										</f:facet>
+										<h:outputText value="#{obN.conteneur.libelle}" />
+									</p:column>
+									<p:column filterBy="#{obN.metadonnees.tags}"
+										sortBy="#{obN.metadonnees.tags}" width="20%">
+										<f:facet name="header">
+											<h:outputText value="Mots clés" />
+										</f:facet>
+										<h:outputText value="#{obN.metadonnees.tags}" />
+									</p:column>
+									<p:column filterBy="#{obN.metadonnees.date_fin_depot}"
+										sortBy="#{obN.metadonnees.date_fin_depot}" width="15%">
+										<f:facet name="header">
+											<h:outputText value="Date depôt" />
+										</f:facet>
+										<h:outputText value="#{obN.metadonnees.date_fin_depot}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+										</h:outputText>
+									</p:column>
+								</p:dataTable>
+							</h:form>
+						</p:tab>
+					</p:tabView>
+					<p:ajax event="close" update="formL"
+						oncomplete="#{partageBean.resetAddFileDIalog()}" global="false" />
+				</p:dialog>
+			</div>
+			<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
+				header="Opération refusé" rendered="#{obnBean.denied}"
+				visible="#{obnBean.denied}">
+				<p:outputLabel styleClass="alert alert-error"
+					style="margin-top:15px" value="#{obnBean.deniedMessage}" />
+				<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+					global="false" />
 			</p:dialog>
 		</div>
-	</div>
-</ui:define>
+	</ui:define>
 </ui:composition>
 

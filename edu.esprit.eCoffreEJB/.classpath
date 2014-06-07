@@ -22,6 +22,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/atelierJEE/configurationJboss/jboss-as-7.1.1.Final/modules/org/hibernate/main/hibernate-core-4.0.1.Final.jar"/>
-	<classpathentry kind="lib" path="C:/Users/kadhem/Downloads/lib/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

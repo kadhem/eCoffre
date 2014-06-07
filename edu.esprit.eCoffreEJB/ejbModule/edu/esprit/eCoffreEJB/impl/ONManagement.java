@@ -222,6 +222,7 @@ public class ONManagement implements IONLocal {
 				map.put("algo", algo);
 				map.put("hash", hashfile);
 				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			} catch (Exception e) {
@@ -236,6 +237,7 @@ public class ONManagement implements IONLocal {
 				map.put("size", -1);
 				map.put("algo", algo);
 				map.put("hash", hashfile);
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
@@ -250,7 +252,6 @@ public class ONManagement implements IONLocal {
 		map.put("algo", algo);
 		map.put("hash", hash);
 		map.put("status", false);
-		map.put("status", false);
 		map.put("cause", "denied");
 		return map;
 	}
@@ -261,11 +262,10 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isDeposer()) {
 			try {
 				ObN obN = null;
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				sftpCom.createContext();
 				sftpCom.changeDir(utiS.getUserName());
 				if (sftpCom.uploadFile(in, libelle)) {
@@ -289,15 +289,43 @@ public class ONManagement implements IONLocal {
 					map.put("date", df.format(new Date()));
 					return map;
 				}
+				map.put("idu", -1);
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", idOnUti);
+				map.put("size", -1);
+				map.put("algo", null);
+				map.put("hash", null);
 				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put("idu", -1);
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", idOnUti);
+				map.put("size", -1);
+				map.put("algo", null);
+				map.put("hash", null);
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			map.put("idu", -1);
+			map.put("ccfn", idCCFN);
+			map.put("cont", idConteneur);
+			map.put("uti", idUti);
+			map.put("idOnUti", idOnUti);
+			map.put("size", -1);
+			map.put("algo", null);
+			map.put("hash", null);
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -311,20 +339,20 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isLire()) {
 			try {
 				System.out.println("iduuuuuu : " + idU);
 				ObN obN = getONByIdu(idU);
 				Metadonnees metadonnees = metaManagement.getMetadonnesByON(obN);
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				sftpCom.createContext();
 				sftpCom.changeDir(utiS.getUserName());
 				InputStream in = sftpCom.getInputStreamFile(obN.getLibelle());
 				if (in != null) {
 					long size = sftpCom.getFileSize(obN.getLibelle());
-					map.put("idu", obN.getIdU());
+					map.put("idu", idU);
 					map.put("ccfn", idCCFN);
+					map.put("cont", idConteneur);
 					map.put("uti", idUti);
 					map.put("idOnUti", obN.getIdUONUti());
 					map.put("size", size);
@@ -335,15 +363,46 @@ public class ONManagement implements IONLocal {
 					map.put("date", df.format(new Date()));
 					return map;
 				}
+				map.put("idu", idU);
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", obN.getIdUONUti());
+				map.put("size", -1);
+				map.put("algo", metadonnees.getAlgo());
+				map.put("hash", metadonnees.getHash());
+				map.put("status", true);
+				map.put("data", in);
 				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put("idu", idU);
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", -1);
+				map.put("size", -1);
+				map.put("algo", "");
+				map.put("hash", "");
+				map.put("data", null);
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			map.put("idu", idU);
+			map.put("ccfn", idCCFN);
+			map.put("uti", idUti);
+			map.put("idOnUti", -1);
+			map.put("size", -1);
+			map.put("algo", "");
+			map.put("hash", "");
+			map.put("data", null);
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -355,11 +414,10 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isDetruire()) {
 			try {
 				ObN obN = getONByIdu(idU);
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				sftpCom.createContext();
 				sftpCom.changeDir(utiS.getUserName());
 				if (sftpCom.deleteFile(obN.getLibelle())) {
@@ -377,22 +435,42 @@ public class ONManagement implements IONLocal {
 
 					map.put("idu", obN.getIdU());
 					map.put("ccfn", idCCFN);
+					map.put("cont", obN.getConteneur().getIdCont());
 					map.put("uti", idUti);
 					map.put("idOnUti", obN.getIdUONUti());
 					map.put("status", true);
 					map.put("date", df.format(new Date()));
 					return map;
 				}
+				map.put("idu", obN.getIdU());
+				map.put("ccfn", idCCFN);
+				map.put("cont", obN.getConteneur().getIdCont());
+				map.put("uti", idUti);
+				map.put("idOnUti", obN.getIdUONUti());
 				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put("idu", idU);
+				map.put("ccfn", idCCFN);
+				map.put("cont", -1);
+				map.put("uti", idUti);
+				map.put("idOnUti", -1);
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
 			System.out.println("denied from onmanagement");
+			map.put("idu", idU);
+			map.put("ccfn", idCCFN);
+			map.put("cont", -1);
+			map.put("uti", idUti);
+			map.put("idOnUti", -1);
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -405,12 +483,11 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isLireMetaDonnees()) {
 			try {
 				ObN obN = getONByIdu(idU);
 				Metadonnees metadonnees = metaManagement.getMetadonnesByON(obN);
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				sftpCom.createContext();
 				sftpCom.changeDir(utiS.getUserName());
 				long size = 0;
@@ -429,15 +506,46 @@ public class ONManagement implements IONLocal {
 					map.put("date", df.format(new Date()));
 					return map;
 				}
+				map.put("idU", obN.getIdU());
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", obN.getIdUONUti());
+				map.put("size", size);
+				map.put("algo", metadonnees.getAlgo());
+				map.put("hash", metadonnees.getHash());
+				map.put("tags", metadonnees.getTags());
 				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put("idU", idU);
+				map.put("ccfn", idCCFN);
+				map.put("cont", idConteneur);
+				map.put("uti", idUti);
+				map.put("idOnUti", -1);
+				map.put("size", -1);
+				map.put("algo", "");
+				map.put("hash", "");
+				map.put("tags", "");
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			map.put("idU", idU);
+			map.put("ccfn", idCCFN);
+			map.put("cont", idConteneur);
+			map.put("uti", idUti);
+			map.put("idOnUti", -1);
+			map.put("size", -1);
+			map.put("algo", "");
+			map.put("hash", "");
+			map.put("tags", "");
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -450,12 +558,11 @@ public class ONManagement implements IONLocal {
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
 		HashFile sh = new HashFile();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isControler()) {
 			try {
 				ObN obN = getONByIdu(idU);
 				Metadonnees metadonnees = metaManagement.getMetadonnesByON(obN);
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				sftpCom.createContext();
 				sftpCom.changeDir(utiS.getUserName());
 				System.out.println("0");
@@ -473,6 +580,7 @@ public class ONManagement implements IONLocal {
 						System.out.println("seu pon");
 						map.put("idu", obN.getIdU());
 						map.put("ccfn", idCCFN);
+						map.put("cont", obN.getConteneur().getIdCont());
 						map.put("uti", idUti);
 						map.put("idOnUti", obN.getIdUONUti());
 						map.put("cont",obN.getConteneur().getIdCont());
@@ -483,15 +591,40 @@ public class ONManagement implements IONLocal {
 						return map;
 					}
 				}
+				map.put("idu", obN.getIdU());
+				map.put("ccfn", idCCFN);
+				map.put("cont", obN.getConteneur().getIdCont());
+				map.put("uti", idUti);
+				map.put("idOnUti", obN.getIdUONUti());
+				map.put("cont",obN.getConteneur().getIdCont());
+				map.put("dateDepot", metadonnees.getDate_fin_depot());
+				map.put("date", df.format(new Date()));
 				map.put("status", true);
 				map.put("match", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put("idu", idU);
+				map.put("ccfn", idCCFN);
+				map.put("cont", -1);
+				map.put("uti", idUti);
+				map.put("idOnUti", -1);
+				map.put("cont",-1);
+				map.put("dateDepot", "");
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			map.put("idu", idU);
+			map.put("ccfn", idCCFN);
+			map.put("cont", -1);
+			map.put("uti", idUti);
+			map.put("idOnUti", -1);
+			map.put("cont",-1);
+			map.put("dateDepot", "");
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -504,6 +637,7 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isLister()) {
 			System.out.println("access");
 			List<ObN> obNs = getIdus(idU, idCCFN, idUti, date, idOnUti, idCont);
@@ -511,11 +645,11 @@ public class ONManagement implements IONLocal {
 				if (idU > 0) {
 					ObN obN = obNs.get(0);
 					map.put("cont", obN.getConteneur().getIdCont());
+				} else if (idCont > 0) {
+					map.put("cont",idCont);
 				} else {
 					map.put("cont", -1);
 				}
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				map.put("ccfn", idCCFN);
 				map.put("uti", idUti);
 				map.put("status", true);
@@ -524,11 +658,33 @@ public class ONManagement implements IONLocal {
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
+				if (idU > 0) {
+					ObN obN = obNs.get(0);
+					map.put("cont", obN.getConteneur().getIdCont());
+				} else if (idCont > 0) {
+					map.put("cont",idCont);
+				} else {
+					map.put("cont", -1);
+				}
+				map.put("ccfn", idCCFN);
+				map.put("uti", idUti);
+				map.put("data", obNs);
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			if (idCont > 0) {
+				map.put("cont",idCont);
+			} else {
+				map.put("cont", -1);
+			}
 			System.out.println("denied");
+			map.put("ccfn", idCCFN);
+			map.put("uti", idUti);
+			map.put("data", null);
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;
@@ -541,14 +697,13 @@ public class ONManagement implements IONLocal {
 
 		UTI_S utiS = utiSManagement.getUtiSById(idUti);
 		Map<String, Object> map = new HashMap<String, Object>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		if (utiS.getProfil().isCompter()) {
 			sftpCom.createContext();
 			sftpCom.changeDir(utiS.getUserName());
 			try {
 				int count = sftpCom.countFile();
 				List<Integer> idus = getCountON(idCCFN, idUti, date, idOnUti);
-				DateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				map.put("ccfn", idCCFN);
 				map.put("uti", idUti);
 				map.put("status", true);
@@ -559,10 +714,21 @@ public class ONManagement implements IONLocal {
 			} catch (SftpException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				map.put("ccfn", idCCFN);
+				map.put("uti", idUti);
+				map.put("data", null);
+				map.put("count", -1);
+				map.put("date", df.format(new Date()));
+				map.put("cause", "error");
 				map.put("status", false);
 				return map;
 			}
 		} else {
+			map.put("ccfn", idCCFN);
+			map.put("uti", idUti);
+			map.put("data", null);
+			map.put("count", -1);
+			map.put("date", df.format(new Date()));
 			map.put("status", false);
 			map.put("cause", "denied");
 			return map;

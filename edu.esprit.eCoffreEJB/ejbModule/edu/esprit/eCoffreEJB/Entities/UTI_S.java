@@ -26,7 +26,7 @@ public class UTI_S extends Utilisateur implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private long quota=1000000000;
+	private long quota=104857600;
 	private Date dateNaissance;
 	private String tel;
 	private String adresse;

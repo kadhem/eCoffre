@@ -10,13 +10,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.CloseEvent;
 
-import sun.misc.BASE64Encoder;
 import edu.esprit.eCoffreEJB.Entities.Invite;
 import edu.esprit.eCoffreEJB.Entities.ObN;
 import edu.esprit.eCoffreEJB.Entities.Partage;
@@ -121,6 +119,7 @@ public class PartageBean {
 	@PostConstruct
 	public void initPartage() {
 		try {
+			System.out.println("init");
 			userBean = (UserBean) FacesContext.getCurrentInstance()
 					.getExternalContext().getSessionMap().get("userBean");
 			utiS = utiSLocal
@@ -144,6 +143,15 @@ public class PartageBean {
 			System.out.println(p.getDescription() + "**");
 		}
 		return "mespartages?faces-redirect=true";
+	}
+	
+	public String fileName(String fileName)
+	{
+				if(fileName.length()>17)
+				{
+					return fileName.substring(0, 16)+"...";
+				}
+				return fileName;
 	}
 
 	public void getSharedObN() {
@@ -222,12 +230,14 @@ public class PartageBean {
 
 	public void selectPartage(Partage partage) {
 		System.out.println("selectedPartage");
+		System.out.println("*"+partage.getNom());
 		statusOp = "";
 		fail = false;
 		success = false;
 		partage.setInvites(partageLocal.getInviTByIdPartage(partage
 				.getIdPartage()));
 		selectedPartage = partage;
+		System.out.println(selectedPartage.getNom()+"*");
 	}
 
 	public void editPartage() {
@@ -238,6 +248,7 @@ public class PartageBean {
 			for (Invite i : selectedPartage.getInvites()) {
 				System.out.println(i.getEmail() + "**");
 				i.linkInviteToPartage(selectedPartage);
+				mail = i.getEmail();
 			}
 			partageLocal.editPartage(selectedPartage);
 			statusOp = "Partage modifié avec succès";
@@ -251,8 +262,20 @@ public class PartageBean {
 	}
 
 	public void deletePartage() {
-		if (partageLocal.deletePartage(selectedPartage.getIdPartage())) {
-			partages.remove(selectedPartage);
+		if(selectedPartage!=null)
+		{
+			if (partageLocal.deletePartage(selectedPartage.getIdPartage())) {
+				partages.remove(selectedPartage);
+				success = true;
+				statusOp = "Partage supprimé.";
+			}
+			else {
+				fail = true;
+				statusOp = "Une erreur est survenue";
+			}
+		}
+		else {
+			System.out.println("selectedpartage null");
 		}
 	}
 
@@ -264,6 +287,8 @@ public class PartageBean {
 				obNsNonPartages.remove(o);
 			}
 		}
+		partages = partageLocal.getPartagesByIdUti(utiS.getIdUti());
+		System.out.println("fin add file");
 	}
 
 	public void deleteFilesFromPartage() {
@@ -275,8 +300,8 @@ public class PartageBean {
 				obNsNonPartages.add(o);
 				obNsPartages.remove(o);
 			}
-
 		}
+		partages = partageLocal.getPartagesByIdUti(utiS.getIdUti());
 	}
 
 	public void resendInvitation(Invite invite) {
@@ -308,7 +333,7 @@ public class PartageBean {
 		}
 	}
 
-	public void resetAjoutDialog(CloseEvent event) {
+	public void resetAjoutDialog() {
 		description = "";
 		nom = "";
 		statusOp = "";
@@ -320,7 +345,7 @@ public class PartageBean {
 
 	}
 
-	public void resetEditDialog(CloseEvent event) {
+	public void resetEditDialog() {
 		success = false;
 		fail = false;
 		statusOp = "";
@@ -328,14 +353,15 @@ public class PartageBean {
 		invitesToDelete = new ArrayList<Invite>();
 	}
 
-	public void resetDeleteDialog(CloseEvent event) {
+	public void resetDeleteDialog() {
+		System.out.println("reset delete dialog");
 		success = false;
 		fail = false;
 		statusOp = "";
 		selectedPartage = null;
 	}
 
-	public void resetAddFileDIalog(CloseEvent event) {
+	public void resetAddFileDIalog() {
 		partages = partageLocal.getPartagesByIdUti(utiS.getIdUti());
 		obNsNonPartages = new ArrayList<ObN>();
 		obNsPartages = new ArrayList<ObN>();

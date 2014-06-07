@@ -1629,7 +1629,7 @@ ul.item-list.todo li .actions {
     display: none;
 }
 
-.hide-border-columns table thead tr th, #addFileDialog table thead tr th{
+.hide-border-columns table thead tr th, #addFileDialog table thead tr th, #tab table thead tr th{
 	border-style: none;
 	background-color: #EFEFEF;
   background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#FDFDFD), to(#EAEAEA));
@@ -1798,11 +1798,11 @@ filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 	color: #fff;
 }
 
-#formAjout table tr, #formEdit table tr {
+#formAjout table tr, #formEdit table tr, #formDepot table tr {
 	border:0;
 	background: inherit;
 }
-#formAjout table tr td, #formEdit table tr td {
+#formAjout table tr td, #formEdit table tr td, #formDepot table tr td {
 	border:none;
 }
 

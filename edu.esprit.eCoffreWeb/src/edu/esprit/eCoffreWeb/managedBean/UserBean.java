@@ -52,7 +52,8 @@ public class UserBean implements Serializable {
 				if (user instanceof UTI_S) {
 
 					System.out.println("utis***** : " + user.getFirstName()+"id : "+user.getIdUti());
-					navigateTo = "pages/utis/dashboard?faces-redirect=true";
+					navigateTo = "pages/utis/index?faces-redirect=true";
+					System.out.println("*"+navigateTo);
 				}
 				else if (user instanceof UTI_G) {
 					System.out.println("adminG");

@@ -61,13 +61,15 @@ public class SchedulePartageManagement implements Runnable {
 						.println("ce partage va être effacé : "+partage.getDescription());
 				deletePartage(partage.getIdPartage());
 			}
-			calExpireDate.add(Calendar.DAY_OF_MONTH, -2);
-			System.out.println("Expire date : "+calExpireDate.getTime());
-
-			if (calToday.compareTo(calExpireDate) >= 0) {
-				System.out
-						.println("il reste 2 jours pour l'expiration du partage: "+partage.getDescription());
-				preventInviT(partage.getIdPartage());
+			else {
+				calExpireDate.add(Calendar.DAY_OF_MONTH, -2);
+				System.out.println("Expire date : "+calExpireDate.getTime());
+	
+				if (calToday.compareTo(calExpireDate) >= 0) {
+					System.out
+							.println("L'espace de partage : "+partage.getDescription() + " va bientôt expirer");
+					preventInviT(partage.getIdPartage());
+				}
 			}
 		}
 	}

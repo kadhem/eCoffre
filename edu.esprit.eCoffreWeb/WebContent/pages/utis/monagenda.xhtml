@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	template="/templates/templateA.xhtml">
-	
+
 	<ui:define name="title">Mon agenda</ui:define>
 	<ui:define name="page-titre">Tableau de bord</ui:define>
 	<ui:define name="description-titre">résumé et statistiques</ui:define>
@@ -23,19 +23,102 @@
 					#{obnBean.calculUsedSpace1()} / 1Go</div>
 			</div>
 			<div style="margin-top: 10px">
-				<p:commandButton type="button" value="Déposer" styleClass="btn btn-success" style="width:100%" onclick="deposer.show()" global="false"/>
+				<p:commandButton type="button" value="Déposer"
+					styleClass="btn btn-success" style="width:100%"
+					onclick="PF('deposer').show()" global="false" />
 			</div>
 		</h:form>
+		<p:dialog id="deposer" widgetVar="deposer" modal="true"
+			header="Déposer vos documents" resizable="false" showEffect="fade"
+			hideEffect="fade" styleClass="deposer" style="position:absolute;">
+
+			<h:form id="formAjout" style="width:550px;margin-top:20px"
+				enctype="multipart/form-data">
+
+				<h:outputText value="Emplacement *"
+					style="font-size:13px;font-weight:bold" />
+				<p:selectOneMenu value="#{obnBean.selectedConteneur}"
+					style="margin-left:15px;width:120px;vertical-align:middle;"
+					effect="fade" converter="#{conteneurConverter}">
+					<f:selectItem itemLabel="Selectionnez un dossier" itemValue=""
+						itemDisabled="true" />
+					<f:selectItems value="#{obnBean.conteneurs}" var="con" />
+					<p:ajax listener="#{obnBean.valueChange}"></p:ajax>
+				</p:selectOneMenu>
+
+				<p:separator />
+				<h6>Pour déposer vos fichiers appyuez sur Parcourir ou glissez
+					les directement. Vous pouvez ajouter jusqu'à 4 fichiers à la fois.
+					Taille limite : 20 mo</h6>
+
+
+				<p:fileUpload id="upload" fileUploadListener="#{obnBean.handle}"
+					mode="advanced" dragDropSupport="true" sizeLimit="20000000"
+					allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|doc|docx|xls|xlsx|txt|rtf|ppt|pptx)$/"
+					cancelLabel="Annuler" label="Parcourir" uploadLabel="Charger"
+					fileLimitMessage="La taille du fichier dépasse la limite"
+					fileLimit="4" style="margin-top:20px" />
+
+
+				<p:separator />
+				<h6>Ajouter des mots clés à vos documents pour une recherche
+					plus simple</h6>
+				<div>
+					<p:inputText placeholder="séparez les mots par une virgule"
+						value="#{obnBean.tags}" />
+				</div>
+				<p:panelGrid columns="1" style="width:100%">
+					<p:column
+						style="margin-top:10px;float: right;vertical-align: middle">
+						<h:outputText
+							value="Extensions autorisées : xls,xlsx,doc,docx,rtf,txt,pdf,jpeg,jpg,gif,png"
+							style="font-size:8px;" />
+
+						<p:commandButton value="Déposer" styleClass="btn btn-primary"
+							style="float:right;padding:5px 5px 5px 5px"
+							actionListener="#{obnBean.uploadFile()}"
+							update=":spaceUser :formAjout" />
+
+						<p:commandButton type="button" value="Annuler" styleClass="btn"
+							style="float:right;padding:5px 5px 5px 5px"
+							onclick="PF('deposer').hide()" global="false" />
+					</p:column>
+
+					<p:column
+						style="height:auto;margin-top:30px;float: left;vertical-align: middle">
+						<pre style="border: none; background-color: inherit;">
+						<h:outputText id="success" styleClass="alert alert-success"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusS}"
+								rendered="#{obnBean.success}" />
+						<h:outputText id="fail" styleClass="alert alert-error"
+								style="font-size:13px;padding:3px" value="#{obnBean.statusF}"
+								rendered="#{obnBean.fail}" />
+						</pre>
+					</p:column>
+				</p:panelGrid>
+			</h:form>
+			<p:ajax event="close" oncomplete="#{obnBean.resetDepotDialog()}"
+				update=":deposer" global="false" />
+		</p:dialog>
 	</ui:define>
 
 	<ui:define name="menu">
-	<h:form>
-		<li><p:commandLink action="index.jsf?faces-redirect=true" global="false"><i class="icon-home"></i>Dashboard</p:commandLink></li>
-		<li><p:commandLink action="#{obnBean.redirectToFiles}" global="false"><i class="icon-home"></i>Mon coffre</p:commandLink></li>
-		<li><p:commandLink action="#{partageBean.redirectToPartages}" global="false"><i class="icon-home"></i>Mes partages</p:commandLink></li>
-		<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Mon agenda</p:commandLink></li>
-		<li><p:commandLink action="#{obnBean.redirectToLogs}" global="false"><i class="icon-home"></i>Mon historique</p:commandLink></li>
-	</h:form>
+		<h:form>
+			<li><p:commandLink action="index.jsf?faces-redirect=true"
+					global="false">
+					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToFiles}"
+					global="false">
+					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+			<li><p:commandLink action="#{partageBean.redirectToPartages}"
+					global="false">
+					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+			<li class="active"><p:commandLink action="#" global="false">
+					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+			<li><p:commandLink action="#{obnBean.redirectToLogs}"
+					global="false">
+					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+		</h:form>
 	</ui:define>
 
 	<ui:define name="contenu">
@@ -55,13 +138,14 @@
 				<div class="widget">
 					<div class="widget-body" style="padding: 0">
 						<h:form>
-							 <p:schedule id="mySchedule" widgetVar="mySchedule" value="#{utisBean.eventModel}" locale="fr" > 
-							 	<p:ajax event="dateSelect" listener="#{utisBean.onDateSelect}" update=":formAddEvent" 
-							 		oncomplete="addEvent.show()" />
-        						<p:ajax event="eventSelect" listener="#{utisBean.onEventSelect}" update=":formShowEvent" 
-        							oncomplete="showEvent.show()" />
-							 </p:schedule> 
-						</h:form>	 
+							<p:schedule id="mySchedule" widgetVar="mySchedule"
+								value="#{utisBean.eventModel}" locale="fr">
+								<p:ajax event="dateSelect" listener="#{utisBean.onDateSelect}"
+									update=":formAddEvent" />
+								<p:ajax event="eventSelect" listener="#{utisBean.onEventSelect}"
+									update=":formShowEvent" oncomplete="PF('showEvent').show()" />
+							</p:schedule>
+						</h:form>
 						<script type="text/javascript">
 						    PrimeFaces.locales['fr'] = {
 						        closeText: 'kapat',
@@ -86,80 +170,102 @@
 						        allDayText : 'Tous les jours'
 						    };
 						</script>
-						
-							 <p:dialog widgetVar="showEvent" header="#{utisBean.selectedEvent.title}" showEffect="clip" hideEffect="clip" 
-							 	resizable="false" style="position:absolute;">  
-							 <h:form id="formShowEvent">
-						        <h:panelGrid columns="2">
-						        							        	
-						            <h:outputLabel for="title" value="Titre: " />  
-						            <p:inputText id="title" value="#{utisBean.selectedEvent.title}" required="true"/>  
-						  			
-						  			<h:outputLabel for="desc" value="Description: " />  
-						            <p:inputTextarea id="desc" value="#{utisBean.selectedEvent.data}" readonly="true"/>
-						  			
-						            <h:outputLabel for="start" value="Début: " />  
-						            <p:calendar id="start" widgetVar="start" value="#{utisBean.selectedEvent.startDate}" 
-						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
-						  			
-						            <h:outputLabel for="end" value="Fin: " />  
-						           	<p:calendar id="end" widgetVar="end" value="#{utisBean.selectedEvent.endDate}" 
-						            	pattern="dd/MM/yyyy HH:mm" required="true"/>
-						            
-						        </h:panelGrid> 
-						        <div style="float:right;margin-top: 10px">
-						          <p:commandButton type="button" value="Annuler" styleClass="btn" onclick="showEvent.hide()"/>  
-						          <p:commandButton value="Modifier" styleClass="btn btn-primary" actionListener="#{utisBean.doEditEvent}"
-						             oncomplete="PF('mySchedule').update();PF('showEvent').hide();"/>  
-						        </div> 
-						        <script type="text/javascript">
-									 jQuery(document).ready(function(){
-									   start.jqEl.datepicker("option", "minDate", +0);//set minDate to today
-									   end.jqEl.datepicker("option", "minDate", +1);//set minDate to today
-									 });
-								</script>
-						    </h:form>
-						    </p:dialog>
-						    
-						    <p:dialog widgetVar="addEvent" header="Nouvel événement" showEffect="clip" hideEffect="clip" resizable="false"
-						    	style="position:absolute;">  
-						    <h:form id="formAddEvent">
-						        <h:panelGrid columns="2">
-						        							        	
-						            <h:outputLabel for="title1" value="Titre: " />  
-						            <p:inputText id="title1" value="#{utisBean.titre}" required="true"/>  
-						  			
-						  			<h:outputLabel for="desc1" value="Description: " />  
-						            <p:inputTextarea id="desc1" value="#{utisBean.description}" required="true"/>
-						  			
-						            <h:outputLabel for="start1" value="Début: " />  
-						            <p:calendar id="start1" widgetVar="start1" value="#{utisBean.selectedEvent.startDate}" 
-						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
-						  
-						            <h:outputLabel for="end1" value="Fin: " />  
-						           	<p:calendar id="end1" widgetVar="end1" value="#{utisBean.selectedEvent.endDate}" 
-						            	pattern="dd/MM/yyyy HH:mm" required="true"/> 
-						            	
-						        </h:panelGrid>  
-						        <div style="float: right;margin-top:10px">
-						          <p:commandButton type="button" value="Annuler" styleClass="btn" onclick="addEvent.hide();"/>  
-						          <p:commandButton id="addButton" value="Ajouter" styleClass="btn btn-primary" actionListener="#{utisBean.doAddEvent}"
-						             oncomplete="PF('mySchedule').update();PF('addEvent').hide();"/>
-						        </div>
-						        
-						    </h:form>
-						    <script type="text/javascript">
-									 jQuery(document).ready(function(){
-									   start1.jqEl.datepicker("option", "minDate", +0);//set minDate to today
-									   end1.jqEl.datepicker("option", "minDate", +1);//set minDate to today
-									 });
-								</script>
-						    <p:ajax event="close" listener="#{utisBean.resetAddEventDialog}" global="false"/>
-						    </p:dialog>
+						<p:dialog widgetVar="showEvent" modal="true"
+							header="#{utisBean.selectedEvent.title}" showEffect="clip"
+							hideEffect="clip" resizable="false" style="position:absolute;">
+							<h:form id="formShowEvent">
+								<h:panelGrid columns="2">
+
+									<h:outputLabel for="title" value="Titre: " />
+									<p:inputText id="title" value="#{utisBean.selectedEvent.title}"
+										required="true" />
+
+									<h:outputLabel for="desc" value="Description: " />
+									<p:inputTextarea id="desc"
+										value="#{utisBean.selectedEvent.data}" readonly="true" />
+
+									<h:outputLabel for="start" value="Début: " />
+									<p:calendar id="start" widgetVar="start"
+										value="#{utisBean.selectedEvent.startDate}"
+										pattern="dd/MM/yyyy HH:mm" required="true" />
+
+									<h:outputLabel for="end" value="Fin: " />
+									<p:calendar id="end" widgetVar="end"
+										value="#{utisBean.selectedEvent.endDate}"
+										pattern="dd/MM/yyyy HH:mm" required="true" />
+
+								</h:panelGrid>
+								<div style="float: right; margin-top: 10px">
+									<p:commandButton type="button" value="Annuler" styleClass="btn"
+										onclick="PF('showEvent').hide()" />
+									<p:commandButton value="Modifier" styleClass="btn btn-primary"
+										actionListener="#{utisBean.doEditEvent}"
+										oncomplete="PF('mySchedule').update();PF('showEvent').hide();" />
+								</div>
+							</h:form>
+						</p:dialog>
+
+						<p:dialog widgetVar="addEvent" modal="true"
+							header="Nouvel événement" showEffect="clip" hideEffect="clip"
+							resizable="false" style="position:absolute;" styleClass="deposer">
+							<h:form id="formAddEvent">
+								<h:panelGrid columns="2">
+
+									<h:outputLabel for="title1" value="Titre: " />
+									<p:inputText id="title1" value="#{utisBean.titre}"
+										required="true" />
+
+									<h:outputLabel for="desc1" value="Description: " />
+									<p:inputTextarea id="desc1" value="#{utisBean.description}"
+										required="true" />
+
+									<h:outputLabel for="start1" value="Début: " />
+									<p:calendar id="start1" widgetVar="start1"
+										value="#{utisBean.selectedEvent.startDate}"
+										pattern="dd/MM/yyyy HH:mm" required="true" />
+
+									<h:outputLabel for="end1" value="Fin: " />
+									<p:calendar id="end1" widgetVar="end1"
+										value="#{utisBean.selectedEvent.endDate}"
+										pattern="dd/MM/yyyy HH:mm" required="true" />
+
+								</h:panelGrid>
+								<div>
+									<h:outputText styleClass="alert-error"
+										value="#{utisBean.statusOp}" rendered="#{utisBean.fail}" />
+									<h:outputText styleClass="alert-success"
+										value="#{utisBean.statusOp}" rendered="#{utisBean.success}" />
+								</div>
+								<div style="float: right; margin-top: 10px">
+									<p:commandButton type="button" value="Annuler" styleClass="btn"
+										onclick="PF('addEvent').hide();" />
+									<p:commandButton id="addButton" value="Ajouter"
+										styleClass="btn btn-primary"
+										actionListener="#{utisBean.doAddEvent}" update="@form" />
+								</div>
+
+							</h:form>
+							<p:ajax event="close"
+								oncomplete="#{utisBean.resetAddEventDialog()}" global="false" />
+						</p:dialog>
 					</div>
 				</div>
 			</div>
+			<p:dialog modal="true" id="erreurDialog" widgetVar="erreurDialog"
+				header="Oops!" draggable="false" resizable="false">
+				<p:outputLabel styleClass="alert alert-error"
+					style="margin-top:15px"
+					value="Vous ne pouvez pas sélectionner une date antérieur à celle d'aujourd'hui" />
+			</p:dialog>
 		</div>
+		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
+			header="Opération refusé" rendered="#{obnBean.denied}"
+			visible="#{obnBean.denied}">
+			<p:outputLabel styleClass="alert alert-error" style="margin-top:15px"
+				value="#{obnBean.deniedMessage}" />
+			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+				global="false" />
+		</p:dialog>
 	</ui:define>
 </ui:composition>
 

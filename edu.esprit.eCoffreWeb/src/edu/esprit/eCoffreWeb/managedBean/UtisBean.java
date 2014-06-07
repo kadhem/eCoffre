@@ -1,6 +1,9 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -159,10 +162,20 @@ public class UtisBean implements Serializable {
 		return "monagenda?faces-redirect=true";
 	}
 
-	public void onDateSelect(SelectEvent selectEvent) {
+	public void onDateSelect(SelectEvent selectEvent) throws ParseException {
 		selectedEvent = new DefaultScheduleEvent("",
 				(Date) selectEvent.getObject(), (Date) selectEvent.getObject(),
 				"");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		if( df.parse(df.format((Date) selectEvent.getObject())).before(df.parse(df.format(new Date()))) )
+		{
+			RequestContext.getCurrentInstance().execute("PF('erreurDialog').show();");
+		}
+		else
+		{
+			RequestContext.getCurrentInstance().execute("PF('addEvent').show();");
+		}
+				
 	}
 
 	public void onEventSelect(SelectEvent selectEvent) {
@@ -172,6 +185,23 @@ public class UtisBean implements Serializable {
 	public void doAddEvent() {
 		try {
 			System.out.println("addd");
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date start = df.parse(df.format(selectedEvent.getStartDate()));
+			Date end = df.parse(df.format(selectedEvent.getEndDate()));
+			Date now = df.parse(df.format(new Date()));
+			System.out.println("now :"+now.toString()+" \n start : "+start.toString()+" \n end :"+end.toString());
+			if(start.before(now))
+			{
+				fail = true;
+				statusOp = "La date de début doit être supérieur à la date actuelle";
+				return;
+			}
+			if(start.after(end))
+			{
+				fail = true;
+				statusOp = "La date de fin doit être supérieur à la date de début";
+				return;
+			}
 			evenement = new Evenement(titre, description,
 					selectedEvent.getStartDate(), selectedEvent.getEndDate());
 			evenementLocal.addEvent(evenement, utiS);
@@ -199,6 +229,23 @@ public class UtisBean implements Serializable {
 					break;
 				}
 			}
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date start = df.parse(df.format(selectedEvent.getStartDate()));
+			Date end = df.parse(df.format(selectedEvent.getEndDate()));
+			Date now = df.parse(df.format(new Date()));
+			System.out.println("now :"+now.toString()+" \n start : "+start.toString()+" \n end :"+end.toString());
+			if(start.before(now))
+			{
+				fail = true;
+				statusOp = "La date de début doit être supérieur à la date actuelle";
+				return;
+			}
+			if(start.after(end))
+			{
+				fail = true;
+				statusOp = "La date de fin doit être supérieur à la date de début";
+				return;
+			}
 			Evenement evenement = evenements.get(i - 1);
 			evenement.setDebutDate(selectedEvent.getStartDate());
 			evenement.setFinDate(selectedEvent.getEndDate());
@@ -211,9 +258,13 @@ public class UtisBean implements Serializable {
 		}
 	}
 
-	public void resetAddEventDialog(CloseEvent event) {
+	public void resetAddEventDialog() {
+		System.out.println("reset");
 		titre = "";
 		description = "";
+		statusOp = "";
+		fail = false;
+		success = false;
 	}
 
 	public UTI_S getUtiS() {
