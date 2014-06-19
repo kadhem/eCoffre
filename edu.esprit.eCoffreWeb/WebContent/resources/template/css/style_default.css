@@ -1,10 +1,11 @@
 body { 
   color: #222; 
-  background-color:#0e4152 !important;/*#DBDBD9 !important;
-  background-image: -webkit-linear-gradient(top, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 31%,rgba(215,222,227,1) 100%,rgba(245,247,249,1) 100%);*/
+  background-color:#3c3c3c !important;
+  /*background-image: -webkit-linear-gradient(top, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 31%,rgba(215,222,227,1) 100%,rgba(245,247,249,1) 100%);*/
 }
 
 #header.navbar-inverse .navbar-inner {
+  background: #f7f7f7 url("../img/body-bg.png");
   background-color: #3c3c3c !important;
   
   border-color: #141313;

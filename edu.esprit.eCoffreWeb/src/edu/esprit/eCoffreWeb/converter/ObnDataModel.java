@@ -1,13 +1,20 @@
 package edu.esprit.eCoffreWeb.converter;
 
+import java.io.Serializable;
 import java.util.List;
+
 import javax.faces.model.ListDataModel;
+
 import org.primefaces.model.SelectableDataModel;
 
 import edu.esprit.eCoffreEJB.Entities.ObN;
 
-public class ObnDataModel extends ListDataModel<ObN> implements SelectableDataModel<ObN> {  
+public class ObnDataModel extends ListDataModel<ObN> implements SelectableDataModel<ObN>,Serializable {  
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	List<ObN> obNs;
 	
 

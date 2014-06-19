@@ -20,7 +20,7 @@
 						style="width:50%;position: absolute" />
 				</div>
 				<div style="padding-left: 115px; font-size: 11px">
-					#{obnBean.calculUsedSpace1()} / 1Go</div>
+					#{obnBean.calculUsedSpace1()} / #{obnBean.calculateUserQuota()}</div>
 			</div>
 			<div style="margin-top: 10px">
 				<p:commandButton type="button" value="Déposer"
@@ -105,19 +105,19 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToFiles}"
 					global="false">
-					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 	<ui:define name="contenu">
@@ -139,7 +139,7 @@
 					<div class="widget-body">
 						<p:tabView effectDuration="normal">
 							<p:tab title="Informations personnel">
-								<h:form>
+								<h:form id="formEdit">
 									<h:panelGrid columns="2" cellpadding="15">
 										<p:outputLabel value="Nom" />
 										<h:outputText id="nom" value="#{utisBean.utiS.lastName}" />
@@ -167,12 +167,12 @@
 										</p:inplace>
 									</h:panelGrid>
 									<p:commandButton value="Valider"
-										action="#{utisBean.doUpdate()}" update="@form"
-										styleClass="btn btn-primary" style="margin-left:600px" />
+										action="#{utisBean.doUpdateInformations()}" update="@form"
+										styleClass="btn btn-primary" style="padding:5px;margin-left:600px" />
 								</h:form>
 							</p:tab>
 							<p:tab title="Paramètres de connexion">
-								<h:form>
+								<h:form id="formL">
 									<h:panelGrid columns="3" cellpadding="15">
 										<p:outputLabel value="Adresse e-mail *"
 											style="margin-top:10px" />
@@ -180,23 +180,22 @@
 										<h:inputHidden value="rien" />
 
 										<p:outputLabel value="Mot de passe *" style="margin-top:10px" />
-										<p:inplace>
-											<p:keyboard value="#{utisBean.utiS.password}" id="password"
+										<p:keyboard value="#{utisBean.password}" id="password"
 												password="true" keypadOnly="true" label="mot de passe"
-												required="true"
+												required="true" placeholder="*****"
 												requiredMessage="vous devez avoir un mot de passe"
 												closeLabel="Fermer" clearLabel="Effacer">
 												<f:validateLength minimum="6" />
-											</p:keyboard>
-										</p:inplace>
+										</p:keyboard>
 										<p:message for="password" />
 									</h:panelGrid>
 									<p:commandButton value="Valider"
-										action="#{utisBean.doUpdate()}" update="@form"
-										styleClass="btn btn-primary" style="margin-left:600px" />
+										action="#{utisBean.doUpdatePassword()}" update="@form"
+										styleClass="btn btn-primary" style="padding:5px;margin-left:600px" />
 								</h:form>
 							</p:tab>
 							<p:tab title="Plus besoin d'EspritBox?">
+								<h:form id="formMeta">
 								<h:panelGrid columns="2" cellpadding="15">
 									<h4>En supprimant votre compte EspritBox vous devez tenir
 										compte des points suivants :</h4>
@@ -210,7 +209,9 @@
 								</h:panelGrid>
 								<p:commandButton value="Résilier"
 									action="#{utisBean.doDelete()}" styleClass="btn btn-primary"
-									style="margin-left:600px"></p:commandButton>
+									style="padding:5px;margin-left:600px"></p:commandButton>
+									
+								</h:form>
 							</p:tab>
 						</p:tabView>
 					</div>
@@ -218,8 +219,7 @@
 			</div>
 		</div>
 		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
-			header="Opération refusé" rendered="#{obnBean.denied}"
-			visible="#{obnBean.denied}">
+			header="Opération refusé" visible="#{obnBean.denied}">
 			<p:outputLabel styleClass="alert alert-error" style="margin-top:15px"
 				value="#{obnBean.deniedMessage}" />
 			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"

@@ -1,6 +1,7 @@
 package edu.esprit.eCoffreWeb.filter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,7 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import edu.esprit.eCoffreWeb.managedBean.UserBean;
 
 @WebFilter("/pages/*")
-public class FilterLogin implements Filter {
+public class FilterLogin implements Filter,Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void destroy() {

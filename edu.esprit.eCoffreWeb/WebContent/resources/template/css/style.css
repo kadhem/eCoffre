@@ -931,7 +931,7 @@ form legend {
 
 .animation{ 
 	position:relative;
-	border: 2px solid #ddd;
+	/*border: 2px solid #ddd;*/
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
 	margin: 0 10% 1% 18%;
@@ -1120,4 +1120,66 @@ form legend {
 }
 #formAjout table tr td, #formEdit table tr td, #formPartage table tr td {
 	border:none;
+}
+
+#cssmenu ul,
+#cssmenu ul li,
+#cssmenu ul li a {
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  font-family: 'Capriola', sans-serif;
+}
+#cssmenu:before,
+#cssmenu:after,
+#cssmenu > ul:before,
+#cssmenu > ul:after {
+  content: '';
+  display: table;
+}
+#cssmenu:after,
+#cssmenu > ul:after {
+  clear: both;
+}
+#cssmenu {
+  width: auto;
+  zoom: 1;
+  height: 100px;
+  background: url(../img/nav-bg.png) repeat-x 0px 10px;
+  border-radius: 2px;
+}
+#cssmenu ul {
+  background: url(../img/nav-bg.png) repeat-x 0px 10px;
+  height: 69px;
+}
+#cssmenu ul li {
+  float: left;
+  list-style: none;
+}
+#cssmenu ul li a {
+  display: block;
+  height: 37px;
+  padding: 22px 30px 0;
+  margin: 4px 2px 0;
+  border-radius: 2px 2px 0 0;
+  text-decoration: none;
+  font-size: 15px;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+  font-weight: 400;
+  opacity: .9;
+}
+#cssmenu ul li:first-child a {
+  margin: 4px 2px 0 0;
+}
+#cssmenu ul li a:hover,
+#cssmenu ul li.active a {
+  background: url(../img/color.png) center bottom;
+  display: block;
+  height: 43px;
+  /*margin-top: 0px;*/
+  padding-top: 26px;
+  color: #600000;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35);
+  opacity: 1;
 }

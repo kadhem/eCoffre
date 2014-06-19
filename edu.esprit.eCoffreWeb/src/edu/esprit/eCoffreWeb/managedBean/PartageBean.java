@@ -1,14 +1,18 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
+import java.io.File;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -16,6 +20,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.event.CloseEvent;
 
 import edu.esprit.eCoffreEJB.Entities.Invite;
+import edu.esprit.eCoffreEJB.Entities.Log;
 import edu.esprit.eCoffreEJB.Entities.ObN;
 import edu.esprit.eCoffreEJB.Entities.Partage;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
@@ -28,8 +33,10 @@ import edu.esprit.eCoffreEJB.interfaces.IUtiSLocal;
 
 @ManagedBean
 @SessionScoped
-public class PartageBean {
+public class PartageBean implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@EJB
 	private IONLocal onLocal;
 	@EJB
@@ -210,16 +217,29 @@ public class PartageBean {
 			}
 			partage.setInvites(invites);
 			partageLocal.editPartage(partage);
-			partageLocal.sendMailToInviT(utiS, invites, partage.getIdPartage());
-			partages = partageLocal.getPartagesByIdUti(utiS.getIdUti());
-			for (Partage p : partages) {
-				System.out.println(p.getDescription() + "**");
+			if(partages.add(partage)) {
+				Collections.sort(partages, Partage.partageComparator);
+				for (Partage p : partages) {
+					System.out.println(p.getDescription() + "**");
+				}
+				if(invites.size()>0)
+				{
+					if(partageLocal.sendMailToInviT(utiS, invites, partage.getIdPartage())) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation ont été envoyée avec succès ",  null);
+				        FacesContext.getCurrentInstance().addMessage(null, message);
+					} else {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation n'ont pas été envoyée. "
+								+ "Une erreur est survenue",  null);
+				        FacesContext.getCurrentInstance().addMessage(null, message);
+					}
+				}
+				statusOp = "Partage ajouté avec succès";
+				success = true;
+				description = nom = "";
+				datePartage = dateExpiration = null;
+				invites = new ArrayList<Invite>();
 			}
-			statusOp = "Partage ajouté avec succès";
-			success = true;
-			description = nom = "";
-			datePartage = dateExpiration = null;
-			invites = new ArrayList<Invite>();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			success = false;
@@ -250,11 +270,36 @@ public class PartageBean {
 				i.linkInviteToPartage(selectedPartage);
 				mail = i.getEmail();
 			}
-			partageLocal.editPartage(selectedPartage);
-			statusOp = "Partage modifié avec succès";
-			success = true;
+			
+			if(partageLocal.editPartage(selectedPartage))
+			{
+				Partage ptd = null;
+				for (Partage p : partages) {
+					if(p==selectedPartage)
+					{
+						ptd=p;
+					}
+				}
+				if(ptd!=null) {
+					partages.set(partages.indexOf(ptd), selectedPartage);
+				}
+				statusOp = "Partage modifié avec succès";
+				success = true;
+				if(invites.size()>0)
+				{
+					if(partageLocal.sendMailToInviT(utiS, invites, selectedPartage.getIdPartage())) {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation ont été envoyée avec succès ",  null);
+				        FacesContext.getCurrentInstance().addMessage(null, message);
+					} else {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation n'ont pas été envoyée. "
+								+ "Une erreur est survenue",  null);
+				        FacesContext.getCurrentInstance().addMessage(null, message);
+					}
+				}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 			statusOp = "Une erreur est survenue, réessayez plus tard";
 			success = false;
 			fail = true;
@@ -268,10 +313,14 @@ public class PartageBean {
 				partages.remove(selectedPartage);
 				success = true;
 				statusOp = "Partage supprimé.";
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Le partage a été supprimé ",  null);
+		        FacesContext.getCurrentInstance().addMessage(null, message);
 			}
 			else {
 				fail = true;
 				statusOp = "Une erreur est survenue";
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Une erreur est survenue, le partage n'a pas été supprimé ",  null);
+		        FacesContext.getCurrentInstance().addMessage(null, message);
 			}
 		}
 		else {
@@ -307,14 +356,22 @@ public class PartageBean {
 	public void resendInvitation(Invite invite) {
 		List<Invite> invites = new ArrayList<Invite>();
 		invites.add(invite);
-		partageLocal.sendMailToInviT(utiS, invites,
-				selectedPartage.getIdPartage());
+		if(partageLocal.sendMailToInviT(utiS, invites,selectedPartage.getIdPartage()))
+		{
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation ont été envoyée avec succès ",  null);
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		} else {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Les invitation n'ont pas été envoyée. "
+					+ "Une erreur est survenue",  null);
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		}
 	}
 
 	public void addInvite() {
 		if (!mail.equals("") && mail != null) {
 			if (selectedPartage != null) {
 				selectedPartage.getInvites().add(new Invite(mail));
+				invites.add(new Invite(mail));
 			} else {
 				invites.add(new Invite(mail));
 			}
@@ -351,6 +408,7 @@ public class PartageBean {
 		statusOp = "";
 		selectedPartage = null;
 		invitesToDelete = new ArrayList<Invite>();
+		invites = new ArrayList<Invite>();
 	}
 
 	public void resetDeleteDialog() {

@@ -20,7 +20,7 @@
 						style="width:50%;position: absolute" />
 				</div>
 				<div style="padding-left: 115px; font-size: 11px">
-					#{obnBean.calculUsedSpace1()} / 1Go</div>
+					#{obnBean.calculUsedSpace1()} / #{obnBean.calculateUserQuota()}</div>
 			</div>
 			<div style="margin-top: 10px">
 				<p:commandButton type="button" value="Déposer"
@@ -106,25 +106,25 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToFiles}"
 					global="false">
-					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li class="active"><p:commandLink action="#" global="false">
-					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
 	<ui:define name="contenu">
 		<div class="row-fluid">
 			<div class="span6" style="width: 100%">
-
+			
 				<p:ajaxStatus onstart="PF('statusDialog').show();"
 					onsuccess="PF('statusDialog').hide()" />
 				<div class="dialog">
@@ -137,7 +137,7 @@
 
 				<h:form id="form" style="padding:0;margin:0">
 					<p:commandButton value="Ajouter" styleClass="btn btn-success"
-						style="padding:5px 5px 5px 5px" onclick="PF('addPartage').show()"
+						style="padding:5px" onclick="PF('addPartage').show()"
 						global="false" update=":formAjout" />
 				</h:form>
 
@@ -148,6 +148,7 @@
 
 					<h:form id="formAjout"
 						style="width:550px;margin-top:20px;margin-bottom:0">
+						<p:growl id="msg" life="5000" />
 						<p:panelGrid columns="2" style="border:0">
 							<h:outputText value="Ajoutez un nom au partage *"
 								style="font-size:13px;font-weight:bold" />
@@ -211,7 +212,7 @@
 								<p:commandButton value="Ajouter" styleClass="btn btn-primary"
 									style="float:right;padding:5px 5px 5px 5px"
 									actionListener="#{partageBean.addPartage()}"
-									update=":formAjout :formL" />
+									update=":formAjout :formL msg" />
 								<p:commandButton type="button" value="Annuler" styleClass="btn"
 									style="float:right;padding:5px 5px 5px 5px"
 									onclick="addPartage.hide()" global="false" />
@@ -287,12 +288,11 @@
 
 				<p:dialog id="editPartage" widgetVar="editPartage" modal="true"
 					header="Ajouter un partage" hideEffect="fade" styleClass="deposer"
-					style="position:absolute;"
-					rendered="#{partageBean.selectedPartage!=null}">
+					style="position:absolute;">
 
 					<h:form id="formEdit"
 						style="width:550px;margin-top:20px;margin-bottom:0">
-
+						<p:growl id="msg1" life="5000"/>
 						<p:panelGrid columns="2" style="border:0">
 							<h:outputText value="Nom au partage *"
 								style="font-size:13px;font-weight:bold" />
@@ -356,7 +356,7 @@
 								<p:commandButton value="Modifier" styleClass="btn btn-primary"
 									style="float: right;padding:5px 5px 5px 5px"
 									actionListener="#{partageBean.editPartage()}"
-									update=":formEdit :formL" />
+									update=":formEdit :formL msg1" />
 
 								<p:commandButton type="button" value="Annuler" styleClass="btn"
 									style="float: right;padding:5px 5px 5px 5px"
@@ -524,14 +524,14 @@
 						oncomplete="#{partageBean.resetAddFileDIalog()}" global="false" />
 				</p:dialog>
 			</div>
-			<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
-				header="Opération refusé" rendered="#{obnBean.denied}"
-				visible="#{obnBean.denied}">
-				<p:outputLabel styleClass="alert alert-error"
-					style="margin-top:15px" value="#{obnBean.deniedMessage}" />
-				<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
-					global="false" />
-			</p:dialog>
+			
+				<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
+					header="Opération refusé" visible="#{obnBean.denied}">
+					<p:outputLabel styleClass="alert alert-error"
+						style="margin-top:15px" value="#{obnBean.deniedMessage}" />
+					<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+						global="false" />
+				</p:dialog>
 		</div>
 	</ui:define>
 </ui:composition>

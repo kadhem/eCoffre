@@ -1,5 +1,8 @@
 package edu.esprit.eCoffreEJB.impl;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
@@ -8,6 +11,9 @@ import javax.ejb.Stateless;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.jboss.ejb3.annotation.Clustered;
 
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreEJB.Entities.Utilisateur;
@@ -46,48 +52,36 @@ public class UtilisateurManagement implements IUtilisateurLocal {
 	@Override
 	public Utilisateur seConnecter(String userName, String passwd) throws NamingException {
 			System.out.println("username : "+userName + " password : "+passwd);
-			ldapCom.createContext();
-			Map<String, Object> map = ldapCom.Login(userName, passwd);
-			if (map.get("message").equals("found")) {
-				System.out.println("trouV");
-				return (Utilisateur) map.get("user");
-				// Query query;
-				// String
-				// req="select u from Utilisateur u where u.userName=:userName and u.password=:passwd";
-				// query=entityManager.createQuery(req);
-				// query.setParameter("userName", userName);
-				// query.setParameter("passwd", passwd);
-				// return (Utilisateur)query.getSingleResult();
-			} else {
-				System.out.println("non trouV");
-				return null;
+			if(ldapCom.createContext())
+			{
+				Map<String, Object> map = ldapCom.Login(userName, passwd);
+				if (map.get("message").equals("found")) {
+					System.out.println("trouV");
+					return (Utilisateur) map.get("user");
+				} else {
+					System.out.println("non trouV");
+					return null;
+				}
+			}
+			else {
+				 Query query;
+				 String req="select u from Utilisateur u";
+				 query=entityManager.createQuery(req);
+				 List<Utilisateur> utilisateurs = query.getResultList();
+				 for (Utilisateur u : utilisateurs) {
+					if(u.getUserName().equals(userName))
+					{
+						System.out.println(encryptPassword(u.getPassword()));
+						if(u.getPassword().equals(passwd))
+						{
+							return u;
+						}
+					}
+				}
+				 return null;
 			}
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean sinscrire(String userName, String firstName,
-			String lastName, String passwd, String tel) {
-
-		// if(ldapCom.addUser(userName, firstName, lastName, passwd, tel))
-		// {
-		// SFTPCom sftpCom=new SFTPCom();
-		// sftpCom.createPersonalDir(userName);
-		// UTI_S utiS=new UTI_S(userName, firstName, lastName, passwd, tel);
-		// utiSManagement.ajouterSimpleUti(utiS);
-		// return true;
-		// }
-		return false;
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
 	@Override
 	public boolean seDesinscrire(UTI_S utiS) {
 		
@@ -131,4 +125,30 @@ public class UtilisateurManagement implements IUtilisateurLocal {
 			return false;
 		}
 	}
+	
+	public String encryptPassword(String passwd)
+    {
+    	MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+			md.update(passwd.getBytes());
+			 
+	        byte byteData[] = md.digest();
+	 
+	        //convert the byte to hex format method 2
+	        StringBuffer hexString = new StringBuffer();
+	    	for (int i=0;i<byteData.length;i++) {
+	    		String hex=Integer.toHexString(0xff & byteData[i]);
+	   	     	if(hex.length()==1) hexString.append('0');
+	   	     	hexString.append(hex);
+	    	}
+	    	String result = "{SHA512}" + hexString;
+	    	System.out.println("userpassword from database:" + result);
+	    	return result;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
 }

@@ -3,7 +3,6 @@
     <wb-module deploy-name="edu.esprit.eCoffreEJB">
         <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
         <wb-resource deploy-path="/" source-path="/libs"/>
-        <wb-resource deploy-path="/" source-path="/config"/>
         <property name="java-output-path" value="/edu.esprit.eCoffreEJB/build/classes"/>
     </wb-module>
 </project-modules>

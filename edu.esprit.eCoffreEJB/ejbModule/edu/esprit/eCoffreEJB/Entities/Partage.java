@@ -1,6 +1,9 @@
 package edu.esprit.eCoffreEJB.Entities;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +45,19 @@ public class Partage implements Serializable {
 	public Partage() {
 		super();
 	}   
+	
+	public static Comparator<Partage> partageComparator = new Comparator<Partage>() {
+
+		@Override
+		public int compare(Partage p1, Partage p2) {
+			// TODO Auto-generated method stub
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+			String date1 = df.format(p1.getDatePartage());
+			String date2 = df.format(p2.getDatePartage());
+			return date2.compareTo(date1);
+		}
+
+	};
 	
 	@Id@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getIdPartage() {

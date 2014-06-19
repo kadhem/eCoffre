@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import org.jboss.ejb3.annotation.Clustered;
+
 import edu.esprit.eCoffreEJB.Entities.Invite;
 import edu.esprit.eCoffreEJB.Entities.ObN;
 import edu.esprit.eCoffreEJB.Entities.Partage;

@@ -1,6 +1,8 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,6 +94,7 @@ public class UtisBean implements Serializable {
 			userName = "";
 			return null;
 		}
+		password = encryptPassword(password);
 		utiS = new UTI_S(userName, firstName, lastName, password, tel, adresse,
 				dateNaissance);
 		if (utiSLocal.ajouterSimpleUtiSansConfirmation(utiS) != 0) {
@@ -118,14 +121,20 @@ public class UtisBean implements Serializable {
 		}
 	}
 
-	public String doUpdate() {
+	public String doUpdateInformations() {
+		utiSLocal.modifierSimpleUti(utiS);
+		return "#";
+	}
+	
+	public String doUpdatePassword() {
+		utiS.setPassword(encryptPassword(password));
 		utiSLocal.modifierSimpleUti(utiS);
 		return "#";
 	}
 
 	public String doDelete() {
-		utiSLocal.supprimerSimpleUti(utiS);
-		return "#";
+//		utiSLocal.supprimerSimpleUti(utiS);
+		return "../accueil?faces-redirect=true";
 	}
 	
 	public void doReset()
@@ -266,6 +275,32 @@ public class UtisBean implements Serializable {
 		fail = false;
 		success = false;
 	}
+	
+	public String encryptPassword(String passwd)
+    {
+    	MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+			md.update(passwd.getBytes());
+			 
+	        byte byteData[] = md.digest();
+	 
+	        //convert the byte to hex format method 2
+	        StringBuffer hexString = new StringBuffer();
+	    	for (int i=0;i<byteData.length;i++) {
+	    		String hex=Integer.toHexString(0xff & byteData[i]);
+	   	     	if(hex.length()==1) hexString.append('0');
+	   	     	hexString.append(hex);
+	    	}
+	    	String result = "{SHA512}" + hexString;
+	    	System.out.println("userpassword in LDAP:" + result);
+	    	return result;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
 
 	public UTI_S getUtiS() {
 		return utiS;
@@ -425,6 +460,12 @@ public class UtisBean implements Serializable {
 
 	public void setToday(Date today) {
 		this.today = today;
+	}
+	
+	public static void main(String[] args)
+	{
+		UtisBean u = new UtisBean();
+		u.encryptPassword("sinda");
 	}
 
 }

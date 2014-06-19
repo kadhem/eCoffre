@@ -13,7 +13,7 @@ public interface IEmailLocal {
 
 	public void sendConfirmationMail(UTI_S utiS);
 
-	public void sendInvitationMail(UTI_S utiS, List<Invite> invites, int idPartage);
+	public Boolean sendInvitationMail(UTI_S utiS, List<Invite> invites, int idPartage);
 
 	public void sendPreventionPartageMail(List<Invite> invites, int idPartage);
 

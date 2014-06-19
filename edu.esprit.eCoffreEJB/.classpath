@@ -2,15 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="ejbModule"/>
 	<classpathentry kind="src" path="libs"/>
-	<classpathentry kind="src" path="config"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="libs/jsch-0.1.50.jar"/>
-	<classpathentry kind="lib" path="libs/quartz-all-2.1.7.jar"/>
-	<classpathentry kind="lib" path="libs/SMSLib.jar"/>
-	<classpathentry kind="lib" path="libs/resteasy-jaxrs-2.3.2.Final.jar"/>
-	<classpathentry kind="lib" path="libs/resteasy-jaxb-provider-2.3.2.Final.jar"/>
-	<classpathentry kind="lib" path="libs/com.springsource.org.codehaus.jackson-1.4.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j"/>
+	<classpathentry exported="true" kind="lib" path="libs/jsch-0.1.50.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/resteasy-jaxrs-2.3.2.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/resteasy-jaxb-provider-2.3.2.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/com.springsource.org.codehaus.jackson-1.4.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss 7.1 Runtime">
 		<attributes>
 			<attribute name="owner.project.facets" value="jpt.jpa;jst.ejb"/>
@@ -21,6 +17,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/atelierJEE/configurationJboss/jboss-as-7.1.1.Final/modules/org/hibernate/main/hibernate-core-4.0.1.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/atelierJEE/configurationJboss/jboss-as-7.1.1.Final/modules/org/hibernate/main/hibernate-core-4.0.1.Final.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

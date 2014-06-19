@@ -1,16 +1,15 @@
 package edu.esprit.eCoffreWeb.converter;
 
+import java.io.Serializable;
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.convert.FacesConverter;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -21,7 +20,12 @@ import edu.esprit.eCoffreEJB.interfaces.IConteneurLocal;
 
 @ManagedBean
 @SessionScoped
-public class ConteneurConverter implements Converter {
+public class ConteneurConverter implements Converter,Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@EJB
 	IConteneurLocal conteneurLocal;

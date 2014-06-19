@@ -34,20 +34,62 @@
 		<div id="header" class="navbar navbar-inverse navbar-fixed-top">
 			<!-- BEGIN TOP NAVIGATION BAR -->
 			<div class="navbar-inner">
-				<div class="container-fluid header">
+				<div class="container-fluid header" style="padding:0;padding-top:10px">
 					<!-- BEGIN LOGO -->
+					<div id="cssmenu">
 					<a class="brand" href="index.html">
-						<img src="../resources/template/img/logoEcoffre.png" alt="Conquer"/>
+						<img src="../resources/templateA/img/logoEcoffre.png" alt="Conquer"/>
 					</a>
 					<!-- END LOGO -->
-					<div style="float: right;">
-						<div>
-							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
-							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
-							<a class="btn" href="../login.jsf" style="vertical-align: inherit;"><b><i>Se connecter</i></b></a> 
-						</div>
+					
+					<div style="float:right">
+					<h:form style="margin:0">
+					<ul>
+					   <li class='active'><a href='accueil.jsf'><span>Accueil</span></a></li>
+					   <li><a href='#'><span>Avantages</span></a></li>
+					   <li><a href='#'><span>Aide</span></a></li>
+					   <li class='last'><a href='#'><span>Contact</span></a></li>
+					   <li class='last'><span><h:commandLink action="inscription.jsf?faces-redirect=true" value="Inscription" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="login.jsf?faces-redirect=true" value="Connexion" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/utis/index.jsf?faces-redirect=true" value="Mon coffre" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_S'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/adminf/index.jsf?faces-redirect=true" value="Administration" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_F'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="#{userBean.doLogOut()}" value="Déconnexion" rendered="#{userBean.user!=null}"/></span></li>
+					</ul>
+					</h:form>
+					</div>
 					</div>
 				</div>
+				<div>
+					<div class="animation" style="margin: 0 1% 1% 10%;float:left">
+					<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" 
+						width="700" height="200">
+					<param name="animation" value="../resources/template/img/animation.swf"/>
+					<param name="quality" value="high"/>
+						<embed src="../resources/template/img/animation.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer"
+						 type="application/x-shockwave-flash" width="700" height="200"></embed>
+					</object>
+					</div>
+					
+					<div style="margin: 0 1% 1% 2%;float:left;position: relative;border-radius: 10px;-webkit-border-radius: 10px;">
+					<p:panel style="width: 100%;height: 193px" rendered="#{partageBean.success}">
+							<p:panel style="height:100%;" header="Nom du partage #{partageBean.partageForInviT.nom}">  
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Description" style="margin-top:10px;margin-right:100px"/>
+						        <h:outputText value="#{partageBean.partageForInviT.description}" />
+						        
+								<p:outputLabel value="Propriètaire"/>
+						        <h:outputText value="#{partageBean.partageForInviT.utiS.firstName} #{partageBean.partageForInviT.utiS.lastName}" />
+						       	
+						        <p:outputLabel value="Valable jusqu'au"/>
+						        <h:outputText value="#{partageBean.partageForInviT.dateExpiration}">
+						         	<f:convertDateTime pattern="dd/MM/yyyy"/>
+						        </h:outputText>
+						    </h:panelGrid>
+						    </p:panel>
+						</p:panel>
+					</div>
+				</div>
+				
 			</div>
 			<!-- END TOP NAVIGATION BAR -->
 		</div>
@@ -70,23 +112,6 @@
 						</p:dialog>
 					</div>
 					
-						<p:panel style="width: 100%;height: 150px;" rendered="#{partageBean.success}">
-							<p:panel style="height:100%;" header="Nom du partage #{partageBean.partageForInviT.nom}">  
-							<h:panelGrid columns="2">
-								<p:outputLabel value="Description" style="margin-top:10px;margin-right:100px"/>
-						        <h:outputText value="#{partageBean.partageForInviT.description}" />
-						        
-								<p:outputLabel value="Propriètaire"/>
-						        <h:outputText value="#{partageBean.partageForInviT.utiS.firstName} #{partageBean.partageForInviT.utiS.lastName}" />
-						       	
-						        <p:outputLabel value="Valable jusqu'au"/>
-						        <h:outputText value="#{partageBean.partageForInviT.dateExpiration}">
-						         	<f:convertDateTime pattern="dd/MM/yyyy"/>
-						        </h:outputText>
-						    </h:panelGrid>
-						    </p:panel>
-						</p:panel>
-						
 						<h:form id="formPartage">  
 						<p:dataGrid value="#{partageBean.obNsForInviT}" var="obN" rendered="#{not empty partageBean.obNsForInviT}" columns="4">
 						    <p:panel header="#{partageBean.fileName(obN.libelle)}" styleClass="sharedObn" >

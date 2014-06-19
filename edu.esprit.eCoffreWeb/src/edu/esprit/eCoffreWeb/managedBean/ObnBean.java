@@ -1,5 +1,8 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -12,9 +15,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -119,6 +126,8 @@ public class ObnBean implements Serializable {
 	public void valueChange(AjaxBehaviorEvent event) {
 		System.out.println("////////////" + selectedConteneur.getLibelle()
 				+ "////////");
+		
+		ZipInputStream zos ;
 	}
 
 	@PostConstruct
@@ -256,8 +265,6 @@ public class ObnBean implements Serializable {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);
 		cal.add(Calendar.HOUR, 1);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		String[] dates = { df.format(cal.getTime()), df.format(new Date()) };
 		Map<String, Object> mapLog = logLocal.LireJournal(0, ccfn.getIdCCFN(),
 				utiS.getIdUti(), null, null, 0);
 		Log log;
@@ -435,15 +442,20 @@ public class ObnBean implements Serializable {
 				0);
 		if ((Boolean) map.get("status")) {
 			obNs = (List<ObN>) map.get("data");
-			String idUs = "";
-			for (ObN o : obNs) {
-				idUs += o.getIdU() + ",";
-				// System.out.println("*" + o.getLibelle() + "*");
+			if( (obNs.size()!=0) && (obNs!=null) )
+			{
+				String idUs = "";
+				for (ObN o : obNs) {
+					idUs += o.getIdU() + ",";
+					// System.out.println("*" + o.getLibelle() + "*");
+				}
+				log = new Log(ccfn.getIdCCFN(), (Integer) map.get("cont"),
+						(Integer) map.get("uti"), idUs, "lister", map.get("date")
+								.toString(), "Succès");
+				logLocal.addLog(log);
+				logs.add(log);
+				Collections.sort(logs, Log.logComparator);
 			}
-			log = new Log(ccfn.getIdCCFN(), (Integer) map.get("cont"),
-					(Integer) map.get("uti"), idUs, "lister", map.get("date")
-							.toString(), "Succès");
-			logLocal.addLog(log);
 			return true;
 		} else if (map.get("cause").equals("denied")) {
 			if(obNs!=null)
@@ -455,6 +467,8 @@ public class ObnBean implements Serializable {
 					(Integer) map.get("uti"), "vide", "lister", map.get("date")
 							.toString(), "Accès refusé");
 			logLocal.addLog(log);
+			logs.add(log);
+			Collections.sort(logs, Log.logComparator);
 			deniedMessage = "Vous n'avez pas le droit de lister vos documents. Contactez l'administrateur";
 			RequestContext.getCurrentInstance().execute(
 					"PF('deniedDialog').show();");
@@ -464,6 +478,8 @@ public class ObnBean implements Serializable {
 					(Integer) map.get("uti"), "vide", "lister", map.get("date")
 							.toString(), "Erreur inconnue");
 			logLocal.addLog(log);
+			logs.add(log);
+			Collections.sort(logs, Log.logComparator);
 			return false;
 		}
 
@@ -498,19 +514,30 @@ public class ObnBean implements Serializable {
 						+ "Espace insuffisant pour le document "
 						+ filesToUpload.get(j).getFileName() + "\n");
 			} else {
+				
+				
+				
+				
+				
 				HashFile hash = new HashFile();
 				StringBuffer hashfile = hash.getEncryptedFileSHA512(in);
 				try {
+					String fileName = renameDoc(filesToUpload.get(j).getFileName());
 					map = onLocal.deposerOnAvecControle(filesToUpload.get(j)
-							.getInputstream(), filesToUpload.get(j)
-							.getFileName(), ccfn.getIdCCFN(), utiS.getIdUti(),
+							.getInputstream(), fileName, ccfn.getIdCCFN(), utiS.getIdUti(),
 							0, selectedConteneur.getIdCont(), "sha-512",
 							hashfile);
 					System.out.println(map.get("status") + "*****---"
 							+ map.get("idu"));
 					if ((Boolean) map.get("status")) {
 						success = true;
-						statusS += filesToUpload.get(j).getFileName()+ " a été bien déposé \n";
+						if(!fileName.equals(filesToUpload.get(j).getFileName()))
+						{
+							statusS += filesToUpload.get(j).getFileName()+ " a été bien déposé avec le nom '"+fileName+"\n";
+						}
+						else {
+							statusS += fileName+ " a été bien déposé \n";
+						}
 						Metadonnees metadonnees = new Metadonnees(
 								(Integer) map.get("idu"),
 								(Integer) map.get("uti"),
@@ -593,6 +620,8 @@ public class ObnBean implements Serializable {
 									.get("algo").toString(), map.get("hash")
 									.toString());
 					logLocal.addLog(log);
+					logs.add(log);
+					Collections.sort(logs, Log.logComparator);
 					break loops;
 				}
 			}
@@ -655,13 +684,47 @@ public class ObnBean implements Serializable {
 		return null;
 	}
 	
-	public void resetDeniedDialog()
+	public void downloadAllFiles()
 	{
-		System.out.println("reset denied");
-		denied = false;
+		try {
+			String dir = System.getProperty("user.home")+File.separator+"Downloads";
+			System.out.println("directory  :"+dir);
+			FileOutputStream fos = new FileOutputStream(dir+File.separator+"documents.zip");
+    		ZipOutputStream zos = new ZipOutputStream(fos);
+    		
+    		for (ObN o : obNs) {
+    			System.out.println("o courant : "+o.getLibelle());
+    			map = onLocal.lireON(o.getIdU(), ccfn.getIdCCFN(), utiS.getIdUti(), 0);
+    			InputStream in = (InputStream) map.get("data");
+    			ZipEntry ze= new ZipEntry(o.getLibelle());
+        		zos.putNextEntry(ze);
+        		byte[] buffer = new byte[1024];
+        		int len;
+        		while ((len = in.read(buffer)) > 0) {
+        			zos.write(buffer, 0, len);
+        		}
+        		zos.closeEntry();
+        		in.close();
+			}
+    		zos.close();
+    		fos.close();
+    		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Téléchargement terminé à l'emplacement "
+    				+dir+File.separator+"documents.zip",  null);
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Une erreur est survenue, réessayez plus tard",  null);
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Une erreur est survenue, réessayez plus tard",  null);
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+		
 	}
 	
-
 	public void showFile(int idU) {
 
 		System.out.println("idU to show " + idU);
@@ -715,8 +778,7 @@ public class ObnBean implements Serializable {
 			logs.add(log);
 			Collections.sort(logs, Log.logComparator);
 			deniedMessage = "Vous n'avez pas le droit de visualiser des documents. Contactez l'administrateur";
-			RequestContext.getCurrentInstance().execute(
-					"PF('deniedDialog').show();");
+			RequestContext.getCurrentInstance().execute("PF('deniedDialog').show();");
 		} else {
 			fail = true;
 			log = new Log(ccfn.getIdCCFN(), -1, (Integer) map.get("uti"), map
@@ -730,8 +792,6 @@ public class ObnBean implements Serializable {
 	}
 
 	public void deleteFile() {
-		success = true;
-		statusOp = "ça va";
 		System.out.println("idU  to" + idToDelete);
 		try {
 			ObN obN = onLocal.getONByIdu(idToDelete);
@@ -751,6 +811,7 @@ public class ObnBean implements Serializable {
 				map = onLocal.Lister(0, ccfn.getIdCCFN(), utiS.getIdUti(), null, null,
 						0);
 				obNs = (List<ObN>) map.get("data");
+				
 			} else if (map.get("cause").equals("denied")) {
 				System.out.println("denied from obnbean");
 				denied = true;
@@ -850,21 +911,29 @@ public class ObnBean implements Serializable {
 					(Integer) map.get("uti"), map.get("idU").toString(),
 					"lire metadonnees", map.get("date").toString(), "Succès");
 			logLocal.addLog(log);
+			logs.add(log);
+			Collections.sort(logs, Log.logComparator);
+			RequestContext.getCurrentInstance().execute("PF('metaDialog').show();");
+			
 		} else if (map.get("cause").equals("denied")) {
-			deniedMessage = "Vous n'avez pas le droit de visualiser les métadonnées. Contactez l'administrateur";
-			RequestContext.getCurrentInstance().execute(
-					"PF('deniedDialog').show();");
 			Log log = new Log(ccfn.getIdCCFN(), (Integer) map.get("cont"),
 					(Integer) map.get("uti"), map.get("idU").toString(),
 					"lire metadonnees", map.get("date").toString(),
 					"Accès refusé");
 			logLocal.addLog(log);
+			logs.add(log);
+			Collections.sort(logs, Log.logComparator);
+			deniedMessage = "Vous n'avez pas le droit de visualiser les métadonnées. Contactez l'administrateur";
+			RequestContext.getCurrentInstance().execute(
+					"PF('deniedDialog').show();");
 		} else {
 			Log log = new Log(ccfn.getIdCCFN(), (Integer) map.get("cont"),
 					(Integer) map.get("uti"), map.get("idU").toString(),
 					"lire metadonnees", map.get("date").toString(),
 					"Erreur inconnue");
 			logLocal.addLog(log);
+			logs.add(log);
+			Collections.sort(logs, Log.logComparator);
 		}
 
 	}
@@ -931,16 +1000,19 @@ public class ObnBean implements Serializable {
 	public DonutChartModel createDonutModel() {
 
 		donutModel = new DonutChartModel();
+		Map<String, Number> circle1 = new HashMap<String, Number>();
 		if (conteneurs != null) {
-			Map<String, Number> circle1 = new HashMap<String, Number>();
 			for (Conteneur c : conteneurs) {
 				circle1.put(
 						c.getLibelle(),
 						onLocal.getONBbyConteneurIdAndUser(c.getIdCont(),
 								utiS.getIdUti()).size());
 			}
-			donutModel.addCircle(circle1);
 		}
+		else {
+			circle1.put("Vide",0);
+		}
+		donutModel.addCircle(circle1);
 		return donutModel;
 	}
 
@@ -954,8 +1026,9 @@ public class ObnBean implements Serializable {
 						onLocal.getONBbyConteneurIdAndUser(c.getIdCont(),
 								utiS.getIdUti()).size());
 			}
+		} else {
+			pieModel.set("Vide",0);
 		}
-
 		return pieModel;
 	}
 
@@ -963,6 +1036,12 @@ public class ObnBean implements Serializable {
 		int i = libelle.lastIndexOf(".");
 		String l = libelle.substring(0, i);
 		return l;
+	}
+	
+	public void resetDeniedDialog()
+	{
+		System.out.println("reset denied");
+		denied = false;
 	}
 
 	public void resetDepotDialog() {
@@ -998,6 +1077,23 @@ public class ObnBean implements Serializable {
 	public void selectIdToDelete(int idU) {
 		System.out.println("idU " + idU);
 		setIdToDelete(idU);
+	}
+	
+	public String renameDoc(String libelle)
+	{
+		int i = 1;
+		for (ObN o : obNs) {
+			if(o.getLibelle().equals(libelle))
+				{
+					int index = libelle.lastIndexOf(".");
+					String fileName = libelle.substring(0,index);
+					String extension = libelle.substring(index, libelle.length());
+					libelle = fileName + "("+i+")"+extension;
+					renameDoc(libelle);
+					i++;
+				}
+		}
+		return libelle;
 	}
 
 	public List<ObN> getObNs() {

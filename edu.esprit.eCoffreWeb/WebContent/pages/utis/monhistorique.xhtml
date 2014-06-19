@@ -20,7 +20,7 @@
 						style="width:50%;position: absolute" />
 				</div>
 				<div style="padding-left: 115px; font-size: 11px">
-					#{obnBean.calculUsedSpace1()} / 1Go</div>
+					#{obnBean.calculUsedSpace1()} / #{obnBean.calculateUserQuota()}</div>
 			</div>
 			<div style="margin-top: 10px">
 				<p:commandButton type="button" value="Déposer"
@@ -105,31 +105,31 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li class="active"><p:commandLink
 					action="#{obnBean.redirectToFiles}" global="false">
-					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#" global="false">
-					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
 	<ui:define name="contenu">
 		<div class="row-fluid">
-			<div class="span6">
+			<div class="span6" style="width: 30%">
 				<h:form>
 					<p:commandButton value="afficher tout"
 						actionListener="#{obnBean.unselectObn}" update=":formLog :libelle"
-						styleClass="btn btn-info" />
+						styleClass="btn btn-info" style="padding:5px"/>
 					<p:commandButton id="btnRecherche" type="button"
 						value="recherche avancée" onclick="PF('recherche').hide()"
-						styleClass="btn btn-info" />
+						styleClass="btn btn-info" style="padding:5px" />
 					<p:overlayPanel id="recherche" for="btnRecherche" hideEffect="fade"
 						dynamic="true" dismissable="false">
 						<h:outputLabel value="Entrez deux date" />
@@ -143,10 +143,6 @@
 							style="vertical-align: top;padding: 1px;" />
 					</p:overlayPanel>
 				</h:form>
-			</div>
-		</div>
-		<div class="row-fluid">
-			<div class="span6" style="width: 30%">
 				<div class="widget" style="min-height: 400px">
 					<div class="widget-body" style="padding: 0; height: 100%">
 						<h:form id="formL" style="height:100%;">
@@ -201,6 +197,8 @@
 											<h:outputText
 												value="Vous avez consulté les métadonnés de ce document"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez détruit un document"
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -230,6 +228,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés de ce document mais vous n'aviez pas le droit"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire document mais vous n'aviez pas le droit" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -259,6 +259,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés de ce document mais une erreur inconnue est survenue"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire document mais une erreur inconnue est survenue" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -328,6 +330,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire un document mais vous n'aviez pas le droit" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -358,6 +362,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire un document mais une erreur inconnue est survenue" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -376,8 +382,7 @@
 			</div>
 		</div>
 		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
-			header="Opération refusé" rendered="#{obnBean.denied}"
-			visible="#{obnBean.denied}">
+			header="Opération refusé" visible="#{obnBean.denied}">
 			<p:outputLabel styleClass="alert alert-error" style="margin-top:15px"
 				value="#{obnBean.deniedMessage}" />
 			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"

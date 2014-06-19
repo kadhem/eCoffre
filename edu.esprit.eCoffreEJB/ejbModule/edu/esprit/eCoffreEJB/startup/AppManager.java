@@ -14,12 +14,11 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.naming.Context;
 
-import edu.esprit.eCoffreEJB.Entities.UTI_F;
 import edu.esprit.eCoffreEJB.Entities.CCFN;
 import edu.esprit.eCoffreEJB.Entities.Conteneur;
 import edu.esprit.eCoffreEJB.Entities.Profil;
+import edu.esprit.eCoffreEJB.Entities.UTI_F;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
-import edu.esprit.eCoffreEJB.Technique.Log;
 import edu.esprit.eCoffreEJB.interfaces.ICCFNLocal;
 import edu.esprit.eCoffreEJB.interfaces.IConteneurLocal;
 import edu.esprit.eCoffreEJB.interfaces.IMetadonneesLocal;

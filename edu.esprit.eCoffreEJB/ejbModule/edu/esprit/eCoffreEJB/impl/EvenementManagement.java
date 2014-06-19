@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.jboss.ejb3.annotation.Clustered;
+
 import edu.esprit.eCoffreEJB.Entities.Evenement;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreEJB.interfaces.IEvenementLocal;

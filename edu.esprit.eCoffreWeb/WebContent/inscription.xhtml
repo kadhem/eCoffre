@@ -16,7 +16,6 @@
 	<link href="./resources/template/css/style.css" rel="stylesheet" />
 	<link href="./resources/template/css/style_responsive.css" rel="stylesheet" />
 	<link href="./resources/template/css/style_default.css" rel="stylesheet" id="style_color" />
-	<link href="#" rel="stylesheet" id="style_metro"/>
 	<link rel="stylesheet" type="text/css" href="./resources/template/uniform/css/uniform.default.css" />
 </h:head>
 <!-- END HEAD -->
@@ -28,17 +27,28 @@
 			<!-- BEGIN TOP NAVIGATION BAR -->
 			<div class="navbar-inner">
 				<div class="container-fluid">
-					<!-- BEGIN LOGO -->
-					<a class="brand" href="accueil.jsf">
+					<div id='cssmenu'>
+					<a class="brand" href="index.html">
 						<img src="./resources/template/img/logoEcoffre.png" alt="Conquer"/>
 					</a>
 					<!-- END LOGO -->
-					<div style="float: right;">
-						<div>
-							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
-							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
-							<a class="btn" href="login.jsf"><b><i>Se connecter</i></b></a> 
-						</div>
+					
+					<div style="float:right">
+					<h:form>
+					<ul>
+					
+					   <li class='active'><a href='index.html'><span>Accueil</span></a></li>
+					   <li><a href='#'><span>Avantages</span></a></li>
+					   <li><a href='#'><span>Aide</span></a></li>
+					   <li class='last'><a href='#'><span>Contact</span></a></li>
+					   <li class='last'><span><h:commandLink action="inscription.jsf?faces-redirect=true" value="Inscription" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="login.jsf?faces-redirect=true" value="Connexion" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/utis/index.jsf?faces-redirect=true" value="Mon coffre" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_S'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/adminf/index.jsf?faces-redirect=true" value="Administration" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_F'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="#{userBean.doLogOut()}" value="Déconnexion" rendered="#{userBean.user!=null}"/></span></li>
+					</ul>
+					</h:form>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -165,9 +175,9 @@
 	                    </p:panel>
 	                    <div style="float:right;margin: 10px 0 0 0;">
 		                    <p:commandButton value="Réinitialiser" action="#{utisBean.doReset()}" 
-	  								styleClass="btn" update="@form"/>
+	  								styleClass="btn" style="padding:5px" update="@form"/>
 		                    <p:commandButton value="Valider" action="#{utisBean.doCreate}" 
-	  								styleClass="btn btn-primary" update="@form"/>
+	  								styleClass="btn btn-primary" style="padding:5px" update="@form"/>
   						</div>
                      </div>
                      <!-- END Coffre Info-->
@@ -183,15 +193,7 @@
       <!-- END PAGE -->  
    </div>
    <!-- END CONTAINER -->
-   <!-- BEGIN FOOTER -->
-   <div id="footer">
-      2012 Conquer. Admin Dashboard Template.
-      <div class="span pull-right">
-         <span class="go-top"><i class="icon-arrow-up"></i></span>
-      </div>
-   </div>
-   <!-- END FOOTER -->
-   
+   <ui:include src="/templates/footer.xhtml" />
 </body>
 <!-- END BODY -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->

@@ -17,9 +17,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -212,8 +209,7 @@ public class ONManagement implements IONLocal {
 					return map;
 				}
 				System.out.println("else");
-				entityManager.getTransaction().rollback();
-				map.put("idu", obN.getIdU());
+				map.put("idu", -1);
 				map.put("ccfn", idCCFN);
 				map.put("cont", idConteneur);
 				map.put("uti", idUti);
@@ -228,7 +224,6 @@ public class ONManagement implements IONLocal {
 			} catch (Exception e) {
 				System.out.println("catch");
 				e.printStackTrace();
-				entityManager.getTransaction().rollback();
 				map.put("idu", -1);
 				map.put("ccfn", idCCFN);
 				map.put("cont", idConteneur);
@@ -590,6 +585,17 @@ public class ONManagement implements IONLocal {
 						map.put("date", df.format(new Date()));
 						return map;
 					}
+					map.put("idu", obN.getIdU());
+					map.put("ccfn", idCCFN);
+					map.put("cont", obN.getConteneur().getIdCont());
+					map.put("uti", idUti);
+					map.put("idOnUti", obN.getIdUONUti());
+					map.put("cont",obN.getConteneur().getIdCont());
+					map.put("dateDepot", metadonnees.getDate_fin_depot());
+					map.put("date", df.format(new Date()));
+					map.put("status", true);
+					map.put("match", false);
+					return map;
 				}
 				map.put("idu", obN.getIdU());
 				map.put("ccfn", idCCFN);
@@ -599,8 +605,8 @@ public class ONManagement implements IONLocal {
 				map.put("cont",obN.getConteneur().getIdCont());
 				map.put("dateDepot", metadonnees.getDate_fin_depot());
 				map.put("date", df.format(new Date()));
-				map.put("status", true);
-				map.put("match", false);
+				map.put("cause", "error");
+				map.put("status", false);
 				return map;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -712,7 +718,6 @@ public class ONManagement implements IONLocal {
 				map.put("date", df.format(new Date()));
 				return map;
 			} catch (SftpException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				map.put("ccfn", idCCFN);
 				map.put("uti", idUti);
@@ -863,14 +868,12 @@ public class ONManagement implements IONLocal {
 
 	@Override
 	public String test() {
-		// TODO Auto-generated method stub
 		return "test test 1 2 1 2";
 	}
 
 	@Override
 	public String uploadRest(MultipartFormDataInput input, int idUti,
 			int idCont, String algo, StringBuffer hash) {
-		// TODO Auto-generated method stub
 
 		String fileName = "";
 		int idCCFN = ccfnManagement.getCCFN().getIdCCFN();
@@ -914,7 +917,7 @@ public class ONManagement implements IONLocal {
 					log = new Log(idCCFN, (Integer) map.get("cont"),
 							(Integer) map.get("uti"),
 							map.get("idu").toString(), "deposer", map.get(
-									"date").toString(), "succès", map.get(
+									"date").toString(), "Succès", map.get(
 									"algo").toString(), map.get("hash")
 									.toString(), map.get("size").toString(),
 							null);
@@ -973,7 +976,7 @@ public class ONManagement implements IONLocal {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int idCCFN = ccfnManagement.getCCFN().getIdCCFN();
 		Log log;
-		// System.out.println("min date + max date : "+minDate+maxDate+" minId + maxId : "+minId+maxId);
+		// System.out.println("min date + m+ax date : "+minDate+maxDate+" minId + maxId : "+minId+maxId);
 		String[] date = null;
 		if (minDate != null && maxDate != null) {
 			date = new String[2];
@@ -998,8 +1001,9 @@ public class ONManagement implements IONLocal {
 //				System.out.println("*" + o.getLibelle() + "*");
 			}
 			log = new Log(idCCFN, (Integer) map.get("cont"), (Integer) map.get("uti"), idUs
-					, "lister", map.get("date").toString(), "succès");
+					, "lister", map.get("date").toString(), "Succès");
 			logLocal.addLog(log);
+			System.out.println("log added");
 		} else if(map.get("cause").equals("denied")){
 			log = new Log(idCCFN, (Integer) map.get("cont"), (Integer) map.get("uti"), "vide"
 					, "lister", map.get("date").toString(), "Accès refusé");
@@ -1022,9 +1026,8 @@ public class ONManagement implements IONLocal {
 		int idCCFN = ccfnManagement.getCCFN().getIdCCFN();
 		map = lireON(idU, idCCFN, idUti, 0);
 		if ((Boolean) map.get("status")) {
-			InputStream stream = (InputStream) map.get("data");
 			log = new Log(idCCFN, -1, (Integer) map.get("uti"), map.get("idu").toString()
-					, "telecharger", map.get("date").toString(), "succès");
+					, "telecharger", map.get("date").toString(), "Succès");
 			logLocal.addLog(log);
 			
 		}
@@ -1042,9 +1045,6 @@ public class ONManagement implements IONLocal {
 	}
 
 	@Override
-	@GET
-	@Path("show")
-	@Produces("*/*")
 	public InputStream showRest(@QueryParam("idUti") int idUti,
 			@QueryParam("idU") int idU) {
 
@@ -1056,7 +1056,7 @@ public class ONManagement implements IONLocal {
 		if ((Boolean) map.get("status")) {
 			InputStream stream = (InputStream) map.get("data");
 			log = new Log(idCCFN, -1, (Integer) map.get("uti"), map.get("idu").toString()
-					, "visualiser", map.get("date").toString(), "succès");
+					, "visualiser", map.get("date").toString(), "Succès");
 			logLocal.addLog(log);
 		}
 		else if(map.get("cause").equals("denied")) {

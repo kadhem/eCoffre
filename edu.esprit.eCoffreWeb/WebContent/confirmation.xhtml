@@ -9,11 +9,7 @@
 	    <f:viewParam name="id" value="#{validationBean.id}" />
 	    <f:event type="preRenderView" listener="#{validationBean.validateAccount()}" />
 	</f:metadata>
-		
-	<ui:define name="animation">
-		<img style="height: 100%;position: absolute;" src="resources/template/img/header_images.jpg" alt="architecture"/>
-	</ui:define>
-	
+
    	<ui:define name="page_header">
       <div class="row-fluid" >
           <div class="span6" style="margin-top:-30px;width:100%">
@@ -26,8 +22,8 @@
 	                    <h:form>
 	                      <h5>Félicitations, vous venez de confirmer votre compte. Vous pouvez dès présent utiliser votre coffre fort</h5>
 	                      <ul>
-	                      <li><h:commandLink action="login.jsf" value="-> Se connecter" /> </li>
-	                      <li><h:commandLink action="accueil.jsf" value="-> Page d'accueil" /></li>
+	                      <li><h:commandLink action="login.jsf?faces-redirect=true" value="-> Se connecter" /> </li>
+	                      <li><h:commandLink action="accueil.jsf?faces-redirect=true" value="-> Page d'accueil" /></li>
 	                      </ul>
 	                    </h:form>
 	                    </p:panel>

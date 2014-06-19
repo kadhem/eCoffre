@@ -1,5 +1,6 @@
 package edu.esprit.eCoffreWeb.validator;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 
 import javax.faces.application.FacesMessage;
@@ -11,9 +12,14 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 @FacesValidator("RequiredCheckboxValidator")
-public class RequiredCheckboxValidator implements Validator {
+public class RequiredCheckboxValidator implements Validator, Serializable {
 
-    public void validate(FacesContext context, UIComponent component, Object value)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public void validate(FacesContext context, UIComponent component, Object value)
         throws ValidatorException
     {
         if (value.equals(Boolean.FALSE)) {

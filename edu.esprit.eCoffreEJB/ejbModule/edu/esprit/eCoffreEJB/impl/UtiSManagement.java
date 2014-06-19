@@ -9,19 +9,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.jboss.ejb3.annotation.Clustered;
+
 import edu.esprit.eCoffreEJB.Entities.Profil;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreEJB.Technique.LdapCom;
 import edu.esprit.eCoffreEJB.Technique.SFTPCom;
 import edu.esprit.eCoffreEJB.interfaces.IUtiSLocal;
-import edu.esprit.eCoffreEJB.interfaces.IUtiSRemote;
 
 /**
  * Session Bean implementation class Uti_fManagement
  */
 @Stateless
 @LocalBean
-public class UtiSManagement implements IUtiSRemote, IUtiSLocal {
+public class UtiSManagement implements IUtiSLocal {
 
 	@PersistenceContext(unitName="data")
 	EntityManager entityManager;
@@ -172,7 +173,9 @@ public class UtiSManagement implements IUtiSRemote, IUtiSLocal {
 	@Override
 	public UTI_S getUtiSById(int idUti)
 	{
-		return entityManager.find(UTI_S.class, idUti);
+		UTI_S utiS = entityManager.find(UTI_S.class, idUti);
+		System.out.println("hello from utismanagement : id : "+utiS.getIdUti());
+		return utiS;
 //		System.out.println("id from ejb : "+idUti);
 //		String queryString = "select us from UTI_S us where us.idUti=:idUti";
 //		Query query = entityManager.createQuery(queryString);

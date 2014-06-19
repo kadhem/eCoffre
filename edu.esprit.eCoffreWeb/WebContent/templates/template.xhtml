@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
 
 <!-- BEGIN HEAD -->
 
@@ -18,9 +19,7 @@
 	<link href="./resources/template/css/style.css" rel="stylesheet" />
 	<link href="./resources/template/css/style_responsive.css" rel="stylesheet" />
 	<link href="./resources/template/css/style_default.css" rel="stylesheet" id="style_color" />
-	<link href="#" rel="stylesheet" id="style_metro"/>
 	<link rel="stylesheet" type="text/css" href="./resources/template/uniform/css/uniform.default.css" />
-	<h:outputScript library="primefaces" name="jquery/jquery.js" />
 </h:head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -29,18 +28,29 @@
 		<div id="header" class="navbar navbar-inverse navbar-fixed-top">
 			<!-- BEGIN TOP NAVIGATION BAR -->
 			<div class="navbar-inner">
-				<div class="container-fluid header">
+				<div class="container-fluid header" style="padding:0;padding-top:10px">
 					<!-- BEGIN LOGO -->
+					<div id="cssmenu">
 					<a class="brand" href="index.html">
 						<img src="./resources/template/img/logoEcoffre.png" alt="Conquer"/>
 					</a>
 					<!-- END LOGO -->
-					<div style="float: right;padding: 1% 4% 0% 0%;">
-						<div>
-							<font color="white"><b><span > Vous n'avez pas encore un compte ?</span></b></font>
-							<a href="inscription.jsf" style="font-size: 17px;margin-right: 10px">S'inscrire</a>
-							<a class="btn" href="login.jsf" style="vertical-align: inherit;"><b><i>Se connecter</i></b></a> 
-						</div>
+					
+					<div style="float:right">
+					<h:form style="margin:0">
+					<ul>
+					   <li class='active'><a href='accueil.jsf'><span>Accueil</span></a></li>
+					   <li><a href='#'><span>Avantages</span></a></li>
+					   <li><a href='#'><span>Aide</span></a></li>
+					   <li class='last'><a href='#'><span>Contact</span></a></li>
+					   <li class='last'><span><h:commandLink action="inscription.jsf?faces-redirect=true" value="Inscription" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="login.jsf?faces-redirect=true" value="Connexion" rendered="#{userBean.user==null}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/utis/index.jsf?faces-redirect=true" value="Mon coffre" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_S'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="/pages/adminf/index.jsf?faces-redirect=true" value="Administration" rendered="#{userBean.user!=null and userBean.user.getClass().getSimpleName() == 'UTI_F'}"/></span></li>
+					   <li class='last'><span><h:commandLink action="#{userBean.doLogOut()}" value="Déconnexion" rendered="#{userBean.user!=null}"/></span></li>
+					</ul>
+					</h:form>
+					</div>
 					</div>
 				</div>
 				<div class="animation">

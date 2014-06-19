@@ -42,7 +42,7 @@ public class LdapCom {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DirContext createContext()
+	public Boolean createContext()
 	{
 		CCFN ccfn=ccfnManagement.getCCFN();
 		String url="ldap://"+ccfn.getUrlLdapServer()+":"+ccfn.getPortLdapServer()+"/"+ccfn.getDnLdapServer();
@@ -64,10 +64,10 @@ public class LdapCom {
         try {
             ctx = new InitialDirContext(env);
             System.out.println("Ldap context created !");
-            return ctx;
+            return true;
         } catch (NamingException e) {
             System.out.println("Failed to create ldap context! : ");
-            return null;
+            return false;
         }
 	}
 	
@@ -91,7 +91,7 @@ public class LdapCom {
                 if (a != null) {
                 	System.out.println("0004 : "+new String((byte[])a.get())+" password passé :"+passwd);
                     String password = (new String((byte[])a.get()));
-                    if(encryptPassword(passwd).equals(password))
+                    if(passwd.equals(password))
                     {
                     	System.out.println("0005");
                     	a = attributes.get("employeeType");
@@ -455,22 +455,6 @@ public class LdapCom {
 		}
 		
 		
-//      ILdapComLocal a=new LdapCom();
-//      a.createContext();
-//      System.out.println("1");
-//      a.encryptPassword("root");
-//      HashMap<String, String> hashMap=new HashMap<String, String>();
-//      hashMap.put("userPassword", a.encryptPassword("root"));
-//      a.editUser("kadhemk@gmail.com",hashMap);
-//      a.deleteUser("test");
-//      try {
-//		System.out.println(a.Login("kadhemk@gmail.com","test"));
-//	} catch (NamingException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
-      
-//		a.addUser("kadhemk@gmail.com", "test", "test", "test","22936773");
     }
     
     

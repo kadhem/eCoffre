@@ -20,7 +20,7 @@
 						style="width:50%;position: absolute" />
 				</div>
 				<div style="padding-left: 115px; font-size: 11px">
-					#{obnBean.calculUsedSpace1()} / 1Go</div>
+					#{obnBean.calculUsedSpace1()} / #{obnBean.calculateUserQuota()}</div>
 			</div>
 			<div style="margin-top: 10px">
 				<p:commandButton type="button" value="Déposer"
@@ -34,18 +34,18 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li class="active"><p:commandLink action="#" global="false">
-					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
@@ -64,12 +64,15 @@
 					</p:dialog>
 				</div>
 				<h:form style="padding:0;margin:0">
+				<p:growl id="msg" life="4000"/>
 					<p:commandButton value="Déposer" styleClass="btn btn-success"
-						style="padding:5px 5px 5px 5px" onclick="PF('deposer').show()"
+						style="padding:5px" onclick="PF('deposer').show()"
 						global="false" />
 					<p:commandButton value="Actualiser"
 						actionListener="#{obnBean.listFiles}" update=":formL :spaceUser"
-						styleClass="btn btn-success" style="padding:5px 5px 5px 5px" />
+						styleClass="btn btn-warning" style="padding:5px" />
+					<p:commandButton title="Télécharger ce fichier" value="Télécharger tout" style="padding:5px"
+						actionListener="#{obnBean.downloadAllFiles()}" styleClass="btn btn-info" update="msg"/>
 				</h:form>
 
 				<p:dialog id="deposer" widgetVar="deposer" modal="true"
@@ -160,8 +163,7 @@
 									<h:graphicImage value="#{obnBean.getIconObN(obN.libelle)}"
 										style="margin-right:10px" />
 									<p:commandLink value="#{obnBean.getLibelle(obN.libelle)}"
-										actionListener="#{obnBean.showMeta(obN)}"
-										oncomplete="PF('metaDialog').show()" update=":metaDialog" />
+										actionListener="#{obnBean.showMeta(obN)}" update=":metaDialog :deniedDialog" />
 								</p:column>
 								<p:column filterBy="#{obN.conteneur.libelle}"
 									sortBy="#{obN.conteneur.libelle}" width="20%"
@@ -184,7 +186,7 @@
 										<p:commandButton id="v" title="Visualiser ce fichier"
 											icon="ui-icon-search"
 											actionListener="#{obnBean.showFile(obN.idU)}"
-											update=":showDialog" />
+											update=":showDialog :deniedDialog" styleClass="btn"/>
 										<p:tooltip for="v"></p:tooltip>
 										<div class="dialog">
 											<p:dialog modal="true" widgetVar="statusDownload"
@@ -198,7 +200,7 @@
 										</div>
 										<p:commandButton id="t" title="Télécharger ce fichier"
 											ajax="false" icon="ui-icon-disk"
-											onclick="PrimeFaces.monitorDownload(start, stop)">
+											onclick="PrimeFaces.monitorDownload(start, stop)" styleClass="btn btn-info">
 											<p:fileDownload
 												value="#{obnBean.downloadFile(obN.idU,obN.libelle)}" />
 										</p:commandButton>
@@ -216,7 +218,7 @@
 										<p:commandButton id="d" title="Supprimer ce fichier"
 											icon="ui-icon-trash"
 											actionListener="#{obnBean.selectIdToDelete(obN.idU)}"
-											oncomplete="PF('deleteDialog').show()" update=":deleteDialog" />
+											oncomplete="PF('deleteDialog').show()" update=":deleteDialog" styleClass="btn btn-danger"/>
 										<p:tooltip for="d"></p:tooltip>
 									</center>
 								</p:column>
@@ -286,7 +288,7 @@
 						<h:outputText id="success" styleClass="alert alert-success"
 							style="width:100%" value="#{obnBean.statusOp}"
 							rendered="#{obnBean.success}" />
-						<h:outputText id="fail1" styleClass="alert alert-error"
+						<h:outputText id="fail" styleClass="alert alert-error"
 							value="#{obnBean.statusOp}" rendered="#{obnBean.fail}" />
 						<div style="float: left; margin-right: 30px; margin-top: 10px">
 							<p:graphicImage value="/resources/templateA/img/question.png"
@@ -299,7 +301,7 @@
 							<div style="float: right">
 								<p:commandButton value="Oui" styleClass="btn btn-primary"
 									icon="ui-icon-check" actionListener="#{obnBean.deleteFile}"
-									update="@form :formL"
+									update="@form :formL :deniedDialog"
 									rendered="#{!obnBean.fail and !obnBean.success}" />
 								<p:commandButton value="Non" styleClass="btn"
 									icon="ui-icon-close"
@@ -328,10 +330,10 @@
 				</p:dialog>
 
 				<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
-					header="Opération refusé" rendered="#{obnBean.denied}" visible="#{obnBean.denied}">
+					header="Opération refusé" visible="#{obnBean.denied}">
 					<p:outputLabel styleClass="alert alert-error"
 								style="margin-top:15px" value="#{obnBean.deniedMessage}"/>
-					<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}" global="false"/>
+				<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}" global="false"/>
 				</p:dialog>
 			</div>
 		</div>

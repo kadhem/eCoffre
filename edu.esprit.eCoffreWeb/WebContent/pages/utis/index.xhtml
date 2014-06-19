@@ -104,19 +104,19 @@
 	<ui:define name="menu">
 		<h:form>
 			<li class="active"><p:commandLink action="#" global="false">
-					<i class="icon-home"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToFiles}"
 					global="false">
-					<i class="icon-home"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="icon-home"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="icon-home"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="icon-home"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 	<ui:define name="contenu">
@@ -155,7 +155,7 @@
 					<div class="widget-body, stat">
 						<p:pieChart value="#{obnBean.createPieModel()}" legendPosition="e"
 							fill="false" sliceMargin="5" diameter="150" showDataLabels="true"
-							style="width:100%;height:100%" />
+							style="width:100%;height:100%"/>
 					</div>
 				</div>
 			</div>
@@ -288,6 +288,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)}  mais vous n'aviez pas le droit"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire un document mais vous n'aviez pas le droit" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -316,6 +318,8 @@
 											<h:outputText
 												value="Vous avez voulu consulter les métadonnés du document #{obnBean.findFileNameByIdu(log.idU)} mais une erreur inconnue est survenue"
 												rendered="#{log.function == 'lire metadonnees'}" />
+											<h:outputText value="Vous avez voulu détruire un document mais une erreur inconnue est survenue" 
+												rendered="#{log.function == 'detruire'}" />
 										</div>
 										<div style="font-size: 10px; font-weight: bold">
 											<h:outputText value="#{log.date}" styleClass="text-error" />
@@ -330,7 +334,7 @@
 			</div>
 		</div>
 		<p:dialog modal="true" id="deniedDialog" widgetVar="deniedDialog"
-			header="Opération refusé" rendered="#{obnBean.denied}" visible="#{obnBean.denied}">
+			header="Opération refusé" visible="#{obnBean.denied}">
 			<p:outputLabel styleClass="alert alert-error"
 					style="margin-top:15px" value="#{obnBean.deniedMessage}"/>
 			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}" global="false"/>

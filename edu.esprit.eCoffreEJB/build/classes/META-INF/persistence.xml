@@ -19,7 +19,7 @@
 		<class>edu.esprit.eCoffreEJB.Entities.Profil</class>
 		<class>edu.esprit.eCoffreEJB.Entities.Log</class>
 		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 		</properties>
 	</persistence-unit>

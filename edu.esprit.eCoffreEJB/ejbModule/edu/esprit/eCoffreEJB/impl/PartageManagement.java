@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.jboss.ejb3.annotation.Clustered;
+
 import edu.esprit.eCoffreEJB.Entities.Invite;
 import edu.esprit.eCoffreEJB.Entities.ObN;
 import edu.esprit.eCoffreEJB.Entities.Partage;

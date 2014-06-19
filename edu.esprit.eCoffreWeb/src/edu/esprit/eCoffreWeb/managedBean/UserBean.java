@@ -1,6 +1,8 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -37,7 +39,7 @@ public class UserBean implements Serializable {
 	public String doAuthenticate() {
 		String navigateTo = null;
 		try {
-			user = userLocal.seConnecter(userName, passwd);
+			user = userLocal.seConnecter(userName, encryptPassword(passwd));
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,16 +77,41 @@ public class UserBean implements Serializable {
 		return navigateTo;
 	}
 
-	public String logOut() {
-		// FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
-		//
-		// return"../welcome";
+	public String doLogOut() {
+		
+		System.out.println("logout");
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.clear();
 
-		return "../index?faces-redirect=true";
+		return "/accueil?faces-redirect=true";
 
 	}
+	
+	public String encryptPassword(String passwd)
+    {
+    	MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+			md.update(passwd.getBytes());
+			 
+	        byte byteData[] = md.digest();
+	 
+	        //convert the byte to hex format method 2
+	        StringBuffer hexString = new StringBuffer();
+	    	for (int i=0;i<byteData.length;i++) {
+	    		String hex=Integer.toHexString(0xff & byteData[i]);
+	   	     	if(hex.length()==1) hexString.append('0');
+	   	     	hexString.append(hex);
+	    	}
+	    	String result = "{SHA512}" + hexString;
+	    	System.out.println("userpassword userBean:" + result);
+	    	return result;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
 
 	public Utilisateur getUser() {
 		return user;

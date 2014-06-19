@@ -106,7 +106,7 @@ public class Log implements Serializable {
 			return date2.compareTo(date1);
 		}
 
-		};
+	};
 
 
 
