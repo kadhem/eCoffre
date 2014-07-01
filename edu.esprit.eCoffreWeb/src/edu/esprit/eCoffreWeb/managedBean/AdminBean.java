@@ -1,6 +1,8 @@
 package edu.esprit.eCoffreWeb.managedBean;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,14 +14,17 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CloseEvent;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
 import edu.esprit.eCoffreEJB.Entities.CCFN;
 import edu.esprit.eCoffreEJB.Entities.Conteneur;
 import edu.esprit.eCoffreEJB.Entities.Partage;
+import edu.esprit.eCoffreEJB.Entities.UTI_F;
 import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreEJB.Entities.Utilisateur;
 import edu.esprit.eCoffreEJB.Technique.LdapCom;
@@ -80,6 +85,8 @@ public class AdminBean implements Serializable {
 	private boolean fail;
 	private boolean success;
 	private String statusOp;
+
+	private UserBean userBean;
 	
 	public AdminBean() {
 		super();
@@ -87,11 +94,16 @@ public class AdminBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		userBean = (UserBean) FacesContext.getCurrentInstance()
+				.getExternalContext().getSessionMap().get("userBean");
 		ccfn = ccfnLocal.getCCFN();
 		users = utiSLocal.getAllUtiS();
 		shares = partageLocal.getAllPartages();
 		countObn = onLocal.getCountAllObn();
-		setConteneurs(conteneurLocal.getAllConteneurs());
+		conteneurs = conteneurLocal.getAllConteneurs();
+		for (Conteneur c : conteneurs) {
+			System.out.println("admin : "+c.getUtiF().getFirstName());
+		}
 		createLinearModel();
 	}
 
@@ -144,8 +156,18 @@ public class AdminBean implements Serializable {
 	}
 	
 	public long calculUsedSpace(String userName) {
+		UTI_S utiS = null;
+		for (UTI_S u : users) {
+			if(u.getUserName().equals(userName))
+			{
+				utiS = u;
+				break;
+			}
+		}
 		long usedSpace = utiSLocal.getUsedSpace(userName);
-		long x = (usedSpace / 1073741824);
+		System.out.println("used space : " + usedSpace + "quota : "
+				+ utiS.getQuota());
+		long x = (usedSpace * 100) / utiS.getQuota();
 		return x;
 	}
 	
@@ -171,7 +193,8 @@ public class AdminBean implements Serializable {
 	public void createConteneur()
 	{
 		Conteneur conteneur = new Conteneur(libelle, actif, parDefaut);
-		if(conteneurLocal.ajouterConteneur(new Conteneur(libelle, actif, parDefaut), ccfn)!=0)
+		conteneur.linkConteneurToAdmin((UTI_F) userBean.getUser());
+		if(conteneurLocal.ajouterConteneur(new Conteneur(libelle, actif, parDefaut), ccfn,(UTI_F) userBean.getUser())!=0)
 		{
 			if(parDefaut)
 			{
@@ -208,6 +231,8 @@ public class AdminBean implements Serializable {
 			password = "";
 			userName = "";
 		}
+		
+		password = encryptPassword(password);
 		UTI_S utiS = new UTI_S(userName, firstName, lastName, password, tel, adresse,
 				dateNaissance);
 		if (utiSLocal.ajouterSimpleUtiSansConfirmation(utiS) != 0) {
@@ -256,7 +281,7 @@ public class AdminBean implements Serializable {
 		
 	}
 	
-	public void resetAddDialog()
+	public void resetAddDialog(CloseEvent event)
 	{
 		userName = null;
 		firstName = null;
@@ -268,6 +293,32 @@ public class AdminBean implements Serializable {
 		coche = false;
 		RequestContext.getCurrentInstance().reset("formAjout"); 
 	}
+	
+	public String encryptPassword(String passwd)
+    {
+    	MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+			md.update(passwd.getBytes());
+			 
+	        byte byteData[] = md.digest();
+	 
+	        //convert the byte to hex format method 2
+	        StringBuffer hexString = new StringBuffer();
+	    	for (int i=0;i<byteData.length;i++) {
+	    		String hex=Integer.toHexString(0xff & byteData[i]);
+	   	     	if(hex.length()==1) hexString.append('0');
+	   	     	hexString.append(hex);
+	    	}
+	    	String result = "{SHA512}" + hexString;
+	    	System.out.println("userpassword in LDAP:" + result);
+	    	return result;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
 	
 	public List<UTI_S> getUsers() {
 		return users;

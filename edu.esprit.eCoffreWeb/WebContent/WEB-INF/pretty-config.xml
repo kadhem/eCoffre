@@ -3,9 +3,61 @@
   xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
                       http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
 
-<!-- 	<url-mapping id="login"> -->
-<!-- 		<pattern value="/utis" /> -->
-<!-- 		<view-id value="/pages/utis/dashboard.jsf" /> -->
-<!-- 	</url-mapping> -->
+    <url-mapping id="login">
+		<pattern value="/authentification" />
+		<view-id value="/login.jsf" />
+	</url-mapping>
+	<url-mapping id="accueil">
+		<pattern value="/accueil" />
+		<view-id value="/accueil.jsf" />
+	</url-mapping>
+    <url-mapping id="succes">
+		<pattern value="/succes" />
+		<view-id value="/succes.jsf" />
+	</url-mapping>
+	<url-mapping id="confirmation">
+		<pattern value="/confirmation/#{id}" />
+		<view-id value="/confirmation.jsf" />
+	</url-mapping>
+	<url-mapping id="partage">
+		<pattern value="/partage"/>
+		<view-id value="/partages/partage.jsf"/>
+	</url-mapping>
+	<url-mapping id="inscription">
+		<pattern value="/inscription" />
+		<view-id value="/inscription.jsf" />
+	</url-mapping>
+	<url-mapping id="espace">
+		<pattern value="/mon_espace/tableau_de_bord" />
+		<view-id value="/pages/utis/index.jsf" />
+	</url-mapping>
+	<url-mapping id="coffre">
+		<pattern value="/mon_espace/mon_coffre" />
+		<view-id value="/pages/utis/moncoffre.jsf" />
+	</url-mapping>
+	<url-mapping id="partage1">
+		<pattern value="/mon_espace/mes_partages" />
+		<view-id value="/pages/utis/mespartages.jsf" />
+	</url-mapping>
+	<url-mapping id="agenda">
+		<pattern value="/mon_espace/mon_agenda" />
+		<view-id value="/pages/utis/monagenda.jsf" />
+	</url-mapping>
+	<url-mapping id="historique">
+		<pattern value="/mon_espace/mon_historique" />
+		<view-id value="/pages/utis/monhistorique.jsf" />
+	</url-mapping>
+	<url-mapping id="admin">
+		<pattern value="/administration/dashboard" />
+		<view-id value="/pages/adminf/index.jsf" />
+	</url-mapping>
+	<url-mapping id="gestionU">
+		<pattern value="/administration/gestion_utilisateurs" />
+		<view-id value="/pages/adminf/gestionutilisateurs.jsf" />
+	</url-mapping>
+	<url-mapping id="gestionC">
+		<pattern value="/administration/gestion_conteneurs" />
+		<view-id value="/pages/adminf/gestionsconteneurs.jsf" />
+	</url-mapping>
 
 </pretty-config>

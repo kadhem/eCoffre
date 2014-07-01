@@ -13,6 +13,7 @@ import org.jboss.ejb3.annotation.Clustered;
 import edu.esprit.eCoffreEJB.Entities.CCFN;
 import edu.esprit.eCoffreEJB.Entities.Conteneur;
 import edu.esprit.eCoffreEJB.Entities.ObN;
+import edu.esprit.eCoffreEJB.Entities.UTI_F;
 import edu.esprit.eCoffreEJB.interfaces.IConteneurLocal;
 import edu.esprit.eCoffreEJB.interfaces.IConteneurRemote;
 import edu.esprit.eCoffreEJB.interfaces.IONLocal;
@@ -22,7 +23,7 @@ import edu.esprit.eCoffreEJB.interfaces.IONLocal;
  */
 @Stateless
 @LocalBean
-public class ConteneurManagement implements IConteneurRemote, IConteneurLocal {
+public class ConteneurManagement implements IConteneurLocal {
 
 	@PersistenceContext(unitName="data")
 	private EntityManager entityManager;
@@ -30,10 +31,11 @@ public class ConteneurManagement implements IConteneurRemote, IConteneurLocal {
 	private IONLocal onLocal;
 	
 	@Override
-	public int ajouterConteneur(Conteneur conteneur, CCFN ccfn) {
+	public int ajouterConteneur(Conteneur conteneur, CCFN ccfn, UTI_F utiF) {
 		// TODO Auto-generated method stub
 		try {
 			conteneur.linkConteneurToCCFN(ccfn);
+			conteneur.linkConteneurToAdmin(utiF);
 			Conteneur conteneur2 = getDefaultConteneur();
 			if(conteneur2!=null)
 			{

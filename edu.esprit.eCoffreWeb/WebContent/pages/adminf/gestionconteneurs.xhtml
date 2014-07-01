@@ -5,6 +5,7 @@
 	xmlns:p="http://primefaces.org/ui" 
 	template="/templates/templateA.xhtml">
 	
+
 <ui:define name="information">
 <h:form id="spaceUser">
 	<h6>Bienvenue #{userBean.user.firstName}</h6>
@@ -15,9 +16,10 @@
 	<li><p:commandLink action="gestionutilisateurs?faces-redirect=true" global="false"><i class="icon-home"></i>Gérer les utilisateurs</p:commandLink></li>
 	<li class="active"><p:commandLink action="#" global="false"><i class="icon-home"></i>Gérer les conteneurs</p:commandLink></li>
 </ui:define>
-<ui:define name="title">Gestion des utilisateurs</ui:define>
-<ui:define name="page-titre">Gestion des utilisateurs</ui:define>
+<ui:define name="title">Gestion des conteneurs</ui:define>
+<ui:define name="page-titre">Gestion des Conteneurs</ui:define>
 <ui:define name="description-titre">...</ui:define>
+<ui:define name="page-courante"><a href="gestionconteneurs.jsf?faces-redirect=true">Conteneurs</a></ui:define>
 <ui:define name="contenu">
 
 	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
@@ -27,7 +29,8 @@
 		</p:dialog>
 	</div>
 	<h:form style="padding:0;margin:0">
-			<p:commandButton value="Ajouter" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" global="false" onclick="addDialog.show()"/>
+			<p:commandButton value="Ajouter" styleClass="btn btn-success" 
+				style="padding:5px 5px 5px 5px" global="false" onclick="PF('addDialog').show()"/>
 	</h:form>
 	<p:dialog widgetVar="addDialog" header="Ajouter un conteneur" modal="true" resizable="true" draggable="true">
 		<h:form id="formAjout" style="margin:0">
@@ -62,7 +65,7 @@
 					    <p:dataTable value="#{adminBean.conteneurs}" var="cont" emptyMessage="Aucun conteneur créé" paginatorPosition="bottom" 
 					     		paginator="true" rows="10" paginatorAlwaysVisible="false" style="text-align: center;" 
 					     			styleClass="hide-border-columns">
-					    	<p:column style="width:1%">
+					    	<p:column style="width:3%">
 					            <f:facet name="header" styleClass="widget-title">
 					                <h:outputText value="Id" />
 					            </f:facet>
@@ -73,6 +76,12 @@
 					                <h:outputText value="Libellé" />
 					            </f:facet>
 					            <h:outputText value="#{cont.libelle}"/><h:outputText value=" (par défaut)" rendered="#{cont.parDefaut}" />
+					        </p:column>
+					        <p:column>
+					            <f:facet name="header" >
+					                <h:outputText value="Créateur" />
+					            </f:facet>
+					            <h:outputText value="#{cont.utiF.firstName} #{cont.utiF.lastName}"/>
 					        </p:column>
 					        <p:column>
 					        <div style="float:right">

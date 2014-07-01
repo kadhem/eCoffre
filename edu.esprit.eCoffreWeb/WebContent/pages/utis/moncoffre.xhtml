@@ -8,6 +8,7 @@
 	<ui:define name="title">Mon coffre</ui:define>
 	<ui:define name="page-titre">Coffre</ui:define>
 	<ui:define name="description-titre">gestion de documents</ui:define>
+	<ui:define name="page-courante"><a href="moncoffre.jsf?faces-redirect=true">Mon coffre</a></ui:define>
 	<ui:define name="information">
 		<h:form id="spaceUser">
 			<h6>Bienvenue #{userBean.user.firstName}</h6>
@@ -34,18 +35,18 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li class="active"><p:commandLink action="#" global="false">
-					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
@@ -53,6 +54,7 @@
 		<div class="row-fluid">
 			<div class="span6" style="width: 100%">
 
+			
 
 				<p:ajaxStatus onstart="PF('statusDialog').show();"
 					onsuccess="PF('statusDialog').hide()" />
@@ -63,13 +65,13 @@
 						<p:graphicImage value="/resources/templateA/img/loading.gif" />
 					</p:dialog>
 				</div>
-				<h:form style="padding:0;margin:0">
+				<h:form style="padding:0;margin:0 0 2px 0">
 				<p:growl id="msg" life="4000"/>
 					<p:commandButton value="Déposer" styleClass="btn btn-success"
 						style="padding:5px" onclick="PF('deposer').show()"
 						global="false" />
 					<p:commandButton value="Actualiser"
-						actionListener="#{obnBean.listFiles}" update=":formL :spaceUser"
+						actionListener="#{obnBean.listFilesWithLog()}" update=":formL :spaceUser"
 						styleClass="btn btn-warning" style="padding:5px" />
 					<p:commandButton title="Télécharger ce fichier" value="Télécharger tout" style="padding:5px"
 						actionListener="#{obnBean.downloadAllFiles()}" styleClass="btn btn-info" update="msg"/>
@@ -144,19 +146,29 @@
 							</p:column>
 						</p:panelGrid>
 					</h:form>
-					<p:ajax event="close" oncomplete="#{obnBean.resetDepotDialog()}" update=":deposer" global="false" />
+					<p:ajax event="close" listener="#{obnBean.resetDepotDialog}" update=":deposer" global="false" />
 				</p:dialog>
 
 				<div class="widget">
 					<div class="widget-body" style="padding: 0">
 						<h:form id="formL">
+						<div style="float: left;">
+						<p:tree id="tree" value="#{obnBean.root}" var="cont" selectionMode="single" selection="#{obnBean.selectedNode}" 
+							style="width:150px;min-height:700px">   
+						<p:ajax event="select" update="@form" listener="#{obnBean.onNodeSelect}" />                 
+					        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+					            <h:outputText value="#{cont}"/>
+					        </p:treeNode>
+					    </p:tree>
+						</div>
+						<div style="float: left;width:85%;margin-left:1%">
 							<p:dataTable id="dataObN" value="#{obnBean.obNs}" var="obN"
 								styleClass="hide-border-columns"
 								emptyMessage="Vous n'avez aucun fichier"
 								paginatorPosition="bottom" paginator="true" rows="7"
-								paginatorAlwaysVisible="false">
+								paginatorAlwaysVisible="false" rendered="#{obnBean.selectedNode!=null}">
 								<p:column filterBy="#{obN.libelle}" sortBy="#{obN.libelle}"
-									width="59%">
+									width="40%">
 									<f:facet name="header" styleClass="widget-title">
 										<h:outputText value="Nom" />
 									</f:facet>
@@ -165,16 +177,8 @@
 									<p:commandLink value="#{obnBean.getLibelle(obN.libelle)}"
 										actionListener="#{obnBean.showMeta(obN)}" update=":metaDialog :deniedDialog" />
 								</p:column>
-								<p:column filterBy="#{obN.conteneur.libelle}"
-									sortBy="#{obN.conteneur.libelle}" width="20%"
-									style="text-align: center;">
-									<f:facet name="header">
-										<h:outputText value="Conteneur" />
-									</f:facet>
-									<h:outputText value="#{obN.conteneur.libelle}" />
-								</p:column>
 								<p:column filterBy="#{obN.metadonnees.tags}"
-									sortBy="#{obN.metadonnees.tags}" width="20%">
+									sortBy="#{obN.metadonnees.tags}" width="40%" style="text-align: center;">
 									<f:facet name="header">
 										<h:outputText value="Mots clés" />
 									</f:facet>
@@ -223,6 +227,7 @@
 									</center>
 								</p:column>
 							</p:dataTable>
+						</div>
 						</h:form>
 					</div>
 				</div>
@@ -277,7 +282,7 @@
 							</div>
 						</div>
 					</h:form>
-					<p:ajax event="close" oncomplete="#{obnBean.resetMetaDialog()}" update=":metaDialog" global="false" />
+					<p:ajax event="close" listener="#{obnBean.resetMetaDialog}" update=":metaDialog" global="false" />
 				</p:dialog>
 
 				<p:dialog id="deleteDialog" widgetVar="deleteDialog" modal="true"
@@ -310,7 +315,7 @@
 							</div>
 						</div>
 					</h:form>
-					<p:ajax event="close" oncomplete="#{obnBean.resetDeleteDialog()}" update=":deleteDialog" global="false"/>
+					<p:ajax event="close" listener="#{obnBean.resetDeleteDialog}" update=":deleteDialog" global="false"/>
 				</p:dialog>
 
 				<p:dialog modal="true" id="showDialog" widgetVar="showDialog"
@@ -322,10 +327,13 @@
 						rendered="#{obnBean.typeFileToShow=='pdf'}">  
 	    				Votre navigateur ne supporte pas les fichiers pdf, <h:outputLink
 							value="/resources/other/guide.pdf">Cliquez</h:outputLink> pour télécharger le fichier.  
-				</p:media>
+					</p:media>
 					<p:graphicImage value="#{obnBean.fileToShow}"
 						style="width:880px;height:480px" cache="false"
 						rendered="#{obnBean.typeFileToShow=='img'}" />
+					<p:outputLabel value="Ce type de document n'est pas encore pris en charge, 
+								nous vous remercions pour votre compréhension" rendered="#{obnBean.typeFileToShow=='autre'}"/>
+					
 					<p:ajax event="close" global="false"/>
 				</p:dialog>
 
@@ -333,7 +341,7 @@
 					header="Opération refusé" visible="#{obnBean.denied}">
 					<p:outputLabel styleClass="alert alert-error"
 								style="margin-top:15px" value="#{obnBean.deniedMessage}"/>
-				<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}" global="false"/>
+				<p:ajax event="close" listener="#{obnBean.resetDeniedDialog}" global="false"/>
 				</p:dialog>
 			</div>
 		</div>

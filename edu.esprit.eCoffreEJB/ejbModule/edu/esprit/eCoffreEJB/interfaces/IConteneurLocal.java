@@ -9,12 +9,13 @@ import javax.ws.rs.Produces;
 
 import edu.esprit.eCoffreEJB.Entities.CCFN;
 import edu.esprit.eCoffreEJB.Entities.Conteneur;
+import edu.esprit.eCoffreEJB.Entities.UTI_F;
 
 @Local
 @Path("/ws/cont")
 public interface IConteneurLocal {
 
-	public int ajouterConteneur(Conteneur conteneur, CCFN ccfn);
+	public int ajouterConteneur(Conteneur conteneur, CCFN ccfn, UTI_F utiF);
 	public boolean supprimerConteneur(Conteneur conteneur);
 	public boolean modifierCconteneur(Conteneur conteneur);
 	public Conteneur getConteneurByIdConteneur(int idCont);

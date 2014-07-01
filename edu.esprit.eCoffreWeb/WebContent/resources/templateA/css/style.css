@@ -379,6 +379,19 @@ a,a:focus, a:hover, a:active {
   border-right: 4px solid #d12610;
 }
   
+#sidebar > ul > form > li a i {
+  color:#eaeaea;
+  font-size: 18px; 
+}
+
+#sidebar > ul > form > li.active > a{
+  border: none; 
+}
+
+#sidebar > ul > form > li.active {
+  border-right: 4px solid #d12610;
+} 
+
 #sidebar > ul > li.active > a .triangle {
   width: 0;
   height: 0;

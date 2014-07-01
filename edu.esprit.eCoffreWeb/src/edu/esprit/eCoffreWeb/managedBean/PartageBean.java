@@ -390,7 +390,7 @@ public class PartageBean implements Serializable{
 		}
 	}
 
-	public void resetAjoutDialog() {
+	public void resetAjoutDialog(CloseEvent event) {
 		description = "";
 		nom = "";
 		statusOp = "";
@@ -402,7 +402,7 @@ public class PartageBean implements Serializable{
 
 	}
 
-	public void resetEditDialog() {
+	public void resetEditDialog(CloseEvent event) {
 		success = false;
 		fail = false;
 		statusOp = "";
@@ -411,7 +411,7 @@ public class PartageBean implements Serializable{
 		invites = new ArrayList<Invite>();
 	}
 
-	public void resetDeleteDialog() {
+	public void resetDeleteDialog(CloseEvent event) {
 		System.out.println("reset delete dialog");
 		success = false;
 		fail = false;
@@ -419,7 +419,7 @@ public class PartageBean implements Serializable{
 		selectedPartage = null;
 	}
 
-	public void resetAddFileDIalog() {
+	public void resetAddFileDIalog(CloseEvent event) {
 		partages = partageLocal.getPartagesByIdUti(utiS.getIdUti());
 		obNsNonPartages = new ArrayList<ObN>();
 		obNsPartages = new ArrayList<ObN>();

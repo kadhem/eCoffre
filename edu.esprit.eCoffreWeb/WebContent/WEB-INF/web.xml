@@ -4,6 +4,10 @@
   <welcome-file-list>
     <welcome-file>accueil.jsf</welcome-file>
   </welcome-file-list>
+  <error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/session.jsf</location>
+  </error-page>
   <servlet>
     <servlet-name>Faces Servlet</servlet-name>
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -20,11 +24,20 @@
   <filter-mapping>
     <filter-name>PrimeFaces FileUpload Filter</filter-name>
     <servlet-name>Faces Servlet</servlet-name>
+    <dispatcher>FORWARD</dispatcher>
+	<dispatcher>REQUEST</dispatcher>
   </filter-mapping>
   <filter>
     <filter-name>Pretty Filter</filter-name>
     <filter-class>com.ocpsoft.pretty.PrettyFilter</filter-class>
   </filter>
+  <filter-mapping>
+	<filter-name>Pretty Filter</filter-name>
+	<url-pattern>/*</url-pattern>
+	<dispatcher>FORWARD</dispatcher>
+	<dispatcher>REQUEST</dispatcher>
+	<dispatcher>ERROR</dispatcher>
+  </filter-mapping>
   <context-param>
     <param-name>primefaces.THEME</param-name>
     <param-value>bootstrap</param-value>

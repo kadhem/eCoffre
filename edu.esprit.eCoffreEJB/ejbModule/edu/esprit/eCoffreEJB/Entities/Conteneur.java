@@ -36,6 +36,7 @@ public class Conteneur implements Serializable{
 	
 	private CCFN ccfn;
 	private List<ObN> obNs;
+	private UTI_F utiF;
 
 	/*---------------------*/
 	
@@ -97,6 +98,11 @@ public class Conteneur implements Serializable{
 	{
 		setCcfn(ccfn);
 	}
+	
+	public void linkConteneurToAdmin(UTI_F utiF)
+	{
+		setUtiF(utiF);
+	}
 
 	@Override
 	public String toString() {
@@ -145,6 +151,16 @@ public class Conteneur implements Serializable{
 
 	public void setParDefaut(boolean parDefaut) {
 		this.parDefaut = parDefaut;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="admin", referencedColumnName="idUti")
+	public UTI_F getUtiF() {
+		return utiF;
+	}
+
+	public void setUtiF(UTI_F utiF) {
+		this.utiF = utiF;
 	}
 	
 	

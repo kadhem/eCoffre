@@ -110,16 +110,17 @@ public class AppManager {
 	public void ajouterConteneur() {
 		/* ajout de conteneurs */
 		CCFN ccfn = proxy2.getCCFN();
+		UTI_F utiF = new UTI_F();utiF.setIdUti(6);
 		Conteneur conteneur = new Conteneur("Documents", true, true);
-		proxy3.ajouterConteneur(conteneur, ccfn);
+		proxy3.ajouterConteneur(conteneur, ccfn,utiF);
 		conteneur = new Conteneur("Factures", true, false);
-		proxy3.ajouterConteneur(conteneur, ccfn);
+		proxy3.ajouterConteneur(conteneur, ccfn,utiF);
 		conteneur = new Conteneur("Assurances", true, false);
-		proxy3.ajouterConteneur(conteneur, ccfn);
+		proxy3.ajouterConteneur(conteneur, ccfn,utiF);
 		conteneur = new Conteneur("Banque", true, false);
-		proxy3.ajouterConteneur(conteneur, ccfn);
+		proxy3.ajouterConteneur(conteneur, ccfn,utiF);
 		conteneur = new Conteneur("Diplômes", true, false);
-		proxy3.ajouterConteneur(conteneur, ccfn);
+		proxy3.ajouterConteneur(conteneur, ccfn,utiF);
 	}
 
 	public void supprimerConteneur() {

@@ -3,6 +3,7 @@ package edu.esprit.eCoffreWeb.filter;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -13,10 +14,11 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.esprit.eCoffreEJB.Entities.UTI_S;
 import edu.esprit.eCoffreWeb.managedBean.UserBean;
 
-@WebFilter("/pages/*")
-public class FilterLogin implements Filter,Serializable {
+@WebFilter(urlPatterns = "/pages/utis/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
+public class FilterLoginUtiS implements Filter,Serializable {
 
 	/**
 	 * 
@@ -37,7 +39,7 @@ public class FilterLogin implements Filter,Serializable {
 		System.out.println(httpServletRequest.getRequestURL().toString());
 		UserBean login = (UserBean) httpServletRequest.getSession()
 				.getAttribute("userBean");
-		if (login != null)
+		if ( (login != null) && (login.getUser() instanceof UTI_S) )
 			chain.doFilter(httpServletRequest, httpServletResponse);
 		else if (!httpServletRequest.getRequestURL().toString()
 				.contains("accueil.jsf")) {

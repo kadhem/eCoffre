@@ -8,6 +8,7 @@
 	<ui:define name="title">Mes partages</ui:define>
 	<ui:define name="page-titre">Partages</ui:define>
 	<ui:define name="description-titre">gestion de partages</ui:define>
+	<ui:define name="page-courante"><a href="mespartages.jsf?faces-redirect=true">Mes partages</a></ui:define>
 	<ui:define name="information">
 		<h:form id="spaceUser">
 			<h6>Bienvenue #{userBean.user.firstName}</h6>
@@ -98,7 +99,7 @@
 				</p:panelGrid>
 			</h:form>
 			<p:ajax event="close" update=":deposer"
-				oncomplete="#{obnBean.resetDepotDialog()}" global="false" />
+				listener="#{obnBean.resetDepotDialog}" global="false" />
 		</p:dialog>
 	</ui:define>
 
@@ -106,18 +107,18 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Dashboard</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToFiles}"
 					global="false">
-					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li class="active"><p:commandLink action="#" global="false">
-					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon agenda</p:commandLink></li>
 			<li><p:commandLink action="#{obnBean.redirectToLogs}"
 					global="false">
-					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
@@ -222,7 +223,7 @@
 
 					</h:form>
 					<p:ajax event="close"
-						oncomplete="#{partageBean.resetAjoutDialog()}" global="false" />
+						listener="#{partageBean.resetAjoutDialog}" global="false" />
 				</p:dialog>
 
 				<div class="widget">
@@ -366,7 +367,7 @@
 
 						</p:panelGrid>
 					</h:form>
-					<p:ajax event="close" oncomplete="#{partageBean.resetEditDialog()}"
+					<p:ajax event="close" listener="#{partageBean.resetEditDialog}"
 						global="false" />
 				</p:dialog>
 
@@ -400,7 +401,7 @@
 						</div>
 					</h:form>
 					<p:ajax event="close" update=":formL"
-						oncomplete="#{partageBean.resetDeleteDialog()}" />
+						listener="#{partageBean.resetDeleteDialog}" />
 				</p:dialog>
 
 				<p:dialog modal="true" id="addFile" widgetVar="addFile"
@@ -521,7 +522,7 @@
 						</p:tab>
 					</p:tabView>
 					<p:ajax event="close" update="formL"
-						oncomplete="#{partageBean.resetAddFileDIalog()}" global="false" />
+						listener="#{partageBean.resetAddFileDIalog}" global="false" />
 				</p:dialog>
 			</div>
 			
@@ -529,7 +530,7 @@
 					header="Opération refusé" visible="#{obnBean.denied}">
 					<p:outputLabel styleClass="alert alert-error"
 						style="margin-top:15px" value="#{obnBean.deniedMessage}" />
-					<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+					<p:ajax event="close" listener="#{obnBean.resetDeniedDialog}"
 						global="false" />
 				</p:dialog>
 		</div>

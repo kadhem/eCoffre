@@ -376,7 +376,6 @@ public class LdapCom {
         }
     	
     	System.out.println("login");
-		Map<String, Object> map=new HashMap<String, Object>();
 		try {
 		    SearchControls sc = new SearchControls();
 		    sc.setSearchScope(SearchControls.SUBTREE_SCOPE);

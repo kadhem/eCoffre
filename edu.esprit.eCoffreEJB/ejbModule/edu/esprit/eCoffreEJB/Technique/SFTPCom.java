@@ -169,34 +169,6 @@ public class SFTPCom {
 			ex.printStackTrace();
 			return false;
 		}
-		// OutputStream outputStream = null;
-		// try {
-		// outputStream = new FileOutputStream(new File("d:/testnew1.txt"));
-		// int read = 0;
-		// byte[] bytes = new byte[1024];
-		//
-		// while ((read = in.read(bytes)) != -1) {
-		// outputStream.write(bytes, 0, read);
-		// }
-		//
-		// System.out.println("Done!");
-		// } catch (FileNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// try {
-		// outputStream.close();
-		// in.close();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// System.out.println("fin");
-		// return false;
 	}
 
 	/*
@@ -253,7 +225,7 @@ public class SFTPCom {
 	public boolean fileExist(String fileName) {
 
 		try {
-			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*");
+			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.*");
 			for (ChannelSftp.LsEntry entry : list) {
 				if (fileName.equals(entry.getFilename())) {
 					return true;
@@ -274,7 +246,7 @@ public class SFTPCom {
 	 */
 	public InputStream getInputStreamFile(String fileName) {
 		try {
-			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*");
+			Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.*");
 			for (ChannelSftp.LsEntry entry : list) {
 				if (fileName.equals(entry.getFilename())) {
 					return channelSftp.get(entry.getFilename());

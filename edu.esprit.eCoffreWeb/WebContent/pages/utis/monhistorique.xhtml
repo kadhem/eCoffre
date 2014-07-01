@@ -8,6 +8,7 @@
 	<ui:define name="title">Mon historique</ui:define>
 	<ui:define name="page-titre">Historique</ui:define>
 	<ui:define name="description-titre">historique d'actions</ui:define>
+	<ui:define name="page-courante"><a href="monhistorique.jsf?faces-redirect=true">Mon Historique</a></ui:define>
 	<ui:define name="information">
 		<h:form id="spaceUser">
 			<h6>Bienvenue #{userBean.user.firstName}</h6>
@@ -96,7 +97,7 @@
 					</p:column>
 				</p:panelGrid>
 			</h:form>
-			<p:ajax event="close" oncomplete="#{obnBean.resetDepotDialog()}"
+			<p:ajax event="close" listener="#{obnBean.resetDepotDialog}"
 				update=":deposer" global="false" />
 		</p:dialog>
 	</ui:define>
@@ -105,18 +106,18 @@
 		<h:form>
 			<li><p:commandLink action="index.jsf?faces-redirect=true"
 					global="false">
-					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Dashboard</p:commandLink></li>
-			<li class="active"><p:commandLink
+					<i class="ui-icon ui-icon-home" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Dashboard</p:commandLink></li>
+			<li><p:commandLink
 					action="#{obnBean.redirectToFiles}" global="false">
-					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon coffre</p:commandLink></li>
+					<i class="ui-icon ui-icon-document" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon coffre</p:commandLink></li>
 			<li><p:commandLink action="#{partageBean.redirectToPartages}"
 					global="false">
-					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mes partages</p:commandLink></li>
+					<i class="ui-icon ui-icon-refresh" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mes partages</p:commandLink></li>
 			<li><p:commandLink action="#{utisBean.redirectToEvents}"
 					global="false">
-					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon agenda</p:commandLink></li>
-			<li><p:commandLink action="#" global="false">
-					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;background-color: white;margin-right:20px"></i>Mon historique</p:commandLink></li>
+					<i class="ui-icon ui-icon-calendar" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon agenda</p:commandLink></li>
+			<li class="active"><p:commandLink action="#" global="false">
+					<i class="ui-icon ui-icon-note" style="display: inline-block;vertical-align: sub;margin-right:20px"></i>Mon historique</p:commandLink></li>
 		</h:form>
 	</ui:define>
 
@@ -385,7 +386,7 @@
 			header="Opération refusé" visible="#{obnBean.denied}">
 			<p:outputLabel styleClass="alert alert-error" style="margin-top:15px"
 				value="#{obnBean.deniedMessage}" />
-			<p:ajax event="close" oncomplete="#{obnBean.resetDeniedDialog()}"
+			<p:ajax event="close" listener="#{obnBean.resetDeniedDialog}"
 				global="false" />
 		</p:dialog>
 	</ui:define>

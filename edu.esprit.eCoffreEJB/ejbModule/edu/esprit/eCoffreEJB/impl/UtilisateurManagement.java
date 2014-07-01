@@ -81,6 +81,40 @@ public class UtilisateurManagement implements IUtilisateurLocal {
 				 return null;
 			}
 	}
+	
+	@Override
+	public Utilisateur seConnecterWS(String userName, String passwd) throws NamingException {
+			System.out.println("username : "+userName + " password : "+passwd);
+			passwd = "{SHA512}"+passwd;
+			if(ldapCom.createContext())
+			{
+				Map<String, Object> map = ldapCom.Login(userName, passwd);
+				if (map.get("message").equals("found")) {
+					System.out.println("trouV");
+					return (Utilisateur) map.get("user");
+				} else {
+					System.out.println("non trouV");
+					return null;
+				}
+			}
+			else {
+				 Query query;
+				 String req="select u from Utilisateur u";
+				 query=entityManager.createQuery(req);
+				 List<Utilisateur> utilisateurs = query.getResultList();
+				 for (Utilisateur u : utilisateurs) {
+					if(u.getUserName().equals(userName))
+					{
+						System.out.println(encryptPassword(u.getPassword()));
+						if(u.getPassword().equals(passwd))
+						{
+							return u;
+						}
+					}
+				}
+				 return null;
+			}
+	}
 
 	@Override
 	public boolean seDesinscrire(UTI_S utiS) {

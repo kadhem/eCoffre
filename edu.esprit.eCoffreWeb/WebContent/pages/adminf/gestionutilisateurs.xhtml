@@ -18,6 +18,7 @@
 <ui:define name="title">Gestion des utilisateurs</ui:define>
 <ui:define name="page-titre">Gestion des utilisateurs</ui:define>
 <ui:define name="description-titre">...</ui:define>
+<ui:define name="page-courante"><a href="gestionsutilisateurs.jsf?faces-redirect=true">Utilisateurs</a></ui:define>
 <ui:define name="contenu">
 
 	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide()"/>  
@@ -29,7 +30,7 @@
 	<h:form style="padding:0;margin:0">
 			<p:commandButton value="Ajouter" styleClass="btn btn-success" style="padding:5px 5px 5px 5px" 
 				global="false" 
-					onclick="addDialog.show()"/>
+					onclick="PF('addDialog').show()"/>
 	</h:form>
 	
 	<p:dialog widgetVar="addDialog" header="Ajouter un utilisateur" modal="true" draggable="true" resizable="false" 
@@ -135,7 +136,7 @@
                   </div>
         	</div>
     	</h:form>
-    	<p:ajax event="close" listener="#{adminBean.resetAddDialog()}" global="false"/>
+    	<p:ajax event="close" listener="#{adminBean.resetAddDialog}" global="false"/>
 	</p:dialog>
 	
 	<div class="row-fluid">
@@ -183,7 +184,7 @@
 					            <p:progressBar value="#{adminBean.calculUsedSpace(user.userName)}" labelTemplate="{value}%" displayOnly="true"/>
 					        </p:column>
 					        
-					        <p:column width="1%">
+					        <p:column width="4%">
 					        <center>
 					            	<p:commandButton id="v" title="Désactiver" icon="ui-icon ui-icon-locked" disabled="#{!user.valide}"
 					            		actionListener="#{adminBean.ableOrDisableUser(user)}" update="@form" styleClass="btn btn-danger"/>

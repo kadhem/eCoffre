@@ -267,7 +267,7 @@ public class UtisBean implements Serializable {
 		}
 	}
 
-	public void resetAddEventDialog() {
+	public void resetAddEventDialog(CloseEvent event) {
 		System.out.println("reset");
 		titre = "";
 		description = "";

@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui" 
 	template="/templates/template.xhtml">
 
-   
+   <ui:define name="title">Succès</ui:define>
    <ui:define name="page_header">
       <div class="row-fluid" >
           <div class="span6" style="margin-top:-30px;width:100%">
@@ -17,7 +17,7 @@
 	                    <h:form>
 	                      <h5>Un mail de confirmation vous a été envoyé sur votre adresse : 
 	                      #{utisBean.utiS.userName}, veuillez confirmer votre compte pour bénéficier des services d'EspritBox</h5>
-	                      <h:commandLink action="accueil.jsf" value="-> vers la page d'accueil" /> 
+	                      <h:commandLink action="accueil.jsf" value="-> Vers la page d'accueil" /> 
 	                    </h:form>
 	                    </p:panel>
 	                 </div>
